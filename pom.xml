@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>jp.co.nri</groupId>
+  <artifactId>pointsys</artifactId>
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
+
+  <name>pointsys</name>
+  <url>http://maven.apache.org</url>
+  <modules>
+    <module>pointsys-core</module>
+    <module>pointsys-api</module>
+    <module>pointsys-framework</module>
+    <module>pointsys-web</module>
+    <module>pointsys-generator</module>
+  </modules>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.2.2.RELEASE</version>
+  </parent>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>jp.co.nri</groupId>
+        <artifactId>pointsys-core</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>jp.co.nri</groupId>
+        <artifactId>pointsys-framework</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>jp.co.nri</groupId>
+        <artifactId>pointsys-api</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
+          <encoding>${project.build.sourceEncoding}</encoding>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

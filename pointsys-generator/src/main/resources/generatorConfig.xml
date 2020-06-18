@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" 
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+  <properties resource="config.properties"/>
+  <context id="mybatis" targetRuntime="MyBatis3">
+    <plugin type="org.mybatis.generator.plugins.SerializablePlugin"></plugin>
+<!--     <plugin type="jp.co.nri.plugins.ForUpdatePlugin"></plugin> -->
+    <plugin type="com.anytron.mybatis.generator.plugins.BatchInsertPlugin"/>
+    <!-- 去除自动生成的注释 -->
+    <commentGenerator>
+      <property name="suppressAllComments" value="true"></property>
+      <property name="suppressDate" value="true"></property>
+      <property name="javaFileEncoding" value="utf-8" />
+    </commentGenerator>
+
+    <!--数据库基本信息 -->
+    <jdbcConnection driverClass="${jdbc.driverClassName}" connectionURL="${jdbc.url}"
+      userId="${jdbc.username}" password="${jdbc.password}">
+    </jdbcConnection>
+
+    <javaTypeResolver>
+      <property name="forceBigDecimals" value="false" />
+    </javaTypeResolver>
+
+    <javaModelGenerator targetPackage="${package.model}" targetProject="src/main/java">
+      <property name="enableSubPackages" value="true" />
+      <property name="trimStrings" value="true" />
+    </javaModelGenerator>
+
+    <sqlMapGenerator targetPackage="${package.xml}" targetProject="src/main/resources">
+      <property name="enableSubPackages" value="true" />
+    </sqlMapGenerator>
+
+    <javaClientGenerator type="XMLMAPPER" targetPackage="${package.mapper}" targetProject="src/main/java">
+      <property name="enableSubPackages" value="true" />
+    </javaClientGenerator>
+
+    <!-- 表名 -->
+    <table tableName="t_emp" domainObjectName="Employee" enableCountByExample="false"
+      enableDeleteByExample="false" enableSelectByExample="true" enableUpdateByExample="false">
+    </table>
+    <table tableName="t_dept" domainObjectName="Department" enableCountByExample="false"
+      enableDeleteByExample="false" enableSelectByExample="true" enableUpdateByExample="false">
+    </table>
+    <table tableName="t_menu" domainObjectName="Menu" enableCountByExample="false"
+      enableDeleteByExample="false" enableSelectByExample="true" enableUpdateByExample="false">
+    </table>
+  </context>
+</generatorConfiguration>

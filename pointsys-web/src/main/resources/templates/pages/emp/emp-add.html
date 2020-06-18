@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<th:block th:include="pages/common/public::header" />
+</head>
+<body>
+  <div class="layui-form timo-compile">
+    <form action="" method="post">
+      <div id="empInfo">
+      <div th:fragment="empInfo">
+      <div class="layui-form-item">
+        <label for="username" class="layui-form-label">用户名</label>
+        <div class="layui-input-inline">
+          <input type="text" id="name" name="name" th:value="${employee?.name}" lay-verify="required"
+            lay-vertype="tips" placeholder="用户名" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label for="address" class="layui-form-label">地址 </label>
+        <div class="layui-input-inline">
+          <input type="text" id="address" name="address" th:value="${employee?.address}" lay-verify="required"
+            lay-vertype="tips" placeholder="地址" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label for="age" class="layui-form-label">年龄</label>
+        <div class="layui-input-inline">
+          <input type="text" id="age" name="age" th:value="${employee?.age}" lay-verify="required" lay-vertype="tips"
+            placeholder="年龄" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label for="tel" class="layui-form-label">手机</label>
+        <div class="layui-input-inline">
+          <input type="text" id="tel" name="tel" th:value="${employee?.tel}" lay-verify="required" lay-vertype="tips"
+            autocomplete="off" placeholder="手机" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label for="tel" class="layui-form-label">工资</label>
+        <div class="layui-input-inline">
+          <input type="text" id="salary" name="salary" th:value="${employee?.salary}" lay-verify="required"
+            lay-vertype="tips" autocomplete="off" placeholder="工资" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">部门</label>
+        <div class="layui-input-inline">
+          <select name="department" lay-verify="tips">
+            <option value="">请选择</option>
+            <option th:each="department:${departmentList}" th:value="${department.id}" th:text="${department.name}"
+              th:selected="${department.id eq employee?.department?.id}"></option>
+          </select>
+        </div>
+      </div>
+      <div class="layui-form-item timo-finally">
+        <input type="hidden" name="id" th:value="${employee?.id}">
+        <button type="button" th:text="${employee}?'修改':'增加'" class="layui-btn layui-btn-normal btn-w100" lay-submit=""
+            data-th-lay-filter="${employee}?'edit':'add'"></button>
+        <button class="layui-btn btn-secondary close-frame-popup" id="closeBtn"><i class="fa fa-times-circle"></i> 关闭</button>
+      </div>
+      </div>
+      </div>
+    </form>
+  </div>
+  <th:block th:include="pages/common/public::footer" />
+  <script>
+    layui.config({
+        base: '/static/js/'
+    }).extend({
+        formSelects: 'formSelects-v4'
+    }).use(['form', 'layer', 'element', 'formSelects'], function () {
+        $ = layui.jquery;
+        var index = parent.layer.getFrameIndex(window.name);
+        var form = layui.form
+          , layer = layui.layer
+          , element = layui.element
+          , formSelects = layui.formSelects;
+        form.on('submit(add)', function (form) {
+            form.field.role = formSelects.value('role-select', 'val');
+            ajaxJsonRequest("POST", '/employee/add', JSON.stringify(form.field), function (result) {
+                handlerResult(result, addDone)
+            });
+            return false;
+        });
+        $(document).on("click",".close-frame-popup",function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+            return false;
+        });
+        var id = getUrlIdParam("empChangeView");
+        if (id != null) {
+            ajaxLayuiRequest("GET", '/employee/get/' + id, function(result) {
+                $("#empInfo").html(result);
+                element.init();
+                form.render();
+            });
+        } else {
+            ajaxLayuiRequest("GET", '/employee/get', function(result) {
+                $("#empInfo").html(result);
+                element.init();
+                form.render();
+            });
+        }
+
+        //监听提交
+        form.on('submit(edit)', function (form) {
+            if (id != null) {
+                ajaxJsonRequest("PUT", '/employee/update/' + id, JSON.stringify(form.field), function(result) {
+                    handlerResult(result, editDone)
+                });
+                return false;
+            }
+        });
+
+        function addDone(data) {
+            parent.layer.close(index);
+            layer.msg("添加成功", {
+                icon : 6
+            });
+        }
+
+        function editDone(data) {
+            parent.layer.close(index);
+            layer.msg("修改成功", {
+                icon : 6
+            });
+        }
+    });
+  </script>
+</body>
+</html>

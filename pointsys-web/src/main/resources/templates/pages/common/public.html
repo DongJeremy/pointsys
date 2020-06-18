@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>公共页面</title>
+</head>
+<body>
+  <th:block th:fragment="header">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="renderer" content="webkit" />
+    <!-- default header name is X-CSRF-TOKEN -->
+    <title>ポイントシステム</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/static/favicon.ico}" />
+    <link rel="stylesheet" th:href="@{/webjars/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/webjars/font-awesome/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/zadmin.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/css/dtree.css}">
+    <link rel="stylesheet" th:href="@{/static/css/font.css}">
+    <link rel="stylesheet" th:href="@{/static/css/formSelects-v4.css}">
+    <link rel="stylesheet" th:href="@{/static/css/animate.min.css}">
+  </th:block>
+  <th:block th:fragment="menu(menu)">
+    <dl class="layui-nav-child">
+      <dd th:each="child:${menu.children}">
+        <a data-th-lay-id="${child.url}" data-th-lay-url="${child.url}"> <cite th:text="${child.menuName}"></cite></a>
+        <th:block th:unless="${#lists.isEmpty(child.children)}" th:include="this::menu(${child})" />
+      </dd>
+    </dl>
+  </th:block>
+  <th:block th:fragment="footer">
+  <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+  <script th:src="@{/webjars/layui/layui.js}"></script>
+  <script th:src="@{/static/js/main.js}"></script>
+  </th:block>
+</body>
+</html>

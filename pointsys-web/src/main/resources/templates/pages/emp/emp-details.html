@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<th:block th:include="pages/common/public::header" />
+</head>
+<body class="animated fadeIn" id="empInfo">
+  <div class="timo-detail-page" th:fragment="empInfo">
+    <div class="timo-detail-title">基本信息</div>
+    <table class="layui-table timo-detail-table">
+        <tbody>
+          <tr>
+            <th width='100px'>用户编号</th>
+            <td th:text="${employee?.id}"></td>
+            <th width='100px'>用户账号</th>
+            <td th:text="${employee?.name}"></td>
+          </tr>
+          <tr>
+            <th>年龄</th>
+            <td th:text="${employee?.age}"></td>
+            <th>地址</th>
+            <td th:text="${employee?.address}"></td>
+          </tr>
+          <tr>
+            <th>所在部门</th>
+            <td colspan="4" th:text="${employee?.department?.name}"></td>
+          </tr>
+          <tr>
+            <th>电话号码</th>
+            <td th:text="${employee?.tel}"></td>
+            <th>工资</th>
+            <td th:text="${employee?.salary}"></td>
+          </tr>
+        </tbody>
+    </table>
+  </div>
+</body>
+<th:block th:include="pages/common/public::footer" />
+<script type="application/javascript">
+    layui.use('layer', function(){
+        var id = getUrlIdParam("empDetailsView");
+        if (id != null) {
+           ajaxLayuiRequest("GET", '/employeeDetails/' + id, function(result) {
+              $("#empInfo").html(result);
+           });
+        }
+    });
+</script>
+</html>

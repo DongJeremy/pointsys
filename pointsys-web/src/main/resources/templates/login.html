@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"></meta>
+<meta name="renderer" content="webkit" />
+<title>ポイントシステム</title>
+<link rel="icon" th:href="@{/static/favicon.ico}" type="image/x-icon" />
+<link rel="stylesheet" th:href="@{/webjars/layui/css/layui.css}">
+<link rel="stylesheet" th:href="@{/webjars/font-awesome/css/font-awesome.min.css}">
+<link rel="stylesheet" th:href="@{/static/css/zadmin.css}" media="all">
+<link rel="stylesheet" th:href="@{/static/css/login.css}">
+</head>
+<body class="layui-layout-login">
+  <div class="login-bg">
+    <div class="cover"></div>
+  </div>
+  <div class="login-content" th:th:classappend="${isCaptcha} ? 'captcha'">
+    <h1 class="login-box-title">
+      <i class="fa fa-fw fa-user"></i>登录
+    </h1>
+    <form id="login-form" class="layui-form" method="post" onsubmit="return false;">
+      <div class="layui-form-item">
+        <label class="layui-icon layui-icon-username" for="username"></label> <input class="layui-input" type="text"
+          name="username" id="username" placeholder="用户名" lay-verify="required" lay-vertype="tips">
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-icon layui-icon-password" for="password"></label> <input class="layui-input" type="password"
+          name="password" id="password" placeholder="密码" lay-verify="required" lay-vertype="tips">
+      </div>
+      <div th:if="${isCaptcha}" class="layui-form-item captcha-item">
+        <label class="layui-icon layui-icon-vercode"></label> <input class="layui-input" type="text" name="captcha"
+          autocomplete="off" placeholder="验证码"> <img class="captcha-img" th:src="@{/captcha}" />
+      </div>
+      <div class="layui-form-item">
+        <input type="checkbox" name="rememberMe" title="记住我" lay-skin="primary"> <a
+          class="layui-layout-right forget-password" href="javascript:alert('请联系超级管理员！')">忘记密码?</a>
+      </div>
+      <button lay-submit lay-filter="login" class="layui-btn layui-btn-fluid ajax-login" onclick="login(this)">
+        <i class="fa fa-sign-in fa-lg fa-fw"></i> 登录
+      </button>
+    </form>
+  </div>
+  <!-- jQuery 3 -->
+  <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+  <script th:src="@{/webjars/layui/layui.js}"></script>
+
+<script type="text/javascript">
+  if (top != self) {
+    parent.location.href = '/login';
+  }
+  
+  var token = localStorage.getItem("token");
+  if (token != null && token.trim().length != 0) {
+    $.ajax({
+      type : 'get',
+      url : '/user/current?token=' + token,
+      success : function(data) {
+        location.href = '/main';
+      },
+      error : function(xhr, textStatus, errorThrown) {
+        var msg = xhr.responseText;
+        var response = JSON.parse(msg);
+        var code = response.code;
+        var message = response.message;
+        if (code == 401) {
+          localStorage.removeItem("token");
+        }
+      }
+    });
+  }
+
+  function login(obj) {
+    $(obj).attr("disabled", true);
+
+    var username = $.trim($('#username').val());
+    var password = $.trim($('#password').val());
+    if (username == "" || password == "") {
+      $("#info").html('用户名或者密码不能为空');
+      $(obj).attr("disabled", false);
+    } else {
+      $.ajax({
+        type : 'post',
+        url : '/login',
+        data : $("#login-form").serialize(),
+        success : function(data) {
+          var dataObj = JSON.parse(data);
+          localStorage.setItem("token", dataObj.token);
+          location.href = '/main';
+        },
+        error : function(xhr, textStatus, errorThrown) {
+          var msg = xhr.responseText;
+          var response = JSON.parse(msg);
+          $("#info").html(response.message);
+          $(obj).attr("disabled", false);
+        }
+      });
+    }
+  }
+</script>
+</body>
+</html>

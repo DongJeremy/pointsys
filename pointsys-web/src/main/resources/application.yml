@@ -1,0 +1,20 @@
+server:
+  port: 80
+  servlet:
+    session:
+      timeout: 1800
+      cookie:
+        max-age: 86400
+spring:
+  thymeleaf:
+    mode: HTML
+    suffix: .html
+    encoding: UTF-8
+    cache: false
+    prefix: classpath:/templates/
+    servlet:
+      content-type: text/html
+
+https:
+  httpclient:
+    url: http://localhost:8080

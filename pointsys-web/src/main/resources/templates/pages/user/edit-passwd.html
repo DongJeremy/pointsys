@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<th:block th:include="pages/common/public::header" />
+</head>
+<body>
+  <div class="page-loading">
+    <div class="rubik-loader"></div>
+  </div>
+  <div class="animated fadeIn timo-compile">
+    <form action="" method="post" class="layui-form">
+      <input type="hidden" name="id" id="id"/>
+      <div class="layui-form-item">
+        <label class="layui-form-label">原密码</label>
+        <div class="layui-input-inline">
+          <input class="layui-input" type="password" name="original" placeholder="请输入原来密码">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">新密码</label>
+        <div class="layui-input-inline">
+          <input class="layui-input" type="password" name="password" placeholder="请输入新密码">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">确认密码</label>
+        <div class="layui-input-inline">
+          <input class="layui-input" type="password" name="confirm" placeholder="再一次输入密码">
+        </div>
+      </div>
+      <div class="layui-form-item timo-finally">
+        <button class="layui-btn" lay-filter="reset-password" lay-submit=""><i class="fa fa-check-circle"></i> 保存</button>
+        <button class="layui-btn btn-secondary close-popup"><i class="fa fa-times-circle"></i> 关闭</button>
+      </div>
+    </form>
+  </div>
+  <th:block th:include="pages/common/public::footer" />
+  <script>
+    function initData(){
+        $.ajax({
+            type : 'get',
+            url : '/user/current',
+            async : false,
+            success : function(data) {
+                $("#id").val(data.id);
+            }
+        });
+    }
+  layui.use(['form', 'layer'], function () {
+      $ = layui.jquery;
+      var form = layui.form
+       , layer = layui.layer;
+      var index = parent.layer.getFrameIndex(window.name);
+      initData();
+      form.on('submit(reset-password)', function (form) {
+          var data = form.field;
+          if (data.password1!=data.password2) {
+              layer.msg("密码两次输入不一致", {icon: 6});
+              return false;
+          }
+          $.post('/api/user/' + data.id + "/reset", form.field, function (result) {
+              handlerResult(result, function (data) {
+                  layer.msg("重置成功", {icon: 6});
+                  parent.layer.close(index);
+              });
+          });
+          return false;
+      });
+  });
+  </script>
+</body>
+</html>

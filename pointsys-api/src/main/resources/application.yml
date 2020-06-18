@@ -1,0 +1,46 @@
+server:
+  port: 8080
+  servlet:
+    session:
+      timeout: 1800
+      cookie:
+        max-age: 86400
+spring:
+  aop:
+    auto: true
+  application:
+    name: 1.0
+  mvc:
+    static-path-pattern: /**
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://192.168.1.94:5432/mydb?characterEncoding=utf8&useSSL=true
+    username: admin
+    password: password
+  session:
+    store-type: redis
+    redis:
+      flush-mode: on-save
+  redis:
+    host: 192.168.1.94
+    port: 6379
+    timeout: 10s
+    lettuce:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 8
+        max-wait: -1ms
+pagehelper:
+  helperDialect: postgresql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+mybatis:
+  type-aliases-package: jp.co.nri.point.web.domain
+  config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath*:mapper/*.xml
+token:
+  expire:
+    seconds: 7200
+  jwtSecret: (XIAO:)_$^11244^%$_(WEI:)_@@++--(LAO:)_++++_.sds_(SHI:)

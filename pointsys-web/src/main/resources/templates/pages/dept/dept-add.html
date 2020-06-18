@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<th:block th:include="pages/common/public::header" />
+</head>
+<body>
+  <div class="layui-form animated fadeIn timo-compile" id="deptInfo">
+    <form action="" method="post" th:fragment="deptInfo">
+      <div class="layui-form-item">
+        <label for="deptName" class="layui-form-label"> 部门名称 </label>
+        <div class="layui-input-inline">
+          <input type="text" id="name" name="name" th:value="${department?.name}" lay-verify="required" lay-vertype="tips"
+            autocomplete="off" placeholder="请输入部门名称" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label for="description" class="layui-form-label"> 部门描述 </label>
+        <div class="layui-input-inline">
+          <input type="text" id="description" name="description" th:value="${department?.description}" lay-verify="required"
+            lay-vertype="tips" autocomplete="off" placeholder="请输入部门描述" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item timo-finally">
+        <input type="hidden" name="id" th:value="${department?.id}">
+        <button class="layui-btn layui-btn-blue" th:text="${department}?'修改':'增加'" lay-submit=""
+            data-th-lay-filter="${department}?'edit':'add'">增加</button>
+        <button class="layui-btn btn-secondary close-frame-popup"><i class="fa fa-times-circle"></i> 关闭</button>
+      </div>
+    </form>
+  </div>
+  <th:block th:include="pages/common/public::footer" />
+</body>
+<script>
+    layui.use([ 'form', 'layer' ], function() {
+        var $ = layui.jquery, form = layui.form, layer = layui.layer;
+        var index = parent.layer.getFrameIndex(window.name);
+
+        var id = getUrlIdParam("deptChangeView");
+        if (id != null) {
+            ajaxLayuiRequest("GET", '/department/get/'+ id, function(result) {
+                $("#deptInfo").html(result);
+            });
+        }
+        $("#parentName").on("click", function() {
+            $(this).toggleClass("layui-form-selected");
+            $("#parentTreeDiv").toggleClass("layui-show layui-anim layui-anim-upbit");
+        });
+        //监听提交
+        form.on('submit(add)', function(form) {
+            ajaxJsonRequest("POST", '/department/add', JSON.stringify(form.field), function(result) {
+                handlerResult(result, addDone)
+            });
+            return false;
+        });
+        //监听提交
+        form.on('submit(edit)', function(form) {
+            if (id != null) {
+                ajaxJsonRequest("PUT", '/department/update/' + id, JSON.stringify(form.field), function(result) {
+                    handlerResult(result, editDone)
+                });
+                return false;
+            }
+        });
+        function addDone(data) {
+            parent.layer.close(index);
+            layer.msg("添加成功", {
+                icon : 6
+            });
+        }
+        function editDone(data) {
+            parent.layer.close(index);
+            layer.msg("修改成功", {
+                icon : 6
+            });
+        }
+    });
+</script>
+</html>
