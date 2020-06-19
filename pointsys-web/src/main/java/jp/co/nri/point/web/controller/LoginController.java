@@ -1,4 +1,4 @@
-package jp.co.nri.point.web.controller.ui;
+package jp.co.nri.point.web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

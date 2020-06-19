@@ -1,4 +1,4 @@
-package jp.co.nri.point.web.controller.ui;
+package jp.co.nri.point.web.controller;
 
 import java.util.List;
 
