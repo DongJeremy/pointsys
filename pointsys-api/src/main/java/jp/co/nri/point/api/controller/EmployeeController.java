@@ -1,11 +1,20 @@
 package jp.co.nri.point.api.controller;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +33,8 @@ import jp.co.nri.point.api.dto.EmployeeVO;
 import jp.co.nri.point.api.service.EmployeeService;
 import jp.co.nri.point.beans.PageResultBean;
 import jp.co.nri.point.beans.ResultBean;
+import jp.co.nri.point.util.BeanCopyUtil;
+import jp.co.nri.point.util.ExcelUtil;
 
 @RestController
 @RequestMapping("/api/v1/employees")
@@ -100,6 +111,20 @@ public class EmployeeController {
             service.deleteById(Long.parseLong(id));
         }
         return ResultBean.successResult();
+    }
+
+    @GetMapping("/download")
+    public ResponseEntity<ByteArrayResource> downloadFile(HttpServletRequest request) throws IOException {
+        String contentType = "application/vnd.ms-excel";
+        String excelFileName = "employee_";
+        SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd_HH_MM_SS");
+        excelFileName += df.format(new Date()) + ".txt";
+        final List<Employee> list = service.getAll();
+        List<EmployeeVO> voList = BeanCopyUtil.copyListProperties(list, EmployeeVO::new);
+        logger.info("download excel file to local.");
+        ByteArrayResource bytes = ExcelUtil.exportToFile(voList);
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + excelFileName + "\"").body(bytes);
     }
 
 }

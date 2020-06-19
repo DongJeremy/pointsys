@@ -21,6 +21,7 @@ import jp.co.nri.point.annotation.OperationLog;
 import jp.co.nri.point.beans.PageResultBean;
 import jp.co.nri.point.beans.ResultBean;
 import jp.co.nri.point.domain.SysUser;
+import jp.co.nri.point.dto.PasswordBean;
 import jp.co.nri.point.dto.UserOnline;
 import jp.co.nri.point.security.service.TokenService;
 import jp.co.nri.point.security.service.UserService;
@@ -33,7 +34,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    
+
     @Autowired
     private TokenService tokenService;
 
@@ -47,7 +48,7 @@ public class UserController {
     @ApiOperation(value = "当前登录用户")
     @GetMapping("/current")
     public SysUser currentUser(String token) {
-        if (token!=null) {
+        if (token != null) {
             return tokenService.getLoginUser(token);
         }
         return UserUtil.getLoginUser();
@@ -128,8 +129,10 @@ public class UserController {
     @OperationLog("重置密码")
     @PostMapping("/{id}/reset")
     @ResponseBody
-    public ResultBean<?> resetPassword(@PathVariable("id") Long id, String original, String password) {
-        boolean resetPass = userService.updatePasswordByUserId(id, original, password);
+    public ResultBean<?> resetPassword(@PathVariable("id") Long id, @RequestBody PasswordBean passwordBean) {
+        System.out.println(passwordBean);
+        boolean resetPass = userService.updatePasswordByUserId(id, passwordBean.getOriginal(),
+                passwordBean.getPassword());
         if (!resetPass) {
             return ResultBean.errorResult("原密码错误，重置密码失败");
         }

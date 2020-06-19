@@ -31,6 +31,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.multipart.MultipartFile;
 
 import jp.co.nri.point.annotation.ExcelInfo;
@@ -255,6 +256,13 @@ public class ExcelUtil<T> {
         write(is, out);
     }
 
+    public final static <T> ByteArrayResource exportToFile(List<T> list) throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        export(list).write(os);
+        byte[] content = os.toByteArray();
+        return new ByteArrayResource(content);
+    }
+
     /**
      * 获取workbook
      * 
@@ -286,7 +294,7 @@ public class ExcelUtil<T> {
      */
     private static void setFieldValue(Object obj, Field f, Workbook wookbook, Cell cell) {
         try {
-            //cell.setCellFormula(CellType.STRING);
+            // cell.setCellFormula(CellType.STRING);
             if (f.getType() == byte.class || f.getType() == Byte.class) {
                 f.set(obj, Byte.parseByte(cell.getStringCellValue()));
             } else if (f.getType() == int.class || f.getType() == Integer.class) {

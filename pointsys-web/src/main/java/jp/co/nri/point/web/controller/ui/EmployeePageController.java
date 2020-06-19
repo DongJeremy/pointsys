@@ -1,5 +1,9 @@
 package jp.co.nri.point.web.controller.ui;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -13,9 +17,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 
 import jp.co.nri.point.beans.PageResultBean;
 import jp.co.nri.point.beans.ResultBean;
+import jp.co.nri.point.util.FileUtil;
 import jp.co.nri.point.web.domain.Employee;
 import jp.co.nri.point.web.domain.EmployeeVO;
 import jp.co.nri.point.web.dto.DeptList;
@@ -23,6 +29,9 @@ import jp.co.nri.point.web.util.HttpClientUtil;
 
 @Controller
 public class EmployeePageController extends BaseController {
+
+    @Resource
+    private HttpServletResponse response;
 
     @GetMapping("/main/empView")
     public String empListView() {
@@ -64,7 +73,7 @@ public class EmployeePageController extends BaseController {
 
     @GetMapping(value = { "/employee/get/{id}", "/employee/get" })
     public String getEmployee(@PathVariable(value = "id", required = false) Long id, Model model) {
-        if(id!=null) {
+        if (id != null) {
             ResultBean<Employee> employeeData = HttpClientUtil.doGetResultBean(restTemplate, getTokenString(),
                     getUrlString("/api/v1/employees/" + id), Employee.class);
             model.addAttribute("employee", employeeData.getData());
@@ -110,15 +119,21 @@ public class EmployeePageController extends BaseController {
         return "pages/emp/emp-details";
     }
 
-//    @GetMapping("/empView/excel/download")
-//    public void empViewDownload(HttpServletResponse response) throws IOException {
-//        String excelFileName = "employee";
-//        final List<Employee> list = employeeService.getAll();
-//        List<Employee> voList = new ArrayList<>();
-//        BeanUtils.copyProperties(list, voList);
-//        logger.info("download excel file to local.");
-//        ExcelUtil.exportToFile(voList, excelFileName, response);
-//    }
+    @GetMapping("/employee/excel/download")
+    @ResponseBody
+    public ResultBean<?> empViewDownload(HttpServletResponse response) throws Exception {
+        String excelFileName = "employee";
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            ByteArrayResource result = HttpClientUtil.doGet(restTemplate, getTokenString(),
+                    getUrlString("/api/v1/employees/download"), ByteArrayResource.class);
+            FileUtil.saveExcelToFile(result.getInputStream(), response, excelFileName);
+        } catch (Exception e) {
+            throw e;
+        }
+        return ResultBean.successResult();
+    }
+
 //
 //    @PostMapping("/empImport")
 //    public @ResponseBody ResultBean<?> importEmployee(HttpServletRequest request) throws IOException, Exception {

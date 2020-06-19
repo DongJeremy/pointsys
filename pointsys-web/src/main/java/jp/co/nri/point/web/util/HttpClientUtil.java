@@ -1,9 +1,12 @@
 package jp.co.nri.point.web.util;
 
+import java.util.Arrays;
+
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -31,6 +34,14 @@ public class HttpClientUtil {
         HttpEntity<T> requestEntity = new HttpEntity<T>(entity, requestHeaders);
         return requestEntity;
     }
+    
+    private static <T> HttpEntity<T> generateFileEntity(String token) {
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.add(Constants.TOKEN_KEY, token);
+        requestHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
+        HttpEntity<T> requestEntity = new HttpEntity<T>(null, requestHeaders);
+        return requestEntity;
+    }
 
     /**
      * 
@@ -43,6 +54,12 @@ public class HttpClientUtil {
      */
     public static <T> T doGet(RestTemplate restTemplate, String token, String url, Class<T> responseType) {
         HttpEntity<String> requestEntity = generateEmptyEntity(token);
+        ResponseEntity<T> result = restTemplate.exchange(url, HttpMethod.GET, requestEntity, responseType);
+        return result.getBody();
+    }
+
+    public static <T> T doGetFile(RestTemplate restTemplate, String token, String url, Class<T> responseType) {
+        HttpEntity<String> requestEntity = generateFileEntity(token);
         ResponseEntity<T> result = restTemplate.exchange(url, HttpMethod.GET, requestEntity, responseType);
         return result.getBody();
     }

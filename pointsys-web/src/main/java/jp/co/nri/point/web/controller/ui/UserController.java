@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import jp.co.nri.point.beans.PageResultBean;
 import jp.co.nri.point.beans.ResultBean;
 import jp.co.nri.point.domain.SysUser;
+import jp.co.nri.point.dto.PasswordBean;
 import jp.co.nri.point.dto.UserOnline;
 import jp.co.nri.point.web.dto.SessionInfo;
 import jp.co.nri.point.web.util.HttpClientUtil;
@@ -84,5 +85,19 @@ public class UserController extends BaseController {
     public ResultBean<?> forceLogout(@RequestBody SessionInfo sessionInfo) {
         return HttpClientUtil.doPostResultBean(restTemplate, getTokenString(),
                 getUrlString("/api/user/kickout/" + sessionInfo.getSessionId()), null, SessionInfo.class);
+    }
+
+    @PostMapping("/user/userInfo")
+    @ResponseBody
+    public ResultBean<?> userInfo(@RequestBody SysUser user) {
+        return HttpClientUtil.doPostResultBean(restTemplate, getTokenString(),
+                getUrlString("/api/user/userInfo"), user, SysUser.class);
+    }
+    
+    @PostMapping("/user/{id}/reset")
+    @ResponseBody
+    public ResultBean<?> resetPassword(@PathVariable("id") Long id, @RequestBody PasswordBean passwordBean) {
+        return HttpClientUtil.doPostResultBean(restTemplate, getTokenString(),
+                getUrlString("/api/user/" + id + "/reset"), passwordBean, PasswordBean.class);
     }
 }

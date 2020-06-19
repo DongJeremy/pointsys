@@ -14,7 +14,7 @@ spring:
     static-path-pattern: /**
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://192.168.1.94:5432/mydb?characterEncoding=utf8&useSSL=true
+    url: jdbc:postgresql://192.168.0.59:5432/mydb?characterEncoding=utf8&useSSL=true
     username: admin
     password: password
   session:
@@ -22,7 +22,7 @@ spring:
     redis:
       flush-mode: on-save
   redis:
-    host: 192.168.1.94
+    host: 192.168.0.59
     port: 6379
     timeout: 10s
     lettuce:
@@ -40,6 +40,10 @@ mybatis:
   type-aliases-package: jp.co.nri.point.web.domain
   config-location: classpath:mybatis-config.xml
   mapper-locations: classpath*:mapper/*.xml
+app:
+  logOperation: true]
+file:
+  upload-dir: ./uploads
 token:
   expire:
     seconds: 7200

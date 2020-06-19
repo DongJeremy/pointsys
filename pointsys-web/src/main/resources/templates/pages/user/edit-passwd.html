@@ -59,7 +59,7 @@
               layer.msg("密码两次输入不一致", {icon: 6});
               return false;
           }
-          $.post('/api/user/' + data.id + "/reset", form.field, function (result) {
+          ajaxJsonRequest("POST", '/user/' + data.id + "/reset", JSON.stringify(form.field), function(result) {
               handlerResult(result, function (data) {
                   layer.msg("重置成功", {icon: 6});
                   parent.layer.close(index);

@@ -506,9 +506,12 @@ function handlerResult(result, fn) {
     if (result.code === 200) {
         fn(result.data);
     } else {
-        console.log(result.msg)
-        //showError(result.msg);
+        showError(result.message);
     }
+}
+
+function showError(msg) {
+    layer.msg(msg, {icon: 2});
 }
 
 setTimeout(function() {
@@ -540,27 +543,52 @@ function ajaxJsonRequest(method, url, jsonData, handleData) {
         contentType : "application/json; charset=utf-8",
         success : handleData,
         error : function(xhr, textStatus, errorThrown){
-//            var msg = xhr.responseText;
-//            console.log(msg);
-//            var response = JSON.parse(msg);
-//            var code = response.code;
-//            var message = response.message;
-//            if (code == 400) {
-//                layer.msg(message);
-//            } else if (code == 401) {
-//                localStorage.removeItem("token");
-//                layer.msg("token过期，请先登录", {shift: -1, time: 1000}, function(){
-//                    location.href = '/login.html';
-//                });
-//            } else if (code == 403) {
-//                console.log("未授权:" + message);
-//                layer.msg('未授权');
-//            } else if (code == 500) {
-//                layer.msg('系统错误：' + message);
-//            }
+            var msg = xhr.responseText;
+            console.log(msg);
+            var response = JSON.parse(msg);
+            var code = response.code;
+            var message = response.message;
+            if (code == 400) {
+                layer.msg(message);
+            } else if (code == 401) {
+                localStorage.removeItem("token");
+                layer.msg("token过期，请先登录", {shift: -1, time: 1000}, function(){
+                    location.href = '/login.html';
+                });
+            } else if (code == 403) {
+                console.log("未授权:" + message);
+                layer.msg('未授权');
+            } else if (code == 500) {
+                layer.msg('系统错误：' + message);
+            }
         }
     });
     return false;
+}
+
+function ajaxDownloadFile(urlToSend, filename) {
+    var req = new XMLHttpRequest();
+    req.open("GET", urlToSend, true);
+    req.responseType = "blob";
+    req.setRequestHeader('token', localStorage.getItem("token"));
+    req.onload = function (event) {
+        if (this.status === 200) {
+            var blob = this.response;
+            if(window.navigator.msSaveOrOpenBlob) {
+                window.navigator.msSaveBlob(blob, fileName);
+            }
+            else{
+                var downloadLink = window.document.createElement('a');
+                var contentTypeHeader = req.getResponseHeader("Content-Type");
+                downloadLink.href = window.URL.createObjectURL(new Blob([blob], { type: contentTypeHeader }));
+                downloadLink.download = filename;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            }
+        }
+    };
+    req.send();
 }
 
 function ajaxLayuiRequest(method, url, handleData) {
@@ -696,4 +724,21 @@ function getUrlIdParam(name) {
     var r = window.location.href.match(reg);
     if (r != null) return unescape(r[1]);
     return null;
+}
+
+Date.prototype.format = function(fmt) {
+    var o = { 
+            "M+" : this.getMonth()+1,
+            "d+" : this.getDate(),
+            "h+" : this.getHours(),
+            "m+" : this.getMinutes(),
+            "s+" : this.getSeconds(),
+            "q+" : Math.floor((this.getMonth()+3)/3),
+            "S"  : this.getMilliseconds()
+    }; 
+    if(/(y+)/.test(fmt)) fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+    for(var k in o) 
+        if(new RegExp("("+ k +")").test(fmt)) 
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length))); 
+    return fmt; 
 }

@@ -46,7 +46,7 @@
         <label class="layui-form-label">选择性别</label>
         <div class="layui-input-inline">
           <input type="radio" name="sex" value="1" title="男" checked><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>男</div></div>
-          <input type="radio" name="sex" value="2" title="女" ><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>女</div></div>
+          <input type="radio" name="sex" value="0" title="女" ><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>女</div></div>
         </div>
       </div>
       <div class="layui-form-item layui-form-text">
@@ -90,7 +90,7 @@
        , layer = layui.layer;
       form.on('submit(save)', function (form) {
           var data = form.field;
-          ajaxJsonRequest("POST", '/api/user/userInfo', JSON.stringify(data), function(result) {
+          ajaxJsonRequest("POST", '/user/userInfo', JSON.stringify(data), function(result) {
               handlerResult(result, function (data) {
                   layer.msg("更新成功", {icon: 6});
                   parent.layer.close(window.parent.layerIndex);

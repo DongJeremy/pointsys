@@ -185,7 +185,8 @@
     });
 
     $("#export_btn").on("click",function(){
-        window.location.href="/main/empView/excel/download";
+        var time1 = new Date().format("yyyy_MM_dd_hh_mm_ss_S");  
+        ajaxDownloadFile('/employee/excel/download', 'employee_'+ time1 +'.xls');
         return false;
     });
     // 行点击事件
