@@ -84,6 +84,7 @@
                 sessionStorage.removeItem("tabs");
                 sessionStorage.removeItem("currentTabId");
                 $.post('/logout', function(result) {
+                    localStorage.removeItem("token");
                     window.location.href = '/login';
                 });
             }

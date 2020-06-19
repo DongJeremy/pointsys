@@ -110,7 +110,7 @@
     });
     upload.render({
         elem: '#import_btn' //绑定元素
-        ,url: '/main/empImport' //上传接口
+        ,url: '/employee/excel/upload' //上传接口
         ,accept: 'file'
         ,done: function(res){
             parent.layer.msg("导入成功", {
@@ -172,7 +172,7 @@
                 acc.push(cur.id);
                 return acc;
             }, []);
-            ajaxJsonRequest("POST", '/api/employee/delete',  JSON.stringify(reqBody), function (data) {
+            ajaxJsonRequest("POST", '/employee/batch/delete',  JSON.stringify(reqBody), function (data) {
                 layer.close(index);
                 handlerResult(data, deleteDone)
             });

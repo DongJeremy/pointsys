@@ -1,5 +1,8 @@
 package jp.co.nri.point.web.controller.ui;
 
+import java.io.IOException;
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,7 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import jp.co.nri.point.beans.PageResultBean;
 import jp.co.nri.point.beans.ResultBean;
@@ -28,7 +31,7 @@ import jp.co.nri.point.web.dto.DeptList;
 import jp.co.nri.point.web.util.HttpClientUtil;
 
 @Controller
-public class EmployeePageController extends BaseController {
+public class EmployeeController extends BaseController {
 
     @Resource
     private HttpServletResponse response;
@@ -114,6 +117,13 @@ public class EmployeePageController extends BaseController {
                 getUrlString("/api/v1/employees/" + id), Employee.class);
     }
 
+    @PostMapping("/employee/batch/delete")
+    @ResponseBody
+    public ResultBean<?> deleteBatchEmployee(@RequestBody List<String> ids) {
+        return HttpClientUtil.doPostListResultBean(restTemplate, getTokenString(),
+                getUrlString("/api/v1/employees/batch/delete"), ids, String.class);
+    }
+
     @GetMapping("/main/empDetailsView/{id}")
     public String empDetailsView(ModelMap model, @PathVariable("id") Long id) throws Exception {
         return "pages/emp/emp-details";
@@ -121,12 +131,11 @@ public class EmployeePageController extends BaseController {
 
     @GetMapping("/employee/excel/download")
     @ResponseBody
-    public ResultBean<?> empViewDownload(HttpServletResponse response) throws Exception {
+    public ResultBean<?> exportEmployee(HttpServletResponse response) throws Exception {
         String excelFileName = "employee";
-        RestTemplate restTemplate = new RestTemplate();
         try {
-            ByteArrayResource result = HttpClientUtil.doGet(restTemplate, getTokenString(),
-                    getUrlString("/api/v1/employees/download"), ByteArrayResource.class);
+            ByteArrayResource result = HttpClientUtil.doExportFile(getTokenString(),
+                    getUrlString("/api/v1/employees/export"), ByteArrayResource.class);
             FileUtil.saveExcelToFile(result.getInputStream(), response, excelFileName);
         } catch (Exception e) {
             throw e;
@@ -134,20 +143,16 @@ public class EmployeePageController extends BaseController {
         return ResultBean.successResult();
     }
 
-//
-//    @PostMapping("/empImport")
-//    public @ResponseBody ResultBean<?> importEmployee(HttpServletRequest request) throws IOException, Exception {
-//        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-//        MultipartFile file = multipartRequest.getFile("file");
-//        final List<EmployeeVO> listObjects = ExcelUtil.importFromFile(file, EmployeeVO.class);
-//        List<Employee> employeeList = new ArrayList<>();
-//        BeanUtils.copyProperties(listObjects, employeeList);
-//        long ret = employeeService.batchSaveEmployee(employeeList);
-//        if (ret == 1L) {
-//            logger.info("upload excel file successful.");
-//            return ResultBean.successResult();
-//        }
-//        logger.error("upload excel file fail.");
-//        return ResultBean.errorResult("import error");
-//    }
+    @PostMapping("/employee/excel/upload")
+    public @ResponseBody ResultBean<?> importEmployee(@RequestParam("file") MultipartFile file)
+            throws IOException, Exception {
+
+        MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
+
+        parts.add("file", file.getResource());
+
+        return HttpClientUtil.doImportFile(getTokenString(), getUrlString("/api/v1/employees/import"), parts,
+                String.class);
+    }
+
 }

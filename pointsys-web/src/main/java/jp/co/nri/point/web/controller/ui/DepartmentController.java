@@ -20,7 +20,7 @@ import jp.co.nri.point.web.domain.Department;
 import jp.co.nri.point.web.util.HttpClientUtil;
 
 @Controller
-public class DepartmentPageController extends BaseController {
+public class DepartmentController extends BaseController {
 
     @GetMapping("/main/deptView")
     public String deptListView(ModelMap model) throws Exception {

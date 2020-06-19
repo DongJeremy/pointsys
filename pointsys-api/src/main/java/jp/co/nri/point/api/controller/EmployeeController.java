@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import jp.co.nri.point.annotation.OperationLog;
 import jp.co.nri.point.api.domain.Department;
@@ -104,27 +105,54 @@ public class EmployeeController {
         return ResultBean.errorResult("update employee fail.");
     }
 
-    @DeleteMapping("/batch/{id}")
+    @PostMapping("/batch/delete")
     @ResponseBody
-    public ResultBean<?> removeEmp(@PathVariable("id") String[] userIds) {
-        for (String id : userIds) {
+    public ResultBean<?> removeEmp(@RequestBody List<String> ids) {
+        for (String id : ids) {
             service.deleteById(Long.parseLong(id));
         }
         return ResultBean.successResult();
     }
 
-    @GetMapping("/download")
-    public ResponseEntity<ByteArrayResource> downloadFile(HttpServletRequest request) throws IOException {
+    @GetMapping("/export")
+    public ResponseEntity<ByteArrayResource> exportEmployee(HttpServletRequest request) throws IOException {
         String contentType = "application/vnd.ms-excel";
         String excelFileName = "employee_";
         SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd_HH_MM_SS");
         excelFileName += df.format(new Date()) + ".txt";
         final List<Employee> list = service.getAll();
-        List<EmployeeVO> voList = BeanCopyUtil.copyListProperties(list, EmployeeVO::new);
-        logger.info("download excel file to local.");
+        List<EmployeeVO> voList = BeanCopyUtil.copyListProperties(list, EmployeeVO::new, (emp, empVo) -> {
+            empVo.setDepartment(emp.getDepartment().getId());
+        });
+        logger.info("export excel file.");
         ByteArrayResource bytes = ExcelUtil.exportToFile(voList);
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + excelFileName + "\"").body(bytes);
+    }
+
+    /**
+     * 
+     * @param file
+     * @return
+     * @throws IOException
+     * @throws Exception
+     */
+    @PostMapping("/import")
+    public @ResponseBody ResultBean<?> importEmployee(@RequestParam("file") MultipartFile file)
+            throws IOException, Exception {
+
+        final List<EmployeeVO> listObjects = ExcelUtil.importFromFile(file, EmployeeVO.class);
+
+        List<Employee> empList = BeanCopyUtil.copyListProperties(listObjects, Employee::new, (empVo, emp) -> {
+            emp.setDepartment(new Department(empVo.getDepartment()));
+        });
+        long ret = service.batchSaveEmployee(empList);
+        if (ret == 1L) {
+            logger.info("import excel file successful.");
+            return ResultBean.successResult();
+        }
+        logger.error("import excel file fail.");
+        return ResultBean.errorResult("import error");
     }
 
 }
