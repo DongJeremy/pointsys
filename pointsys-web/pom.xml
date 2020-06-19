@@ -70,6 +70,17 @@
       <artifactId>echarts</artifactId>
       <version>4.6.0</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.mitre.dsmiley.httpproxy/smiley-http-proxy-servlet -->
+    <dependency>
+      <groupId>org.mitre.dsmiley.httpproxy</groupId>
+      <artifactId>smiley-http-proxy-servlet</artifactId>
+      <version>1.11</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>18.0</version>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-configuration-processor</artifactId>

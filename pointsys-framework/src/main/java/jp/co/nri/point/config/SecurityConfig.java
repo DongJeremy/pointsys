@@ -66,13 +66,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
 
         // 基于token，所以不需要session
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests()
-                .antMatchers("/login", "/main/**").permitAll()
-                .anyRequest().authenticated().and()
-                .formLogin().and()
-                .exceptionHandling().authenticationEntryPoint(badAuthenticationEntryPoint).and()
-                .logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler);
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
+                .antMatchers("/login", "/main/**").permitAll().anyRequest().authenticated().and().formLogin().and()
+                .exceptionHandling().authenticationEntryPoint(badAuthenticationEntryPoint).and().logout()
+                .logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler);
 
         // 解决不允许显示在iframe的问题
         http.headers().frameOptions().disable();
@@ -90,7 +87,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         // 将项目中静态资源路径开放出来
-        web.ignoring().antMatchers("/static/**", "/webjars/**", "/");
+        web.ignoring().antMatchers("/static/**", "/webjars/**", "/", "/configuration/**", "/v2/api-docs",
+                "/swagger*/**");
     }
 
 }

@@ -18,3 +18,7 @@ spring:
 https:
   httpclient:
     url: http://localhost:8080
+
+proxy:
+  servlet_url: /api/*
+  target_url: http://localhost:8080

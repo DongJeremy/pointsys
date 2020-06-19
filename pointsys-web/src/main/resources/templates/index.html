@@ -79,15 +79,15 @@
   </div>
 
   <th:block th:include="pages/common/public::footer" />
-  <script>
-            function logout() {
-                sessionStorage.removeItem("tabs");
-                sessionStorage.removeItem("currentTabId");
-                $.post('/logout', function(result) {
-                    localStorage.removeItem("token");
-                    window.location.href = '/login';
-                });
-            }
-        </script>
+<script>
+    function logout() {
+        sessionStorage.removeItem("tabs");
+        sessionStorage.removeItem("currentTabId");
+            $.post('/logout', function(result) {
+                localStorage.removeItem("token");
+                window.location.href = '/login';
+        });
+    }
+</script>
 </body>
 </html>
