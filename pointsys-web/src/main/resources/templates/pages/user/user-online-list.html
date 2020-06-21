@@ -47,12 +47,13 @@
                 {type: 'numbers', title: '序号', width: "5%"}
                 , {field: 'username', title: '用户名', width: "13%", templet: function (d) {
                        var username = d.username;
-                       if (d.id === token ) {
+                       if (d.token === token ) {
                           username += "<span class=\"layui-badge-rim layui-bg-blue\">当前登录</span>";
                        }
                        return username;
                   }
                 }
+                , {field: 'token', title: 'token', width: "10%", hide: true}
                 , {field: 'id', title: 'SESSION_ID', width: "25%"}
                 , {field: 'startTimestamp', title: '登录时间', templet: function(d) { return dateFormat("yyyy-MM-dd hh:mm:ss", new Date(d.startTimestamp))}, width: "15%"}
                 , {field: 'lastAccessTime', title: '最后访问时间', templet: function(d) { return dateFormat("yyyy-MM-dd hh:mm:ss", new Date(d.lastAccessTime))}, width: "15%"}
@@ -60,8 +61,8 @@
                 , {field: 'status', title: '状态', width: "5%"}
                 , {title: '操作', align: 'center', templet: function (d) {
                     var op = "";
-                    if (d.id !== token ) {
-                    	op += "<a class=\"layui-btn layui-btn-xs layui-btn-danger\" lay-event=\"kickout\">下线</a>";
+                    if (d.token !== token ) {
+                        op += "<a class=\"layui-btn layui-btn-xs layui-btn-danger\" lay-event=\"kickout\">下线</a>";
                     }
                     return op;
                }

@@ -6,6 +6,7 @@ import java.util.Date;
 public class UserOnline implements Serializable {
     private static final long serialVersionUID = 2180468297983602156L;
     private String id;
+    private String token;
     private Long userId;
     private String username;
     private String ip;
@@ -20,6 +21,14 @@ public class UserOnline implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public Long getUserId() {

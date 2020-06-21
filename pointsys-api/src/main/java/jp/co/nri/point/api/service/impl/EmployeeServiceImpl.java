@@ -7,22 +7,18 @@ import javax.annotation.Resource;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
 
-import jp.co.nri.point.base.BaseServiceImpl;
 import jp.co.nri.point.api.domain.Employee;
 import jp.co.nri.point.api.mapper.EmployeeMapper;
 import jp.co.nri.point.api.service.EmployeeService;
+import jp.co.nri.point.base.BaseServiceImpl;
 
 @Service
 public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employee> implements EmployeeService {
-
-    private static final Logger logger = LogManager.getLogger(EmployeeServiceImpl.class);
 
     @Resource
     private EmployeeMapper employeeMapper;

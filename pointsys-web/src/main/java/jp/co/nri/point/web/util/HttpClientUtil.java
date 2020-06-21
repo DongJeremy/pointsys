@@ -60,6 +60,18 @@ public class HttpClientUtil {
         return requestEntity;
     }
 
+    private static <T> PageResultBean<T> getPageResultBean(ResponseEntity<String> result) {
+        PageResultBean<T> pageResultBean = JSON.parseObject(result.getBody(), new TypeReference<PageResultBean<T>>() {
+        });
+        return pageResultBean;
+    }
+
+    private static <T> ResultBean<T> getResultBean(ResponseEntity<String> result) {
+        ResultBean<T> resultBean = JSON.parseObject(result.getBody(), new TypeReference<ResultBean<T>>() {
+        });
+        return resultBean;
+    }
+
     /**
      * 
      * @param <T>
@@ -101,8 +113,7 @@ public class HttpClientUtil {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<MultiValueMap<String, Object>> requestEntity = generateFileUploadEntity(token, parmas);
         ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
-        return JSON.parseObject(result.getBody(), new TypeReference<ResultBean<T>>() {
-        });
+        return getResultBean(result);
     }
 
     /**
@@ -134,8 +145,8 @@ public class HttpClientUtil {
             Class<T> responseType) {
         HttpEntity<String> requestEntity = generateEmptyEntity(token);
         ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
-        return JSON.parseObject(result.getBody(), new TypeReference<ResultBean<T>>() {
-        });
+        ResultBean<T> resultBean = getResultBean(result);
+        return resultBean;
     }
 
     /**
@@ -152,10 +163,10 @@ public class HttpClientUtil {
             MultiValueMap<String, String> parmas, Class<T> responseType) {
         HttpEntity<String> requestEntity = generateEmptyEntity(token);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParams(parmas);
-        ResponseEntity<String> result = restTemplate.exchange(builder.build().toUriString(), HttpMethod.GET,
-                requestEntity, String.class, parmas);
-        return JSON.parseObject(result.getBody(), new TypeReference<PageResultBean<T>>() {
-        });
+        String urlString = builder.build().toUriString();
+        ResponseEntity<String> result = restTemplate.exchange(urlString, HttpMethod.GET, requestEntity, String.class,
+                parmas);
+        return getPageResultBean(result);
     }
 
     /**
@@ -192,16 +203,14 @@ public class HttpClientUtil {
             List<T> entity, Class<T> responseType) {
         HttpEntity<List<T>> requestEntity = generateListEntity(token, entity);
         ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
-        return JSON.parseObject(result.getBody(), new TypeReference<ResultBean<T>>() {
-        });
+        return getResultBean(result);
     }
 
     public static <T> ResultBean<T> doPostResultBean(RestTemplate restTemplate, String token, String url, T entity,
             Class<T> responseType) {
         HttpEntity<T> requestEntity = generateDataEntity(token, entity);
         ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
-        return JSON.parseObject(result.getBody(), new TypeReference<ResultBean<T>>() {
-        });
+        return getResultBean(result);
     }
 
     /**
@@ -218,8 +227,7 @@ public class HttpClientUtil {
             Class<T> responseType) {
         HttpEntity<String> requestEntity = generateEmptyEntity(token);
         ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, String.class);
-        return JSON.parseObject(result.getBody(), new TypeReference<ResultBean<T>>() {
-        });
+        return getResultBean(result);
     }
 
     /**
@@ -236,8 +244,7 @@ public class HttpClientUtil {
             Class<T> responseType) {
         HttpEntity<T> requestEntity = generateDataEntity(token, entity);
         ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
-        return JSON.parseObject(result.getBody(), new TypeReference<ResultBean<T>>() {
-        });
+        return getResultBean(result);
     }
 
 }

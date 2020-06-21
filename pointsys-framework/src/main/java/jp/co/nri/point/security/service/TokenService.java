@@ -17,4 +17,6 @@ public interface TokenService {
 
     Set<String> getAllTokenList(String pattern);
 
+    boolean deleteUUIDToken(String sessionId);
+
 }

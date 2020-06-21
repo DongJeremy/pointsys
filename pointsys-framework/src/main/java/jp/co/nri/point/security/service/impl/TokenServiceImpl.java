@@ -79,4 +79,9 @@ public class TokenServiceImpl implements TokenService {
         return keySet;
     }
 
+    @Override
+    public boolean deleteUUIDToken(String token) {
+        return deleteToken(token);
+    }
+
 }

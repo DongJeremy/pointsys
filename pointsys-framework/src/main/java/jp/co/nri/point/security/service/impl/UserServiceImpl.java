@@ -106,9 +106,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, SysUser> implem
         Set<String> tokenSet = tokenService.getAllTokenList(Constants.REDIS_TOKEN_KEY + "*");
         for (String token : tokenSet) {
             UserOnline userOnline = new UserOnline();
-            token = token.substring(7);
+            if(token.startsWith(Constants.REDIS_TOKEN_KEY)) {
+                token = token.substring(7);
+            }
             LoginUser user = tokenService.getLoginUser(token);
-            userOnline.setId(token);
+            userOnline.setId(user.getToken());
+            userOnline.setToken(token);
             userOnline.setUsername(user.getUsername());
             userOnline.setStartTimestamp(new Date(user.getLoginTime()));
             userOnline.setLastAccessTime(new Date(user.getLoginTime()));
@@ -134,7 +137,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, SysUser> implem
     public void forceLogout(String sessionId) {
         LoginUser currentUser = UserUtil.getLoginUser();
         if (!currentUser.getToken().equals(sessionId)) {
-            tokenService.deleteToken(sessionId);
+            tokenService.deleteUUIDToken(sessionId);
         }
     }
 
