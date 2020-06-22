@@ -16,7 +16,6 @@ import jp.co.nri.point.beans.PageResultBean;
 import jp.co.nri.point.beans.ResultBean;
 import jp.co.nri.point.domain.SysUser;
 import jp.co.nri.point.dto.PasswordBean;
-import jp.co.nri.point.dto.UserOnline;
 import jp.co.nri.point.web.dto.SessionInfo;
 import jp.co.nri.point.web.util.HttpClientUtil;
 
@@ -60,24 +59,24 @@ public class UserController extends BaseController {
 
     @GetMapping("/user/list")
     @ResponseBody
-    public PageResultBean<SysUser> listUser(@RequestParam(value = "page", defaultValue = "1") int page,
+    public PageResultBean listUser(@RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "limit", defaultValue = "10") int limit) {
         MultiValueMap<String, String> paramsMap = new LinkedMultiValueMap<>();
         paramsMap.set("page", String.valueOf(page));
         paramsMap.set("limit", String.valueOf(limit));
         return HttpClientUtil.doGetPageResultBean(restTemplate, getTokenString(), getUrlString("/api/user/list"),
-                paramsMap, SysUser.class);
+                paramsMap);
     }
 
     @GetMapping("/user/onlinelist")
     @ResponseBody
-    public PageResultBean<UserOnline> listUsers(@RequestParam(value = "page", defaultValue = "1") int page,
+    public PageResultBean listUsers(@RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "limit", defaultValue = "10") int limit) {
         MultiValueMap<String, String> paramsMap = new LinkedMultiValueMap<>();
         paramsMap.set("page", String.valueOf(page));
         paramsMap.set("limit", String.valueOf(limit));
         return HttpClientUtil.doGetPageResultBean(restTemplate, getTokenString(), getUrlString("/api/user/onlinelist"),
-                paramsMap, UserOnline.class);
+                paramsMap);
     }
 
     @PostMapping("/user/kickout")

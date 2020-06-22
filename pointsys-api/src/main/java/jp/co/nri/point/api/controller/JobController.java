@@ -12,16 +12,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import jp.co.nri.point.api.domain.JobModel;
 import jp.co.nri.point.api.service.JobService;
 
+@Api(tags = "定时任务")
 @RestController
 @RequestMapping("/api/v1/jobs")
 public class JobController {
     @Autowired
     private JobService jobService;
 
+    @ApiOperation("新建定时任务")
     @PostMapping
     public void add(@RequestBody JobModel jobModel) {
         JobModel model = jobService.getByName(jobModel.getJobName());
@@ -49,7 +52,7 @@ public class JobController {
     @ApiOperation("根据id获取定时任务")
     @GetMapping("/{id}")
     public JobModel getById(@PathVariable Long id) {
-        return jobService.getById(id).orElse(new JobModel());
+        return jobService.getById(id);
     }
 
     @ApiOperation(value = "校验cron表达式")

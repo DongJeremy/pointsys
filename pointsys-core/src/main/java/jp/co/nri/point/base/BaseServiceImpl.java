@@ -3,7 +3,7 @@ package jp.co.nri.point.base;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,28 +14,33 @@ import com.github.pagehelper.PageHelper;
 public class BaseServiceImpl<M extends BaseMapper<T>, T> implements BaseService<T> {
 
     protected Logger logger = LoggerFactory.getLogger(getClass().getName());
-    
+
     @Autowired
     private M mapper;
 
     @Override
-    public Long getCount(T entity) {
-        return mapper.selectCount(entity);
+    public Long count() {
+        return mapper.selectCount();
     }
 
     @Override
-    public Optional<T> getById(Long id) {
-        return Optional.ofNullable(mapper.selectByPrimaryKey(id));
+    public Long count(Map<String, Object> params) {
+        return mapper.selectCountByParams(params);
     }
 
     @Override
-    public List<T> getAll() {
-        return mapper.selectAll();
-    }
-
-    @Override
-    public List<T> getAll(int pageNum, int pageSize) {
+    public List<T> list(Map<String, Object> params, int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
+        return mapper.selectAllByParams(params);
+    }
+
+    @Override
+    public T getById(Long id) {
+        return mapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public List<T> list() {
         return mapper.selectAll();
     }
 
@@ -63,7 +68,8 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T> implements BaseService<
     }
 
     @Override
-    public Long deleteById(Long id) {
+    public Long delete(Long id) {
         return mapper.deleteByPrimaryKey(id);
     }
+
 }

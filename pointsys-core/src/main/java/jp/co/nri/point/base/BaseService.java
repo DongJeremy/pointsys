@@ -1,19 +1,21 @@
 package jp.co.nri.point.base;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 public interface BaseService<T> {
 
-    Long getCount(T entity);
+    Long count();
 
-    Optional<T> getById(Long id);
+    Long count(Map<String, Object> params);
 
-    List<T> getAll();
+    T getById(Long id);
 
-    List<T> getAll(int pageNum, int pageSize);
+    List<T> list();
+
+    List<T> list(Map<String, Object> params, int pageNum, int pageSize);
 
     Long save(T entity);
 
-    Long deleteById(Long id);
+    Long delete(Long id);
 }

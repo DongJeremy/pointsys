@@ -22,9 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import jp.co.nri.point.api.dto.UploadFileResponse;
 import jp.co.nri.point.api.service.FileStorageService;
 
+@Api(tags = "文件处理")
 @RestController
 public class FileController {
 
@@ -33,6 +36,7 @@ public class FileController {
     @Autowired
     private FileStorageService fileStorageService;
 
+    @ApiOperation("上传文件")
     @PostMapping("/uploadFile")
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
         String fileName = fileStorageService.storeFile(file);
@@ -43,11 +47,13 @@ public class FileController {
         return new UploadFileResponse(fileName, fileDownloadUri, file.getContentType(), file.getSize());
     }
 
+    @ApiOperation("上传多个文件")
     @PostMapping("/uploadMultipleFiles")
     public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
         return Arrays.asList(files).stream().map(file -> uploadFile(file)).collect(Collectors.toList());
     }
 
+    @ApiOperation("下载文件")
     @GetMapping("/downloadFile/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
         // Load file as Resource

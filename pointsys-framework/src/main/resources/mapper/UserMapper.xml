@@ -37,57 +37,64 @@
   </sql>
 
   <select id="selectAll" resultMap="myUserMap">
-    SELECT 
-    <include refid="selectColumns"/>
-    FROM 
-      sys_user A
+    SELECT
+    <include refid="selectColumns" />
+    FROM
+    sys_user A
     ORDER BY A.id
   </select>
 
-  <select id="selectAllByCondition" resultMap="myUserMap">
+  <select id="selectAllByParams" resultMap="myUserMap">
     SELECT
-    <include refid="selectColumns"/>
-    FROM 
-      sys_user A 
+    <include refid="selectColumns" />
+    FROM
+    sys_user A
     <where>
       1=1
       <if test="name != null and name != ''">
         AND A.name = #{name}
-      </if> 
+      </if>
     </where>
     ORDER BY A.id
   </select>
 
-  <select id="selectCountByCondition" resultType="long">
+  <select id="selectCount" resultType="long">
+    SELECT
+    count(*)
+    FROM
+    sys_user
+  </select>
+
+  <select id="selectCountByParams" resultType="long">
     SELECT count(*)
-    FROM 
-      sys_user A 
+    FROM
+    sys_user A
     <where>
       1=1
       <if test="name != null and name != ''">
         AND A.name = #{name}
-      </if> 
+      </if>
     </where>
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="long">
     DELETE FROM
-      sys_user 
+    sys_user
     WHERE sys_user.id=#{id}
   </delete>
 
   <insert id="insert" parameterType="SysUser">
     INSERT INTO sys_user (
-      id, username, password, nickname, headImgUrl, phone, telephone, email, birthday, sex, 
-      status, createTime, updateTime)
+    id, username, password, nickname, headImgUrl, phone, telephone, email, birthday, sex,
+    status, createTime, updateTime)
     VALUES (
-      default,#{username}, #{password}, #{nickname}, #{headImgUrl}, #{phone}, #{telephone}, #{email}, #{birthday}, #{sex}, 
-      #{status}, now(), now())
+    default,#{username}, #{password}, #{nickname}, #{headImgUrl}, #{phone}, #{telephone}, #{email}, #{birthday}, #{sex},
+    #{status}, now(), now())
   </insert>
 
   <select id="selectByPrimaryKey" resultMap="myUserMap">
     SELECT
-    <include refid="selectColumns"/>
+    <include refid="selectColumns" />
     FROM sys_user A
     <where>
       A.id=#{id}
@@ -96,7 +103,7 @@
 
   <select id="selectByUser" resultMap="myUserMap">
     SELECT
-    <include refid="selectColumns"/>
+    <include refid="selectColumns" />
     FROM sys_user A
     <where>
       A.username=#{username}
@@ -105,7 +112,7 @@
 
   <update id="changePassword">
     UPDATE
-      sys_user
+    sys_user
     <set>
       password = #{password},
     </set>
@@ -113,13 +120,6 @@
       sys_user.id=#{id}
     </where>
   </update>
-
-  <select id="selectCount" resultType="long">
-    SELECT 
-      count(*)
-    FROM 
-      sys_user
-  </select>
 
   <update id="updateByPrimaryKey" parameterType="SysUser">
     UPDATE sys_user t
@@ -190,14 +190,14 @@
   </select>
 
   <delete id="deleteUserRole" parameterType="long">
-    DELETE FROM 
-      sys_role_user
+    DELETE FROM
+    sys_role_user
     WHERE userId = #{userId}
   </delete>
 
   <select id="selectUserInfoByUsername" resultMap="myUserMap">
     SELECT
-      id, username, email, nickname, sex, phone, intro
+    id, username, email, nickname, sex, phone, intro
     FROM sys_user
     <where>
       username=#{username}

@@ -60,8 +60,8 @@ public class HttpClientUtil {
         return requestEntity;
     }
 
-    private static <T> PageResultBean<T> getPageResultBean(ResponseEntity<String> result) {
-        PageResultBean<T> pageResultBean = JSON.parseObject(result.getBody(), new TypeReference<PageResultBean<T>>() {
+    private static PageResultBean getPageResultBean(ResponseEntity<String> result) {
+        PageResultBean pageResultBean = JSON.parseObject(result.getBody(), new TypeReference<PageResultBean>() {
         });
         return pageResultBean;
     }
@@ -159,8 +159,8 @@ public class HttpClientUtil {
      * @param responseType
      * @return
      */
-    public static <T> PageResultBean<T> doGetPageResultBean(RestTemplate restTemplate, String token, String url,
-            MultiValueMap<String, String> parmas, Class<T> responseType) {
+    public static PageResultBean doGetPageResultBean(RestTemplate restTemplate, String token, String url,
+            MultiValueMap<String, String> parmas) {
         HttpEntity<String> requestEntity = generateEmptyEntity(token);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParams(parmas);
         String urlString = builder.build().toUriString();

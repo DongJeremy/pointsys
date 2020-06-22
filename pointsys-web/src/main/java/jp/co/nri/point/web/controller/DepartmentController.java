@@ -35,13 +35,13 @@ public class DepartmentController extends BaseController {
 
     @GetMapping("/department/list")
     @ResponseBody
-    public PageResultBean<Department> listDepartment(@RequestParam(value = "page", defaultValue = "1") int page,
+    public PageResultBean listDepartment(@RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "limit", defaultValue = "10") int limit) {
         MultiValueMap<String, String> paramsMap = new LinkedMultiValueMap<>();
         paramsMap.set("page", String.valueOf(page));
         paramsMap.set("limit", String.valueOf(limit));
         return HttpClientUtil.doGetPageResultBean(restTemplate, getTokenString(), getUrlString("/api/v1/departments"),
-                paramsMap, Department.class);
+                paramsMap);
     }
 
     @PostMapping("/department/add")

@@ -21,6 +21,13 @@ spring:
     store-type: redis
     redis:
       flush-mode: on-save
+  mail:
+    default-encoding: UTF-8
+    host: smtp.163.com
+    username:
+    password:
+    protocol: smtp
+    test-connection: false
   redis:
     host: 192.168.1.94
     port: 6379

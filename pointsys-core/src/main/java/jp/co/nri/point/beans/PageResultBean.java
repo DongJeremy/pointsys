@@ -5,7 +5,7 @@ import java.util.List;
 
 import jp.co.nri.point.enums.ResultEnum;
 
-public class PageResultBean<T> implements Serializable {
+public class PageResultBean implements Serializable {
 
     private static final long serialVersionUID = 5071118307783022228L;
 
@@ -15,9 +15,9 @@ public class PageResultBean<T> implements Serializable {
 
     private long count;
 
-    private List<T> data;
+    private List<?> data;
 
-    public PageResultBean(long count, List<T> data) {
+    public PageResultBean(long count, List<?> data) {
         this.count = count;
         this.data = data;
         this.code = ResultEnum.SUCCESS.getCode();
@@ -40,11 +40,11 @@ public class PageResultBean<T> implements Serializable {
         this.code = code;
     }
 
-    public List<T> getData() {
+    public List<?> getData() {
         return data;
     }
 
-    public void setData(List<T> data) {
+    public void setData(List<?> data) {
         this.data = data;
     }
 

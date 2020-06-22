@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="jp.co.nri.point.api.mapper.MailMapper">
+
+  <resultMap type="jp.co.nri.point.api.domain.Mail" id="mailMap">
+    <id column="id" property="id"></id>
+    <result column="userid" property="userId" />
+    <result column="subject" property="subject" />
+    <result column="content" property="content" />
+    <result column="createtime" property="createTime" />
+    <result column="updatetime" property="updateTime" />
+  </resultMap>
+
+  <sql id="where">
+    <where>
+      <if test="params != null">
+        <if test="params.subject != null and params.subject != ''">
+          and t.subject like concat('%', #{params.subject}, '%')
+        </if>
+        <if test="params.beginTime != null and params.beginTime != ''">
+          and t.createTime &gt;= #{params.beginTime}
+        </if>
+        <if test="params.endTime != null and params.endTime != ''">
+          and DATE(t.createTime) &lt;= #{params.endTime}
+        </if>
+      </if>
+    </where>
+  </sql>
+
+  <select id="selectAll" resultMap="mailMap">
+    SELECT *
+    FROM t_mail d
+  </select>
+
+  <select id="selectAllByParams" resultMap="mailMap">
+    SELECT *
+    FROM t_mail t
+    <include refid="where" />
+  </select>
+
+  <select id="selectCount" resultType="long">
+    SELECT count(*)
+    FROM t_mail
+  </select>
+
+  <select id="selectCountByParams" resultType="long">
+    SELECT count(*)
+    FROM t_mail t
+    <include refid="where" />
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="long">
+    DELETE FROM
+    t_mail t WHERE t.id=#{id}
+  </delete>
+
+  <insert id="insert" parameterType="jp.co.nri.point.api.domain.Mail">
+    INSERT INTO t_mail (id, userId, subject, content, createTime, updateTime)
+    VALUES
+    (default,#{userId}, #{subject}, #{content}, now(), now())
+  </insert>
+
+  <select id="selectByPrimaryKey" resultMap="mailMap">
+    SELECT *
+    FROM t_mail t
+    WHERE t.id=#{id}
+  </select>
+
+  <update id="updateByPrimaryKey" parameterType="jp.co.nri.point.api.domain.Mail">
+    UPDATE
+    t_mail t
+    <set>
+      subject = #{subject},
+      content = #{content}, 
+      updateTime = now()
+    </set>
+    WHERE t.id=#{id}
+  </update>
+</mapper>

@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import jp.co.nri.point.annotation.OperationLog;
 import jp.co.nri.point.api.domain.Department;
 import jp.co.nri.point.api.domain.Employee;
@@ -34,9 +36,13 @@ import jp.co.nri.point.api.dto.EmployeeVO;
 import jp.co.nri.point.api.service.EmployeeService;
 import jp.co.nri.point.beans.PageResultBean;
 import jp.co.nri.point.beans.ResultBean;
+import jp.co.nri.point.pagination.PaginationHandler;
+import jp.co.nri.point.pagination.PaginationRequest;
+import jp.co.nri.point.pagination.PaginationResponse;
 import jp.co.nri.point.util.BeanCopyUtil;
 import jp.co.nri.point.util.ExcelUtil;
 
+@Api(tags = "雇员")
 @RestController
 @RequestMapping("/api/v1/employees")
 public class EmployeeController {
@@ -46,26 +52,17 @@ public class EmployeeController {
     @Autowired
     private EmployeeService service;
 
-    @OperationLog("获取用户列表")
-    @GetMapping()
-    public @ResponseBody PageResultBean<Employee> listEmployee(
-            @RequestParam(value = "username", required = false) String username,
-            @RequestParam(value = "department", required = false) String department,
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "limit", defaultValue = "10") int limit) {
-        List<Employee> emps = null;
-        long count = 0;
-        if ((department == null) && (username == null)) {
-            emps = service.getAll(page, limit);
-            count = service.getCount(new Employee());
-        } else {
-            System.out.println(username);
-            emps = service.getAllByCondition(username, department, page, limit);
-            count = service.getCountByCondition(username, department);
-        }
-        return new PageResultBean<Employee>(count, emps);
+    @OperationLog("获取雇员列表")
+    @ApiOperation("获取雇员列表")
+    @GetMapping
+    @ResponseBody
+    public PageResultBean listEmployee(PaginationRequest request) {
+        PaginationResponse pageResponse = new PaginationHandler(req -> service.count(req.getParams()),
+                req -> service.list(req.getParams(), req.getOffset(), req.getLimit())).handle(request);
+        return new PageResultBean(pageResponse.getRecordsTotal(), pageResponse.getData());
     }
 
+    @ApiOperation("添加雇员")
     @PostMapping
     public @ResponseBody ResultBean<?> addEmployee(@RequestBody EmployeeVO employeeVo) {
         Employee employee = new Employee();
@@ -79,18 +76,21 @@ public class EmployeeController {
         return ResultBean.errorResult("add employee fail.");
     }
 
+    @ApiOperation("删除雇员")
     @DeleteMapping("/{id}")
     public @ResponseBody ResultBean<?> deleteEmployee(@PathVariable Long id) {
-        service.deleteById(id);
+        service.delete(id);
         logger.info("delete employee successful.");
         return ResultBean.successResult();
     }
 
+    @ApiOperation("获取雇员")
     @GetMapping("/{id}")
     public @ResponseBody ResultBean<?> getEmployee(@PathVariable Long id) {
-        return ResultBean.successResult(service.getById(id).orElse(new Employee()));
+        return ResultBean.successResult(service.getById(id));
     }
 
+    @ApiOperation("修改雇员")
     @PutMapping("/{id}")
     public @ResponseBody ResultBean<?> updateEmployee(@PathVariable Long id, @RequestBody EmployeeVO employeeVo) {
         Employee employee = new Employee();
@@ -105,22 +105,24 @@ public class EmployeeController {
         return ResultBean.errorResult("update employee fail.");
     }
 
+    @ApiOperation("批量删除雇员")
     @PostMapping("/batch/delete")
     @ResponseBody
     public ResultBean<?> removeEmp(@RequestBody List<String> ids) {
         for (String id : ids) {
-            service.deleteById(Long.parseLong(id));
+            service.delete(Long.parseLong(id));
         }
         return ResultBean.successResult();
     }
 
+    @ApiOperation("导出雇员")
     @GetMapping("/export")
     public ResponseEntity<ByteArrayResource> exportEmployee(HttpServletRequest request) throws IOException {
         String contentType = "application/vnd.ms-excel";
         String excelFileName = "employee_";
         SimpleDateFormat df = new SimpleDateFormat("yyyy_MM_dd_HH_MM_SS");
         excelFileName += df.format(new Date()) + ".txt";
-        final List<Employee> list = service.getAll();
+        final List<Employee> list = service.list();
         List<EmployeeVO> voList = BeanCopyUtil.copyListProperties(list, EmployeeVO::new, (emp, empVo) -> {
             empVo.setDepartment(emp.getDepartment().getId());
         });
@@ -137,6 +139,7 @@ public class EmployeeController {
      * @throws IOException
      * @throws Exception
      */
+    @ApiOperation("导入雇员")
     @PostMapping("/import")
     public @ResponseBody ResultBean<?> importEmployee(@RequestParam("file") MultipartFile file)
             throws IOException, Exception {

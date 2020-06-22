@@ -11,8 +11,8 @@
     <result column="salary" property="salary" />
     <result column="tel" property="tel" />
     <association property="department" column="department" javaType="Department">
-      <id property="id" column="department_id"/>
-      <result property="name" column="department_name"/>
+      <id property="id" column="department_id" />
+      <result property="name" column="department_name" />
     </association>
   </resultMap>
 
@@ -27,62 +27,64 @@
     B.name AS department_name
   </sql>
 
+  <sql id="where">
+    <where>
+      <if test="params.username != null and params.username != ''">
+        and A.name = #{params.username}
+      </if>
+      <if test="params.department != null and params.department != ''">
+        and cast(A.department as character varying) = #{params.department}
+      </if>
+    </where>
+  </sql>
+
   <select id="selectAll" resultMap="employeeMap">
-    SELECT 
-    <include refid="selectColumns"/>
-    FROM 
-      t_emp A
-    LEFT OUTER JOIN t_dept B ON A.department=B.id
-    ORDER BY A.id
-  </select>
-
-  <select id="selectAllByCondition" resultMap="employeeMap">
     SELECT
-    <include refid="selectColumns"/>
-    FROM 
-      t_emp A 
+    <include refid="selectColumns" />
+    FROM
+    t_emp A
     LEFT OUTER JOIN t_dept B ON A.department=B.id
-    <where>
-      1=1
-      <if test="name != null and name != ''">
-        AND A.name = #{name}
-      </if> 
-      <if test="departmentName != null and departmentName != ''">
-        AND cast(A.department as character varying) = #{departmentName}
-      </if>
-    </where>
     ORDER BY A.id
   </select>
 
-  <select id="selectCountByCondition" resultType="long">
+  <select id="selectAllByParams" resultMap="employeeMap">
+    SELECT
+    <include refid="selectColumns" />
+    FROM
+    t_emp A
+    LEFT OUTER JOIN t_dept B ON A.department=B.id
+    <include refid="where" />
+    ORDER BY A.id
+  </select>
+
+  <select id="selectCount" resultType="long">
     SELECT count(*)
-    FROM 
-      t_emp A 
-    <where>
-      1=1
-      <if test="name != null and name != ''">
-        AND A.name = #{name}
-      </if> 
-      <if test="departmentName != null and departmentName != ''">
-        AND cast(A.department as character varying) = #{departmentName}
-      </if>
-    </where>
+    FROM
+    t_emp A
+  </select>
+
+  <select id="selectCountByParams" resultType="long">
+    SELECT count(*)
+    FROM
+    t_emp A
+    <include refid="where" />
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="long">
     DELETE FROM
-      t_emp 
+    t_emp
     WHERE t_emp.id=#{id}
   </delete>
 
   <insert id="insert" parameterType="Employee">
     INSERT INTO t_emp (id,name,address,age,department,salary,tel)
-    VALUES (default,#{name},#{address},#{age},#{department.id},#{salary},#{tel})
+    VALUES
+    (default,#{name},#{address},#{age},#{department.id},#{salary},#{tel})
   </insert>
 
   <select id="selectByPrimaryKey" resultMap="employeeMap">
     SELECT
-    <include refid="selectColumns"/>
+    <include refid="selectColumns" />
     FROM t_emp A
     LEFT OUTER JOIN t_dept B ON A.department=B.id
     <where>
@@ -90,16 +92,9 @@
     </where>
   </select>
 
-  <select id="selectCount" resultType="long">
-    SELECT 
-      count(*)
-    FROM 
-      t_emp
-  </select>
-
   <update id="updateByPrimaryKey" parameterType="Employee">
     UPDATE
-      t_emp
+    t_emp
     <set>
       <if test="name != null">
         name = #{name},
@@ -116,7 +111,7 @@
       <if test="tel != null">
         tel = #{tel},
       </if>
-        age = #{age}
+      age = #{age}
     </set>
     <where>
       id=#{id}

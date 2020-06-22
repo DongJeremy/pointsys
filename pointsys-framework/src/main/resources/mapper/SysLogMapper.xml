@@ -22,10 +22,21 @@
     SELECT
     <include refid="Base_Column_List"/>
     FROM t_sys_log
+  </select>
+
+  <select id="selectAllByParams" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_sys_log
     ORDER BY create_time DESC
   </select>
 
   <select id="selectCount" resultType="long">
+    SELECT count(*)
+    FROM t_sys_log
+  </select>
+
+  <select id="selectCountByParams" resultType="long">
     SELECT count(*)
     FROM t_sys_log
   </select>

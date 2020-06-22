@@ -1,7 +1,5 @@
 package jp.co.nri.point.api.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +19,9 @@ import jp.co.nri.point.beans.PageResultBean;
 import jp.co.nri.point.beans.ResultBean;
 import jp.co.nri.point.domain.SysUser;
 import jp.co.nri.point.dto.PasswordBean;
-import jp.co.nri.point.dto.UserOnline;
+import jp.co.nri.point.pagination.PaginationHandler;
+import jp.co.nri.point.pagination.PaginationRequest;
+import jp.co.nri.point.pagination.PaginationResponse;
 import jp.co.nri.point.security.service.TokenService;
 import jp.co.nri.point.security.service.UserService;
 import jp.co.nri.point.util.UserUtil;
@@ -42,7 +41,7 @@ public class UserController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('sys:user:query')")
     public SysUser user(@PathVariable Long id) {
-        return userService.getById(id).orElse(new SysUser());
+        return userService.getById(id);
     }
 
     @ApiOperation(value = "当前登录用户")
@@ -55,15 +54,16 @@ public class UserController {
     }
 
     @OperationLog("获取在线用户列表")
+    @ApiOperation(value = "获取在线用户列表")
     @GetMapping("/onlinelist")
     @ResponseBody
-    public PageResultBean<UserOnline> listUsers(@RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "limit", defaultValue = "10") int limit) {
-        List<UserOnline> userOnlines = userService.getOnlineUsers(page, limit);
-        long count = userService.getOnlineUserCount();
-        return new PageResultBean<UserOnline>(count, userOnlines);
+    public PageResultBean listUsers(PaginationRequest request) {
+        PaginationResponse pageResponse = new PaginationHandler(req -> userService.getOnlineUserCount(),
+                req -> userService.getOnlineUsers(req.getOffset(), req.getLimit())).handle(request);
+        return new PageResultBean(pageResponse.getRecordsTotal(), pageResponse.getData());
     }
 
+    @ApiOperation("剔除在线用户")
     @PostMapping("/kickout/{sessionId}")
     @ResponseBody
     public ResultBean<?> forceLogout(@PathVariable("sessionId") String sessionId) {
@@ -71,16 +71,17 @@ public class UserController {
         return ResultBean.successResult();
     }
 
+    @ApiOperation("获取用户列表")
     @OperationLog("获取用户列表")
     @GetMapping("/list")
     @ResponseBody
-    public PageResultBean<SysUser> listUser(@RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "limit", defaultValue = "10") int limit) {
-        List<SysUser> emps = userService.getAll(page, limit);
-        long count = userService.getCount(new SysUser());
-        return new PageResultBean<SysUser>(count, emps);
+    public PageResultBean listUser(PaginationRequest request) {
+        PaginationResponse pageResponse = new PaginationHandler(req -> userService.count(req.getParams()),
+                req -> userService.list(req.getParams(), req.getOffset(), req.getLimit())).handle(request);
+        return new PageResultBean(pageResponse.getRecordsTotal(), pageResponse.getData());
     }
 
+    @ApiOperation("添加用户")
     @OperationLog("添加用户")
     @PostMapping
     @ResponseBody
@@ -88,6 +89,7 @@ public class UserController {
         return ResultBean.successResult(userService.save(user));
     }
 
+    @ApiOperation("编辑用户")
     @OperationLog("编辑用户")
     @PutMapping
     @ResponseBody
@@ -104,11 +106,12 @@ public class UserController {
         return ResultBean.successResult();
     }
 
+    @ApiOperation("刪除用户")
     @OperationLog("刪除用户")
     @DeleteMapping("/{id}")
     @ResponseBody
     public ResultBean<?> deleteUser(@PathVariable Long id) {
-        userService.deleteById(id);
+        userService.delete(id);
         return ResultBean.successResult();
     }
 

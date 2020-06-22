@@ -49,7 +49,7 @@ public class EmployeeController extends BaseController {
 
     @GetMapping("/employee/list")
     @ResponseBody
-    public PageResultBean<Employee> empList(@RequestParam(value = "username", required = false) String username,
+    public PageResultBean empList(@RequestParam(value = "username", required = false) String username,
             @RequestParam(value = "department", required = false) String department,
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "limit", defaultValue = "10") int limit) {
@@ -62,8 +62,8 @@ public class EmployeeController extends BaseController {
         if (department != null) {
             paramsMap.set("department", department);
         }
-        PageResultBean<Employee> server = HttpClientUtil.doGetPageResultBean(restTemplate, getTokenString(),
-                getUrlString("/api/v1/employees"), paramsMap, Employee.class);
+        PageResultBean server = HttpClientUtil.doGetPageResultBean(restTemplate, getTokenString(),
+                getUrlString("/api/v1/employees"), paramsMap);
         return server;
     }
 

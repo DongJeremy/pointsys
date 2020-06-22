@@ -110,6 +110,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, SysUser> implem
                 token = token.substring(7);
             }
             LoginUser user = tokenService.getLoginUser(token);
+            if (user==null) {
+                continue;
+            }
             userOnline.setId(user.getToken());
             userOnline.setToken(token);
             userOnline.setUsername(user.getUsername());

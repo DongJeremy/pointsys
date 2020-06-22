@@ -10,8 +10,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.github.pagehelper.PageHelper;
-
 import jp.co.nri.point.api.domain.Employee;
 import jp.co.nri.point.api.mapper.EmployeeMapper;
 import jp.co.nri.point.api.service.EmployeeService;
@@ -25,17 +23,6 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
 
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
-
-    @Override
-    public List<Employee> getAllByCondition(String username, String deptName, int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        return employeeMapper.selectAllByCondition(username, deptName);
-    }
-
-    @Override
-    public Long getCountByCondition(String username, String deptName) {
-        return employeeMapper.selectCountByCondition(username, deptName);
-    }
 
     @Override
     public Long batchSaveEmployee(List<Employee> list) {
@@ -61,6 +48,5 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
         }
         return 1L;
     }
-
 
 }
