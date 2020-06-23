@@ -6,24 +6,27 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import jp.co.nri.point.api.domain.Mail;
 import jp.co.nri.point.api.domain.MailTo;
 import jp.co.nri.point.api.service.MailService;
+import jp.co.nri.point.beans.PageResultBean;
+import jp.co.nri.point.beans.ResultBean;
 import jp.co.nri.point.pagination.PaginationHandler;
 import jp.co.nri.point.pagination.PaginationRequest;
 import jp.co.nri.point.pagination.PaginationResponse;
 
 @Api(tags = "邮件")
-@Controller
+@RestController
 @RequestMapping("/api/v1/mails")
 public class MailController {
 
@@ -32,7 +35,8 @@ public class MailController {
 
     @PostMapping
     @ApiOperation(value = "保存邮件")
-    public Mail save(@RequestBody Mail mail) {
+    @ResponseBody
+    public ResultBean<?> save(@RequestBody Mail mail) {
         String toUsers = mail.getToUsers().trim();
         if (StringUtils.isBlank(toUsers)) {
             throw new IllegalArgumentException("收件人不能为空");
@@ -46,25 +50,27 @@ public class MailController {
         toUser = toUser.stream().filter(u -> !StringUtils.isBlank(u)).map(u -> u.trim()).collect(Collectors.toList());
         mailService.save(mail, toUser);
 
-        return mail;
+        return ResultBean.successResult();
     }
 
     @ApiOperation(value = "根据id获取邮件")
     @GetMapping("/{id}")
-    public Mail get(@PathVariable Long id) {
-        return mailService.getById(id);
+    public @ResponseBody ResultBean<?> get(@PathVariable Long id) {
+        return ResultBean.successResult(mailService.getById(id));
     }
 
     @ApiOperation(value = "根据id获取邮件发送详情")
     @GetMapping("/{id}/to")
-    public List<MailTo> getMailTo(@PathVariable Long id) {
-        return mailService.getToUsers(id);
+    public @ResponseBody ResultBean<?> getMailTo(@PathVariable Long id) {
+        List<MailTo> mailTos = mailService.getToUsers(id);
+        return ResultBean.successResult(mailTos);
     }
 
     @ApiOperation(value = "邮件列表")
     @GetMapping
-    public PaginationResponse list(PaginationRequest request) {
-        return new PaginationHandler(req -> mailService.count(req.getParams()),
+    public @ResponseBody PageResultBean list(PaginationRequest request) {
+        PaginationResponse pageResponse = new PaginationHandler(req -> mailService.count(req.getParams()),
                 req -> mailService.list(req.getParams(), req.getOffset(), req.getLimit())).handle(request);
+        return new PageResultBean(pageResponse.getRecordsTotal(), pageResponse.getData());
     }
 }

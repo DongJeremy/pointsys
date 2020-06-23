@@ -514,10 +514,6 @@ function showError(msg) {
     layer.msg(msg, {icon: 2});
 }
 
-setTimeout(function() {
-    $(".page-loading").hide();
-}, 500);
-
 function uuid() {
     var s = [];
     var hexDigits = "0123456789abcdef";
@@ -596,9 +592,9 @@ function ajaxLayuiRequest(method, url, handleData) {
         type : method,
         url : url,
         beforeSend: function () {
-            this.layerIndex = layer.load(0, { shade: false });
+            $(".page-loading").show()
         },
-        async: false,
+        async: true,
         success : handleData,
         error : function(xhr, textStatus, errorThrown){
             var msg = xhr.responseText;
@@ -621,7 +617,7 @@ function ajaxLayuiRequest(method, url, handleData) {
             }
         },
         complete: function(){
-            layer.close(this.layerIndex);
+            $(".page-loading").hide();
         }
     });
     return false;

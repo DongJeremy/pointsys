@@ -25,9 +25,10 @@ a {
     right: 0;
     bottom: 0;
     background-color: #fff;
+    display: none;
 }
 
-.layui-layer-loading .layui-layer-loading3 .rubik-loader {
+.rubik-loader {
     width: 64px;
     height: 64px;
     position: absolute;

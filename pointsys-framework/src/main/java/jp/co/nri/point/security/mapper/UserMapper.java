@@ -5,8 +5,8 @@ import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import org.springframework.data.repository.query.Param;
 
 import jp.co.nri.point.base.BaseMapper;
 import jp.co.nri.point.domain.SysUser;

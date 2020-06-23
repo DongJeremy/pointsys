@@ -17,10 +17,6 @@ spring:
     url: jdbc:postgresql://192.168.1.94:5432/mydb?characterEncoding=utf8&useSSL=true
     username: admin
     password: password
-  session:
-    store-type: redis
-    redis:
-      flush-mode: on-save
   mail:
     default-encoding: UTF-8
     host: smtp.163.com
@@ -28,16 +24,6 @@ spring:
     password:
     protocol: smtp
     test-connection: false
-  redis:
-    host: 192.168.1.94
-    port: 6379
-    timeout: 10s
-    lettuce:
-      pool:
-        min-idle: 0
-        max-idle: 8
-        max-active: 8
-        max-wait: -1ms
 pagehelper:
   helperDialect: postgresql
   reasonable: true
@@ -48,7 +34,9 @@ mybatis:
   config-location: classpath:mybatis-config.xml
   mapper-locations: classpath*:mapper/*.xml
 app:
-  logOperation: true]
+  logOperation: true
+swagger:
+  enable: true
 file:
   upload-dir: ./uploads
 token:

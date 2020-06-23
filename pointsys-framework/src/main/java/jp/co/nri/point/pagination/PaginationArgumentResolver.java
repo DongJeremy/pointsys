@@ -66,7 +66,6 @@ public class PaginationArgumentResolver implements HandlerMethodArgumentResolver
                     param.put(k, v);
                 }
             });
-            System.out.println(param);
             tableRequest.setParams(param);
         }
     }

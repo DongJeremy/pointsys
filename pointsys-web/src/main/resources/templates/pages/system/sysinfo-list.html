@@ -5,9 +5,9 @@
 <th:block th:include="pages/common/public::header" />
 </head>
 <body class="animated fadeIn timo-layout-page">
-<!--   <div class="page-loading"> -->
-<!--     <div class="rubik-loader"></div> -->
-<!--   </div> -->
+  <div class="page-loading">
+    <div class="rubik-loader"></div>
+  </div>
   <div class="animated fadeIn layui-card">
     <div class="layui-card-header timo-card-header">
       <span><i class="fa fa-bars"></i> 系统信息</span> <i class="layui-icon layui-icon-refresh refresh-btn"></i>
@@ -172,9 +172,10 @@
   <th:block th:include="pages/common/public::footer" />
 </body>
 <script type="application/javascript">
-    layui.use('layer', function(){
+    layui.use([ 'element', 'layer' ], function(){
         ajaxLayuiRequest("GET", '/sysInfo/current', function(result) {
             $("#serverInfo").html(result);
+            $(".page-loading").hide();
         });
     });
 </script>
