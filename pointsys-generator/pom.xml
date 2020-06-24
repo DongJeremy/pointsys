@@ -15,6 +15,11 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis</artifactId>
+      <version>3.5.4</version>
+    </dependency>
+    <dependency>
       <groupId>org.mybatis.generator</groupId>
       <artifactId>mybatis-generator-core</artifactId>
       <version>1.4.0</version>
@@ -59,11 +64,6 @@
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
             <version>3.5.4</version>
-          </dependency>
-          <dependency>
-            <groupId>jp.co.nri</groupId>
-            <artifactId>pointsys-plugin</artifactId>
-            <version>1.0.0</version>
           </dependency>
         </dependencies>
       </plugin>

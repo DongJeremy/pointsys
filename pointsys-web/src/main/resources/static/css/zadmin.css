@@ -869,6 +869,7 @@ a {
 
 .timo-layout-page .timo-table.timo-table-fixed {
     table-layout: fixed;
+    border-collapse: collapse;
 }
 
 .timo-layout-page .timo-table a {
@@ -1005,7 +1006,7 @@ a {
     margin-bottom: 8px;
 }
 
-.page-link {
+.paginate_button {
     position: relative;
     display: block;
     padding: 8px 14px;
@@ -1016,29 +1017,29 @@ a {
     border: 1px solid #dee2e6;
 }
 
-.page-link:hover {
+.paginate_button:hover {
     background-color: #dddddd;
 }
 
-.page-item:first-child .page-link {
+.paginate_button:first-child a {
     margin-left: 0;
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px;
 }
 
-.page-item:last-child .page-link {
+.paginate_button:last-child a {
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
 }
 
-.page-item.active .page-link {
+.paginate_button.active a {
     z-index: 1;
     color: #FFF;
     background-color: #009688;
     border-color: #009688;
 }
 
-.page-item .breviary {
+.paginate_button .breviary {
     font-weight: bold;
 }
 

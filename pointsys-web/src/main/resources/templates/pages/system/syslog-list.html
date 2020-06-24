@@ -13,7 +13,28 @@
       <span><i class="fa fa-bars"></i> 系统日志</span>
     </div>
     <div class="layui-card-body">
-      <div class="layui-row timo-card-screen put-row">
+      <div class="layui-row timo-card-screen">
+        <div class="pull-left layui-form-pane timo-search-box">
+          <div class="layui-inline">
+            <label class="layui-form-label">类型</label>
+            <div class="layui-input-block timo-search-status">
+              <select class="timo-search-select" name="type" mo:dict="LOG_TYPE" mo-selected="${param.type}"
+                mo-empty="全部"></select>
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">日志名称 </label>
+            <div class="layui-input-block">
+              <input type="text" name="name" th:value="${param.name}" placeholder="请输入日志名称" autocomplete="off"
+                class="layui-input">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <button class="layui-btn timo-search-btn">
+              <i class="fa fa-search"></i>
+            </button>
+          </div>
+        </div>
         <div class="pull-right screen-btn-group">
           <div class="btn-group-right">
             <button class="layui-btn" data-type="getCheckData" id="del_btn">
@@ -23,53 +44,78 @@
         </div>
       </div>
       <div class="timo-table-wrap">
-        <table class="layui-hide timo-table" id="login-log-table" lay-filter="allAttr"></table>
+        <table class="layui-table timo-table timo-table-fixed" id="login-log-table" lay-filter="allAttr">
+          <thead>
+            <tr>
+              <th>id</th>
+              <th>用户名</th>
+              <th>描述</th>
+              <th>耗时(毫秒)</th>
+              <th>请求方法</th>
+              <th>请求参数</th>
+              <th>IP</th>
+              <th>修改时间</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
   <th:block th:include="pages/common/public::footer" />
-  <script>
-    layui.use(['table'], function () {
-        var table = layui.table;
-        var $ = layui.$;
-  
-        table.render({
-            elem: '#login-log-table'
-           , url: '/syslog/list'
-          , page: true
-          , id : 'logTable'
-          , limits: [10,20,50]
-          , response: {
-              statusName: 'code'
-              , statusCode: 200
-              , msgName: 'msg'
-              , countName: 'count'
-              , dataName: 'data'}
-          , cols: [
-              [
-                  {field: 'username', title: '用户名', width: "8%"}
-                  , {field: 'operation', title: '描述', width: "8%"}
-                  , {field: 'time', title: '耗时(毫秒)', width: "8%"}
-                  , {field: 'method', title: '请求方法', width: "25%"}
-                  , {field: 'params', title: '请求参数'}
-                  , {field: 'ip', title: 'IP', width: "10%"}
-                  , {field: 'createTime', title: '操作时间', templet: function(d) { return dateFormat("yyyy-MM-dd hh:mm:ss", new Date(d.createTime))}, width: "15%"}
-              ]
-          ]
-      });
+  <script type="text/javascript" th:inline="javascript">  
+    $('#login-log-table').DataTable({
+        "searching": false,
+        "processing": true,
+        "serverSide": true,
+        "language": {
+            "url": "/static/lang/Chinese.lang"
+        },
+        "autoWidth": false,
+        "ajax": {
+            "url" : "/syslog/list",
+            "type":"get",
+            "data":function(d){
+                 d.description = $('#description').val();
+                 d.status = $('#status').val();
+            }
+        },
+        "dom": "<'dt-toolbar'r>t<'dt-toolbar-footer'<'col-sm-10 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-10' p v>>",	
+        "columns": [
+            { "data": "id", "defaultContent": "", "width": "5%"},
+            { "data": "username", "defaultContent": "", "width": "8%"},
+            { "data": "operation", "defaultContent": "", "width": "8%"},
+            { "data": "time", "defaultContent": "", "width": "8%"},
+            { "data": "method", "defaultContent": "25%"},
+            { "data": "params", "defaultContent": ""},
+            { "data": "ip", "defaultContent": "", "width": "10%"},
+            {
+                "data" : "flag", 
+                "defaultContent" : "",
+                "render": function (data, type, row) {
+                    var flag = row['createTime'];
+                    return flag;
+                },
+                "width": "15%"
+            },
+        ],
+        "order": [ [ 0, 'asc' ], [ 1, 'asc' ] ]
+    });
 
-      $("#del_btn").on("click", function() {
-          layer.confirm('是否清空日志?', function(index) {
-              ajaxJsonRequest("POST", '/syslog/clear', null, function(data) {
-                  layer.close(index);
-                  handlerResult(data, function() {
-                      parent.layer.msg("删除成功", {icon: 6});
-                      table.reload('logTable');
-                  });
-              });
-          });
-      });
-  });
-  </script>
+                $("#del_btn").on("click", function() {
+                    layer.confirm('是否清空日志?', function(index) {
+                        ajaxJsonRequest("POST", '/syslog/clear', null, function(data) {
+                            layer.close(index);
+                            handlerResult(data, function() {
+                                parent.layer.msg("删除成功", {
+                                    icon : 6
+                                });
+                                table.reload('logTable');
+                            });
+                        });
+                    });
+                });
+        </script>
 </body>
 </html>

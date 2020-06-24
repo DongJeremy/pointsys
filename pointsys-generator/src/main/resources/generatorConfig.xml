@@ -5,8 +5,8 @@
   <properties resource="config.properties"/>
   <context id="mybatis" targetRuntime="MyBatis3">
     <plugin type="org.mybatis.generator.plugins.SerializablePlugin"></plugin>
-<!--     <plugin type="jp.co.nri.plugins.ForUpdatePlugin"></plugin> -->
-    <plugin type="com.anytron.mybatis.generator.plugins.BatchInsertPlugin"/>
+    <plugin type="com.park.core.plugin.LombokPlugin"/>
+    <plugin type="com.park.core.plugin.ForUpdatePlugin"/>
     <!-- 去除自动生成的注释 -->
     <commentGenerator>
       <property name="suppressAllComments" value="true"></property>
@@ -23,16 +23,16 @@
       <property name="forceBigDecimals" value="false" />
     </javaTypeResolver>
 
-    <javaModelGenerator targetPackage="${package.model}" targetProject="src/main/java">
+    <javaModelGenerator targetPackage="${package.model}" targetProject="pointsys-generator/src/main/java">
       <property name="enableSubPackages" value="true" />
       <property name="trimStrings" value="true" />
     </javaModelGenerator>
 
-    <sqlMapGenerator targetPackage="${package.xml}" targetProject="src/main/resources">
+    <sqlMapGenerator targetPackage="${package.xml}" targetProject="pointsys-generator/src/main/resources">
       <property name="enableSubPackages" value="true" />
     </sqlMapGenerator>
 
-    <javaClientGenerator type="XMLMAPPER" targetPackage="${package.mapper}" targetProject="src/main/java">
+    <javaClientGenerator type="XMLMAPPER" targetPackage="${package.mapper}" targetProject="pointsys-generator/src/main/java">
       <property name="enableSubPackages" value="true" />
     </javaClientGenerator>
 

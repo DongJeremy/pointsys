@@ -5,7 +5,7 @@ import java.util.List;
 
 import jp.co.nri.point.enums.ResultEnum;
 
-public class PageResultBean implements Serializable {
+public class PageResultBean extends PaginationResponse {
 
     private static final long serialVersionUID = 5071118307783022228L;
 
@@ -13,23 +13,40 @@ public class PageResultBean implements Serializable {
 
     private String message;
 
-    private long count;
+    private long recordsTotal;
+
+    private long recordsFiltered;
 
     private List<?> data;
 
     public PageResultBean(long count, List<?> data) {
-        this.count = count;
-        this.data = data;
+        this.recordsTotal = count;
+        this.recordsFiltered = count;
         this.code = ResultEnum.SUCCESS.getCode();
         this.message = ResultEnum.SUCCESS.getMessage();
     }
 
-    public long getCount() {
-        return count;
+    public PageResultBean(long recordsTotal, long recordsFiltered, List<?> data) {
+        this.recordsTotal = recordsTotal;
+        this.recordsFiltered = recordsFiltered;
+        this.code = ResultEnum.SUCCESS.getCode();
+        this.message = ResultEnum.SUCCESS.getMessage();
     }
 
-    public void setCount(long count) {
-        this.count = count;
+    public long getRecordsTotal() {
+        return recordsTotal;
+    }
+
+    public void setRecordsTotal(long recordsTotal) {
+        this.recordsTotal = recordsTotal;
+    }
+
+    public long getRecordsFiltered() {
+        return recordsFiltered;
+    }
+
+    public void setRecordsFiltered(long recordsFiltered) {
+        this.recordsFiltered = recordsFiltered;
     }
 
     public int getCode() {
