@@ -1007,6 +1007,13 @@ a {
 }
 
 .paginate_button {
+	border: none!important;
+	padding: 0!important;
+	margin: 0!important;
+	border-collapse: collapse!important;
+}
+
+.paginate_button a {
     position: relative;
     display: block;
     padding: 8px 14px;
@@ -1015,6 +1022,10 @@ a {
     color: #009688;
     background-color: #FFF;
     border: 1px solid #dee2e6;
+}
+
+.paginate_button a:hover{
+	background-color: #dddddd;
 }
 
 .paginate_button:hover {
@@ -1033,14 +1044,21 @@ a {
 }
 
 .paginate_button.active a {
-    z-index: 1;
+/*     z-index: 1; */
     color: #FFF;
     background-color: #009688;
     border-color: #009688;
 }
 
 .paginate_button .breviary {
-    font-weight: bold;
+/*     font-weight: bold; */
+}
+
+.dataTables_wrapper .dataTables_length {
+    float: left;
+    padding: 12px 3px 0;
+    margin-left: 8px;
+    border-radius: 2px;
 }
 
 /* 添加/编辑页面 */

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import jp.co.nri.point.beans.PageResultBean;
+import jp.co.nri.point.beans.PaginationResponse;
 import jp.co.nri.point.beans.ResultBean;
 import jp.co.nri.point.domain.SysUser;
 import jp.co.nri.point.dto.PasswordBean;
@@ -59,22 +59,22 @@ public class UserController extends BaseController {
 
     @GetMapping("/user/list")
     @ResponseBody
-    public PageResultBean listUser(@RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "limit", defaultValue = "10") int limit) {
+    public PaginationResponse listUser(@RequestParam(value = "start", defaultValue = "0") int start,
+            @RequestParam(value = "length", defaultValue = "10") int length) {
         MultiValueMap<String, String> paramsMap = new LinkedMultiValueMap<>();
-        paramsMap.set("page", String.valueOf(page));
-        paramsMap.set("limit", String.valueOf(limit));
+        paramsMap.set("start", String.valueOf(start));
+        paramsMap.set("length", String.valueOf(length));
         return HttpClientUtil.doGetPageResultBean(restTemplate, getTokenString(), getUrlString("/api/user/list"),
                 paramsMap);
     }
 
     @GetMapping("/user/onlinelist")
     @ResponseBody
-    public PageResultBean listUsers(@RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "limit", defaultValue = "10") int limit) {
+    public PaginationResponse listUsers(@RequestParam(value = "start", defaultValue = "0") int start,
+            @RequestParam(value = "length", defaultValue = "10") int length) {
         MultiValueMap<String, String> paramsMap = new LinkedMultiValueMap<>();
-        paramsMap.set("page", String.valueOf(page));
-        paramsMap.set("limit", String.valueOf(limit));
+        paramsMap.set("start", String.valueOf(start));
+        paramsMap.set("length", String.valueOf(length));
         return HttpClientUtil.doGetPageResultBean(restTemplate, getTokenString(), getUrlString("/api/user/onlinelist"),
                 paramsMap);
     }

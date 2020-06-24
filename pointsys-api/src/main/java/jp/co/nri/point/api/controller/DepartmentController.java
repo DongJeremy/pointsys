@@ -16,11 +16,10 @@ import io.swagger.annotations.ApiOperation;
 import jp.co.nri.point.annotation.OperationLog;
 import jp.co.nri.point.api.domain.Department;
 import jp.co.nri.point.api.service.DepartmentService;
-import jp.co.nri.point.beans.PageResultBean;
+import jp.co.nri.point.beans.PaginationRequest;
+import jp.co.nri.point.beans.PaginationResponse;
 import jp.co.nri.point.beans.ResultBean;
 import jp.co.nri.point.pagination.PaginationHandler;
-import jp.co.nri.point.pagination.PaginationRequest;
-import jp.co.nri.point.pagination.PaginationResponse;
 
 @Api(tags = "部门")
 @RestController
@@ -33,10 +32,11 @@ public class DepartmentController {
     @ApiOperation(value = "部门列表")
     @GetMapping
     @ResponseBody
-    public PageResultBean listDepartment(PaginationRequest request) {
+    public PaginationResponse listDepartment(PaginationRequest request) {
+        int offset = request.getStart() / request.getLength() + 1;
         PaginationResponse pageResponse = new PaginationHandler(req -> service.count(req.getParams()),
-                req -> service.list(req.getParams(), req.getOffset(), req.getLimit())).handle(request);
-        return new PageResultBean(pageResponse.getRecordsTotal(), pageResponse.getData());
+                req -> service.list(req.getParams(), offset, req.getLength())).handle(request);
+        return pageResponse;
     }
 
     @OperationLog("添加部门")

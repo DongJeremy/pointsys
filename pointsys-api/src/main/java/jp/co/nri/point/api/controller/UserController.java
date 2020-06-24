@@ -15,13 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import jp.co.nri.point.annotation.OperationLog;
-import jp.co.nri.point.beans.PageResultBean;
+import jp.co.nri.point.beans.PaginationRequest;
+import jp.co.nri.point.beans.PaginationResponse;
 import jp.co.nri.point.beans.ResultBean;
 import jp.co.nri.point.domain.SysUser;
 import jp.co.nri.point.dto.PasswordBean;
 import jp.co.nri.point.pagination.PaginationHandler;
-import jp.co.nri.point.pagination.PaginationRequest;
-import jp.co.nri.point.pagination.PaginationResponse;
 import jp.co.nri.point.security.service.TokenService;
 import jp.co.nri.point.security.service.UserService;
 import jp.co.nri.point.util.UserUtil;
@@ -57,10 +56,11 @@ public class UserController {
     @ApiOperation(value = "获取在线用户列表")
     @GetMapping("/onlinelist")
     @ResponseBody
-    public PageResultBean listUsers(PaginationRequest request) {
+    public PaginationResponse listUsers(PaginationRequest request) {
+        int offset = request.getStart() / request.getLength() + 1;
         PaginationResponse pageResponse = new PaginationHandler(req -> userService.getOnlineUserCount(),
-                req -> userService.getOnlineUsers(req.getOffset(), req.getLimit())).handle(request);
-        return new PageResultBean(pageResponse.getRecordsTotal(), pageResponse.getData());
+                req -> userService.getOnlineUsers(offset, req.getLength())).handle(request);
+        return pageResponse;
     }
 
     @ApiOperation("剔除在线用户")
@@ -75,10 +75,11 @@ public class UserController {
     @OperationLog("获取用户列表")
     @GetMapping("/list")
     @ResponseBody
-    public PageResultBean listUser(PaginationRequest request) {
+    public PaginationResponse listUser(PaginationRequest request) {
+        int offset = request.getStart() / request.getLength() + 1;
         PaginationResponse pageResponse = new PaginationHandler(req -> userService.count(req.getParams()),
-                req -> userService.list(req.getParams(), req.getOffset(), req.getLimit())).handle(request);
-        return new PageResultBean(pageResponse.getRecordsTotal(), pageResponse.getData());
+                req -> userService.list(req.getParams(), offset, req.getLength())).handle(request);
+        return pageResponse;
     }
 
     @ApiOperation("添加用户")

@@ -13,6 +13,6 @@ public interface MailService extends BaseService<Mail> {
 
     List<MailTo> getToUsers(Long id);
 
-    List<MailTo> list(Map<String, Object> params, Integer offset, Integer limit);
+    //List<MailTo> list(Map<String, Object> params, Integer offset, Integer limit);
 
 }

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import jp.co.nri.point.beans.PageResultBean;
+import jp.co.nri.point.beans.PaginationResponse;
 import jp.co.nri.point.beans.ResultBean;
 import jp.co.nri.point.util.FileUtil;
 import jp.co.nri.point.web.domain.Employee;
@@ -49,22 +49,22 @@ public class EmployeeController extends BaseController {
 
     @GetMapping("/employee/list")
     @ResponseBody
-    public PageResultBean empList(@RequestParam(value = "username", required = false) String username,
+    public PaginationResponse empList(@RequestParam(value = "username", required = false) String username,
             @RequestParam(value = "department", required = false) String department,
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "limit", defaultValue = "10") int limit) {
+            @RequestParam(value = "start", defaultValue = "0") int start,
+            @RequestParam(value = "length", defaultValue = "10") int length) {
         MultiValueMap<String, String> paramsMap = new LinkedMultiValueMap<>();
-        paramsMap.set("page", String.valueOf(page));
-        paramsMap.set("limit", String.valueOf(limit));
+        paramsMap.set("start", String.valueOf(start));
+        paramsMap.set("length", String.valueOf(length));
         if (username != null) {
             paramsMap.set("username", username);
         }
         if (department != null) {
             paramsMap.set("department", department);
         }
-        PageResultBean server = HttpClientUtil.doGetPageResultBean(restTemplate, getTokenString(),
+        PaginationResponse response = HttpClientUtil.doGetPageResultBean(restTemplate, getTokenString(),
                 getUrlString("/api/v1/employees"), paramsMap);
-        return server;
+        return response;
     }
 
     @PostMapping("/employee/add")

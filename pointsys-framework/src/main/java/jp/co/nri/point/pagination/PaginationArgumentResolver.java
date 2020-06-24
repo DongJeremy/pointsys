@@ -16,6 +16,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.google.common.collect.Maps;
 
+import jp.co.nri.point.beans.PaginationRequest;
+
 public class PaginationArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
@@ -31,12 +33,12 @@ public class PaginationArgumentResolver implements HandlerMethodArgumentResolver
 
         PaginationRequest tableRequest = new PaginationRequest();
         Map<String, String[]> param = request.getParameterMap();
-        if (param.containsKey("page")) {
-            tableRequest.setOffset(Integer.parseInt(request.getParameter("page")));
+        if (param.containsKey("start")) {
+            tableRequest.setStart(Integer.parseInt(request.getParameter("start")));
         }
 
-        if (param.containsKey("limit")) {
-            tableRequest.setLimit(Integer.parseInt(request.getParameter("limit")));
+        if (param.containsKey("length")) {
+            tableRequest.setLength(Integer.parseInt(request.getParameter("length")));
         }
 
         Map<String, Object> map = Maps.newHashMap();

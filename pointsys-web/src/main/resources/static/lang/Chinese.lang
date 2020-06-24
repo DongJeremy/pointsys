@@ -7,6 +7,7 @@
 	"sInfoFiltered": "(由 _MAX_ 项结果过滤)",
 	"sInfoPostFix":  "",
 	"sSearch":       "搜索:",
+	"sLengthMenu":   "_MENU_",
 	"sUrl":          "",
 	"sEmptyTable":     "表中数据为空",
 	"sLoadingRecords": "载入中...",

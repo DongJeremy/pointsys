@@ -54,10 +54,4 @@ public class MailServiceImpl extends BaseServiceImpl<MailMapper, Mail> implement
         return null;
     }
 
-    @Override
-    public List<MailTo> list(Map<String, Object> params, Integer offset, Integer limit) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

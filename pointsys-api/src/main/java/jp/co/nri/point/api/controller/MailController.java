@@ -19,11 +19,10 @@ import io.swagger.annotations.ApiOperation;
 import jp.co.nri.point.api.domain.Mail;
 import jp.co.nri.point.api.domain.MailTo;
 import jp.co.nri.point.api.service.MailService;
-import jp.co.nri.point.beans.PageResultBean;
+import jp.co.nri.point.beans.PaginationRequest;
+import jp.co.nri.point.beans.PaginationResponse;
 import jp.co.nri.point.beans.ResultBean;
 import jp.co.nri.point.pagination.PaginationHandler;
-import jp.co.nri.point.pagination.PaginationRequest;
-import jp.co.nri.point.pagination.PaginationResponse;
 
 @Api(tags = "邮件")
 @RestController
@@ -68,9 +67,10 @@ public class MailController {
 
     @ApiOperation(value = "邮件列表")
     @GetMapping
-    public @ResponseBody PageResultBean list(PaginationRequest request) {
+    public @ResponseBody PaginationResponse list(PaginationRequest request) {
+        int offset = request.getStart() / request.getLength() + 1;
         PaginationResponse pageResponse = new PaginationHandler(req -> mailService.count(req.getParams()),
-                req -> mailService.list(req.getParams(), req.getOffset(), req.getLimit())).handle(request);
-        return new PageResultBean(pageResponse.getRecordsTotal(), pageResponse.getData());
+                req -> mailService.list(req.getParams(), offset, req.getLength())).handle(request);
+        return pageResponse;
     }
 }

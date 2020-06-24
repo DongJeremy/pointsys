@@ -34,11 +34,10 @@ import jp.co.nri.point.api.domain.Department;
 import jp.co.nri.point.api.domain.Employee;
 import jp.co.nri.point.api.dto.EmployeeVO;
 import jp.co.nri.point.api.service.EmployeeService;
-import jp.co.nri.point.beans.PageResultBean;
+import jp.co.nri.point.beans.PaginationRequest;
+import jp.co.nri.point.beans.PaginationResponse;
 import jp.co.nri.point.beans.ResultBean;
 import jp.co.nri.point.pagination.PaginationHandler;
-import jp.co.nri.point.pagination.PaginationRequest;
-import jp.co.nri.point.pagination.PaginationResponse;
 import jp.co.nri.point.util.BeanCopyUtil;
 import jp.co.nri.point.util.ExcelUtil;
 
@@ -56,10 +55,11 @@ public class EmployeeController {
     @ApiOperation("获取雇员列表")
     @GetMapping
     @ResponseBody
-    public PageResultBean listEmployee(PaginationRequest request) {
+    public PaginationResponse listEmployee(PaginationRequest request) {
+        int offset = request.getStart() / request.getLength() + 1;
         PaginationResponse pageResponse = new PaginationHandler(req -> service.count(req.getParams()),
-                req -> service.list(req.getParams(), req.getOffset(), req.getLimit())).handle(request);
-        return new PageResultBean(pageResponse.getRecordsTotal(), pageResponse.getData());
+                req -> service.list(req.getParams(), offset, req.getLength())).handle(request);
+        return pageResponse;
     }
 
     @ApiOperation("添加雇员")

@@ -1,4 +1,4 @@
-package jp.co.nri.point.pagination;
+package jp.co.nri.point.beans;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -7,24 +7,24 @@ public class PaginationRequest implements Serializable {
 
     private static final long serialVersionUID = 6159176532232364406L;
 
-    private Integer offset;
-    private Integer limit;
+    private Integer start;
+    private Integer length;
     private Map<String, Object> params;
 
-    public Integer getOffset() {
-        return offset;
+    public Integer getStart() {
+        return start;
     }
 
-    public void setOffset(Integer offset) {
-        this.offset = offset;
+    public void setStart(Integer start) {
+        this.start = start;
     }
 
-    public Integer getLimit() {
-        return limit;
+    public Integer getLength() {
+        return length;
     }
 
-    public void setLimit(Integer limit) {
-        this.limit = limit;
+    public void setLength(Integer length) {
+        this.length = length;
     }
 
     public Map<String, Object> getParams() {

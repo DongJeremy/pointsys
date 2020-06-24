@@ -16,7 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 
-import jp.co.nri.point.beans.PageResultBean;
+import jp.co.nri.point.beans.PaginationResponse;
 import jp.co.nri.point.beans.ResultBean;
 import jp.co.nri.point.constant.Constants;
 
@@ -60,8 +60,8 @@ public class HttpClientUtil {
         return requestEntity;
     }
 
-    private static PageResultBean getPageResultBean(ResponseEntity<String> result) {
-        PageResultBean pageResultBean = JSON.parseObject(result.getBody(), new TypeReference<PageResultBean>() {
+    private static PaginationResponse getPageResultBean(ResponseEntity<String> result) {
+        PaginationResponse pageResultBean = JSON.parseObject(result.getBody(), new TypeReference<PaginationResponse>() {
         });
         return pageResultBean;
     }
@@ -159,7 +159,7 @@ public class HttpClientUtil {
      * @param responseType
      * @return
      */
-    public static PageResultBean doGetPageResultBean(RestTemplate restTemplate, String token, String url,
+    public static PaginationResponse doGetPageResultBean(RestTemplate restTemplate, String token, String url,
             MultiValueMap<String, String> parmas) {
         HttpEntity<String> requestEntity = generateEmptyEntity(token);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParams(parmas);

@@ -3,6 +3,9 @@ package jp.co.nri.point.pagination;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.co.nri.point.beans.PaginationRequest;
+import jp.co.nri.point.beans.PaginationResponse;
+
 public class PaginationHandler {
 
     private CountHandler countHandler;
