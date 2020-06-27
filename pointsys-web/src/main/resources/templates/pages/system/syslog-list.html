@@ -44,7 +44,7 @@
         </div>
       </div>
       <div class="timo-table-wrap">
-        <table class="layui-table timo-table timo-table-fixed" id="login-log-table" lay-filter="allAttr">
+        <table class="layui-table timo-table timo-table-fixed" id="dt-table" lay-filter="allAttr">
           <thead>
             <tr>
               <th>id</th>
@@ -64,59 +64,45 @@
     </div>
   </div>
   <th:block th:include="pages/common/public::footer" />
-  <script type="text/javascript" th:inline="javascript">  
-    $('#login-log-table').DataTable({
-        "searching": false,
-        "processing": true,
-        "serverSide": true,
-        "language": {
-            "url": "/static/lang/Chinese.lang"
-        },
-        "autoWidth": false,
-        "ajax": {
-            "url" : "/syslog/list",
-            "type":"get",
-            "data":function(d){
-                 d.description = $('#description').val();
-                 d.status = $('#status').val();
-            }
-        },
-        "lengthMenu": [ [10, 20, 30, -1], ['10条/页', '20条/页', '30条/页', "All"] ],
-        "dom": "<'dt-toolbar'r>t<'dt-toolbar-footer'<'col-sm-10 col-xs-12 hidden-xs'i l><'col-xs-12 col-sm-10' p v>>",	
-        "columns": [
-            { "data": "id", "defaultContent": "", "width": "5%"},
-            { "data": "username", "defaultContent": "", "width": "8%"},
-            { "data": "operation", "defaultContent": "", "width": "8%"},
-            { "data": "time", "defaultContent": "", "width": "8%"},
-            { "data": "method", "defaultContent": "25%"},
-            { "data": "params", "defaultContent": ""},
-            { "data": "ip", "defaultContent": "", "width": "10%"},
-            {
-                "data" : "flag", 
-                "defaultContent" : "",
-                "render": function (data, type, row) {
-                    var flag = row['createTime'];
-                    return flag;
-                },
-                "width": "15%"
+<script type="text/javascript">
+layui.use('layer', function() {
+    var layer = layui.layer;
+    
+    columns = [
+        { data: "id", defaultContent: "", width: "5%"},
+        { data: "username", defaultContent: "", width: "8%"},
+        { data: "operation", defaultContent: "", width: "8%"},
+        { data: "time", defaultContent: "", width: "8%"},
+        { data: "method", defaultContent: "", width: "25%"},
+        { data: "params", defaultContent: ""},
+        { data: "ip", defaultContent: "", width: "10%"},
+        {
+            data : "flag", 
+            defaultContent : "",
+            render: function (data, type, row) {
+                var flag = row['createTime'];
+                return flag;
             },
-        ],
-        "order": [ [ 0, 'asc' ], [ 1, 'asc' ] ]
-    });
-
-                $("#del_btn").on("click", function() {
-                    layer.confirm('是否清空日志?', function(index) {
-                        ajaxJsonRequest("POST", '/syslog/clear', null, function(data) {
-                            layer.close(index);
-                            handlerResult(data, function() {
-                                parent.layer.msg("删除成功", {
-                                    icon : 6
-                                });
-                                table.reload('logTable');
-                            });
-                        });
+            width: "15%"
+        },
+    ];
+    var config  = initTableConfig(layer, "/syslog/list", null, columns, [ [ 0, 'asc' ], [ 1, 'asc' ] ]);
+    var table = $('#dt-table').DataTable(config);
+    
+    $("#del_btn").on("click", function() {
+        layer.confirm('是否清空日志?', function(index) {
+            ajaxJsonRequest("POST", '/syslog/clear', null, function(data) {
+                layer.close(index);
+                handlerResult(data, function() {
+                    parent.layer.msg("删除成功", {
+                        icon : 6
                     });
+                    table.ajax.reload();
                 });
-        </script>
+            });
+        });
+    });
+});
+</script>
 </body>
 </html>

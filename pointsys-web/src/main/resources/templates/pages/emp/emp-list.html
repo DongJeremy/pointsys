@@ -57,57 +57,135 @@
           </div>
         </div>
       </div>
-      <div class="timo-table-wrap">
-        <table class="layui-hide timo-table" id="user-table" lay-filter="allAttr"></table>
+      <div class="timo-table-wrap" id="wrap-table">
+        <table class="layui-table timo-table timo-table-fixed" id="dt-table" lay-filter="allAttr">
+          <thead>
+            <tr>
+              <th class='th'><input type="checkbox" class="checkall" id="checkAll" name="cb-check-all" /></th>
+              <th>用户名</th>
+              <th>部门</th>
+              <th>地址</th>
+              <th>年龄</th>
+              <th>手机</th>
+              <th>工资</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
-  <script type="text/html" id="column-toolbar">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="info">详细</a>
-    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
-  </script>
   <th:block th:include="pages/common/public::footer" />
-  <script>
-    layui.use([ 'table', 'element', 'form' ], function() {
-        var table = layui.table
-        , $ = layui.$
-        , upload = layui.upload
-        , element = layui.element
-        , form = layui.form;
+<script>
+layui.use([ 'table', 'element', 'form' ], function() {
+    var table = layui.table
+    , $ = layui.$
+    , upload = layui.upload
+    , element = layui.element
+    , form = layui.form;
 
-        ajaxLayuiRequest("GET", '/employee/getDeptList', function(result) {
-            $("#deptInfo").html(result);
-            element.init();
-            form.render('select');
-        });
-
-    table.render({
-        elem: '#user-table'
-        , url: '/employee/list'
-        , page: true
-        , id: 'userTable'
-        , limits:[10,20,50]
-        , response: {
-             statusName: 'code'
-             ,statusCode: 200
-             ,msgName: 'msg'
-             ,countName: 'recordsTotal'
-             ,dataName: 'data'}
-        , cols: [
-            [
-                {checkbox: true}
-                , {field: 'id', title: 'ID', width: "10%", hide: true}
-                , {field: 'name', title: '用户名', width: "15%"}
-                , {field: 'department', title: '部门', width: "15%",templet:'<span>{{ d.department.name }}</span>'}
-                , {field: 'address', title: '地址', width: "15%"}
-                , {field: 'age', title: '年龄', width: "10%"}
-                , {field: 'tel', title: '手机', width: "14%"}
-                , {field: 'salary', title: '工资'}
-                , {title: '操作', fixed: 'right', align: 'center', toolbar: '#column-toolbar', width: "15%"}
-            ]
-        ]
+    ajaxLayuiRequest("GET", '/employee/getDeptList', function(result) {
+        $("#deptInfo").html(result);
+        element.init();
+        form.render('select');
     });
+
+    columns = [
+        {
+            targets: 0,
+            data: null,
+            className: 'timo-table-checkbox',
+            orderable: false,
+            render: function (data, type, full, meta) {
+                return '<input type="checkbox" id="check_' + data.id + '" class="check" name="check" value="' + data.id + '">';
+            },
+            width: "20px"
+        },
+        { data: "name", defaultContent: "", width: "10%"},
+        { 
+            data: "status", 
+            defaultContent: "",
+            width: "15%",
+            render: function (data, type, row) {
+                var department = row['department'];
+                return '<span>' + department.name + '</span>'
+            }
+        },
+        { data: "address", defaultContent: ""},
+        { data: "age", defaultContent: "", width: "10%"},
+        { data: "tel", defaultContent: "", width: "14%"},
+        { data: "salary", defaultContent: "", width: "8%"},
+        { 
+            data: "", 
+            defaultContent: "",
+            orderable:false,
+            width: "12%",
+            render: function (data, type, row) {
+                var id = row['id'];
+                var edit = buttonEdit(id);
+                var del = buttonDel(id);
+                var info = buttonInfo(id)
+                return edit + del + info;
+            }
+        },
+    ];
+    var data = function(d){
+        d.department = $('.timo-search-select').val();
+        d.username = $("#dataReload").val();
+    }
+    var $table = $('#dt-table'),
+        $wrapper = $("#wrap-table");
+    var config  = initTableConfig(layer, "/employee/list", data, columns, [ [ 3, 'asc' ], [ 1, 'asc' ] ]);
+    config["drawCallback"] = drawCallback($wrapper, $table)
+
+    var _table = $table.DataTable(config);
+    $table.on("change", ":checkbox", function () {
+        if ($(this).is("[name='cb-check-all']")) {
+            $(":checkbox", $table).prop("checked", $(this).prop("checked"));
+        } else {
+            var checkbox = $("tbody :checkbox", $table);
+            $(":checkbox[name='cb-check-all']", $table).prop('checked', checkbox.length === checkbox.filter(':checked').length);
+        }
+    })
+    window.editInfo = function(id) {
+        layer.open({
+            content: '/main/empChangeView/' + id,
+            title: "编辑",
+            area: ['500px', '460px'],
+            type: 2,
+            maxmin: true,
+            shadeClose: true,
+            end: function () {
+                _table.ajax.reload(null, false);
+            }
+        });
+    }
+    window.showDetail = function(id) {
+        layer.open({
+            content: '/main/empDetailsView/' + id,
+            title: "详细信息",
+            area: ['700px', '400px'],
+            type: 2,
+            maxmin: true,
+            shadeClose: true,
+            end: function () {
+                _table.ajax.reload(null, false);
+            }
+        });
+    }
+    window.deleteInfo = function(id) {
+        layer.confirm("确定删除雇员吗?", {icon: 3, title: '提示'}, function (index) {//确定回调
+            ajaxJsonRequest("DELETE", '/employee/delete/' + id, null, function(data) {
+                layer.close(index);
+                handlerResult(data, deleteDone)
+            });
+        }, function(index) {//取消回调
+            layer.close(index);
+        });
+    }
+
     upload.render({
         elem: '#import_btn' //绑定元素
         ,url: '/employee/excel/upload' //上传接口
@@ -116,33 +194,18 @@
             parent.layer.msg("导入成功", {
                 icon : 6
             });
-            table.reload('userTable', {});
+            _table.ajax.reload(null, false);
         }
         ,error: function(){
             parent.layer.msg("导入失敗", {
                 icon : 6
             });
-            table.reload('userTable', {});
+            _table.ajax.reload(null, false);
         }
     });
 
     $("#searchBtn").on("click",function(){
-        var dataReload = $('#dataReload')
-        , deptId = $('.timo-search-select');
-        var index = layer.msg('查询中，请稍后...', {icon: 16, time: false, shade: 0});
-        setTimeout(function() {
-            table.reload('userTable', {
-                page: {
-                    curr: 1
-                }
-                , where: {
-                	department: deptId.val()
-                    , username: dataReload.val()
-                }
-            });
-            layer.close(index);
-        }, 800);
-        return false;
+        _table.ajax.reload();
     });
 
     $("#add_btn").on("click",function(){
@@ -154,17 +217,20 @@
             maxmin: true,
             shadeClose: true,
             end: function () {
-                table.reload('userTable');
+                $table.ajax.reload(null, false);
             }
         });
         return false;
     });
 
     $("#del_btn").on("click",function(){
-        var checkStatus = table.checkStatus('userTable')
-        ,checkData = checkStatus.data;
+        var $checkbox = $("tbody :checkbox", $table);
+        var checkData = [];
+        $checkbox.filter(':checked').each(function () {
+            checkData.push(_table.row($(this).closest('tr')).data());
+        });
         if (checkData.length === 0) {
-        	layer.msg('请选择数据');
+            layer.msg('请选择数据');
             return false;
         }
         layer.confirm('确定删除吗?', function (index) {
@@ -189,71 +255,21 @@
         ajaxDownloadFile('/employee/excel/download', 'employee_'+ time1 +'.xls');
         return false;
     });
-    // 行点击事件
-    table.on('tool', function (obj) {
-        var data = obj.data;
-        var event = obj.event;
-        if (event === 'edit') {
-            edit(data.id);
-        } else if (event === 'info') {
-            info(data.id);
-        } else if (event === 'del') {
-            del(obj);
-        }
-    });
-    function edit(id) {
-        layer.open({
-            content: '/main/empChangeView/' + id,
-            title: "编辑",
-            area: ['500px', '460px'],
-            type: 2,
-            maxmin: true,
-            shadeClose: true,
-            end: function () {
-                table.reload('userTable');
-            }
-        });
-    }
-    function info(id) {
-        layer.open({
-            content: '/main/empDetailsView/' + id,
-            title: "详细信息",
-            area: ['700px', '400px'],
-            type: 2,
-            maxmin: true,
-            shadeClose: true,
-            end: function () {
-                table.reload('userTable');
-            }
-        });
-    }
-
-    function del(obj) {
-        layer.confirm("确定删除雇员吗?", {icon: 3, title: '提示'}, function (index) {//确定回调
-            var id = obj.data.id;
-            ajaxJsonRequest("DELETE", '/employee/delete/' + id, null, function(data) {
-                layer.close(index);
-                handlerResult(data, deleteDone)
-            });
-        }, function(index) {//取消回调
-            layer.close(index);
-        });
-    }
 
     function deleteDone(data) {
         parent.layer.msg("删除成功", {
             icon : 6
         });
-        table.reload('userTable', {});
+        _table.ajax.reload(null, false);
     }
 
     function exportDone(data) {
         parent.layer.msg("導出成功", {
             icon : 6
         });
-        table.reload('userTable', {});
+        _table.ajax.reload(null, false);
     }
-  });
-  </script>
+});
+</script>
 </body>
 </html>
