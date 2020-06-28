@@ -25,112 +25,139 @@
           </div>
         </div>
       </div>
-      <div class="timo-table-wrap">
-        <table class="layui-hide timo-table" id="dept-table" lay-filter="allAttr"></table>
+      <div class="timo-table-wrap" id="wrap-table">
+        <table class="layui-table timo-table timo-table-fixed" id="dt-table" lay-filter="allAttr">
+          <thead>
+            <tr>
+              <th class='th'><input type="checkbox" class="checkall" id="checkAll" name="cb-check-all" /></th>
+              <th>名称</th>
+              <th>描述</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
-  <script type="text/html" id="column-toolbar">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
-  </script>
   <th:block th:include="pages/common/public::footer" />
-  <script>
-    layui.use([ 'jquery', 'layer', 'table', 'element' ], function() {
-        var layer = layui.layer
-        , table = layui.table;
-        table.render({
-            elem : '#dept-table'
-            , url : '/department/list'
-            , cellMinWidth : 80
-            , page : true
-            , id : 'deptTable'
-            , limits : [ 10, 20, 50 ]
-            , response: {
-                statusName: 'code'
-                , statusCode: 200
-                , msgName: 'msg'
-                , countName: 'count'
-                , dataName: 'data'}
-            , cols : [ [ 
-                { checkbox : true }
-                , { field : 'id', title : 'ID', hide : true }
-                , { field : 'name', title : '名称' }
-                , { field : 'description', title : '描述' }
-                , { title : '操作', align : 'center', toolbar : '#column-toolbar' } ]
-            ]
-        });
-        $("#add_btn").on("click", function() {
-            layer.open({
-                content : "/main/deptChangeView",
-                title : "新增部门",
-                area : [ '480px', '250px' ],
-                type : 2,
-                maxmin : true,
-                shadeClose : true,
-                end : function() {
-                    table.reload('deptTable');
-                }
-            });
-            return false;
-        });
-        $("#del_btn").on("click", function() {
-            var checkStatus = table.checkStatus('deptTable')
-            , checkData = checkStatus.data;
-            if (checkData.length === 0) {
-                return layer.msg('请选择数据');
+<script>
+layui.use([ 'jquery', 'layer', 'table', 'element' ], function() {
+    var layer = layui.layer
+      , table = layui.table;
+    
+    columns = [
+        {
+            targets: 0,
+            data: null,
+            className: 'timo-table-checkbox',
+            orderable: false,
+            render: function (data, type, full, meta) {
+                return '<input type="checkbox" id="check_' + data.id + '" class="check" name="check" value="' + data.id + '">';
+            },
+            width: "20px"
+        },
+        { data: "name", defaultContent: ""},
+        { data: "description", defaultContent: ""},
+        { 
+            data: "", 
+            defaultContent: "",
+            orderable:false,
+            width: "80px",
+            render: function (data, type, row) {
+                var id = row['id'];
+                var edit = buttonEdit(id);
+                var del = buttonDel(id);
+                return edit + del;
             }
-            layer.confirm('确定删除吗?', function(index) {
-                var reqBody = checkData.reduce(function(acc, cur) {
-                    acc.push(cur.id);
-                    return acc;
-                }, []);
-                ajaxJsonRequest("DELETE", '/department/delete/', JSON.stringify(reqBody), function(data) {
-                    layer.close(index);
-                    handlerResult(data, function() {
-                        parent.layer.msg("删除成功", {icon: 6});
-                        table.reload('deptTable');
-                    });
-                });
-            });
-            return false;
-        });
-        table.on('tool', function(obj) {
-            var data = obj.data;
-            var event = obj.event;
-            if (event === 'edit') {
-                layer.open({
-                    content : '/main/deptChangeView/' + data.id,
-                    title : "编辑",
-                    area : [ '500px', '250px' ],
-                    type : 2,
-                    maxmin : true,
-                    shadeClose : true,
-                    end : function() {
-                        table.reload('deptTable');
-                    }
-                });
-            } else if (event === 'del') {
-                layer.confirm("你确定删除数据吗？", {
-                    icon : 3,
-                    title : '提示'
-                }, function(index) {
-                    var id = obj.data.id;
-                    ajaxJsonRequest("DELETE", '/department/delete/' + data.id, null, function(data) {
-                        layer.close(index);
-                        handlerResult(data, function() {
-                            parent.layer.msg("删除成功", {
-                                icon : 6
-                            });
-                            table.reload('deptTable');
-                        });
-                    });
-                }, function(index) {
-                        layer.close(index);
-                });
+        },
+    ];
+    var $table = $('#dt-table'),
+        $wrapper = $("#wrap-table");
+
+    var config  = initTableConfig(layer, "/department/list", null, columns, [ ]);
+    config["drawCallback"] = drawCallback($wrapper, $table)
+
+    var _table = $table.DataTable(config);
+    $table.on("change", ":checkbox", function () {
+        if ($(this).is("[name='cb-check-all']")) {
+            $(":checkbox", $table).prop("checked", $(this).prop("checked"));
+        } else {
+            var checkbox = $("tbody :checkbox", $table);
+            $(":checkbox[name='cb-check-all']", $table).prop('checked', checkbox.length === checkbox.filter(':checked').length);
+        }
+    })
+    window.editInfo = function(id) {
+        layer.open({
+            content : '/main/deptChangeView/' + data.id,
+            title : "编辑",
+            area : [ '500px', '250px' ],
+            type : 2,
+            maxmin : true,
+            shadeClose : true,
+            end : function() {
+                _table.ajax.reload(null, false);
             }
         });
+    }
+    window.deleteInfo = function(id) {
+        layer.confirm("你确定删除数据吗？", {
+            icon : 3,
+            title : '提示'
+        }, function(index) {
+            var id = obj.data.id;
+            ajaxJsonRequest("DELETE", '/department/delete/' + id, null, function(data) {
+                layer.close(index);
+                handlerResult(data, function() {
+                    parent.layer.msg("删除成功", {
+                        icon : 6
+                    });
+                    _table.ajax.reload(null, false);
+                });
+            });
+        }, function(index) {
+                layer.close(index);
+        });
+    }
+    
+    $("#add_btn").on("click", function() {
+        layer.open({
+            content : "/main/deptChangeView",
+            title : "新增部门",
+            area : [ '480px', '250px' ],
+            type : 2,
+            maxmin : true,
+            shadeClose : true,
+            end : function() {
+                table.reload('deptTable');
+            }
+        });
+        return false;
     });
-  </script>
+    
+    $("#del_btn").on("click", function() {
+        var checkStatus = table.checkStatus('deptTable')
+        , checkData = checkStatus.data;
+        if (checkData.length === 0) {
+            return layer.msg('请选择数据');
+        }
+        layer.confirm('确定删除吗?', function(index) {
+            var reqBody = checkData.reduce(function(acc, cur) {
+                acc.push(cur.id);
+                return acc;
+            }, []);
+            ajaxJsonRequest("DELETE", '/department/delete/', JSON.stringify(reqBody), function(data) {
+                layer.close(index);
+                handlerResult(data, function() {
+                    parent.layer.msg("删除成功", {icon: 6});
+                    table.reload('deptTable');
+                });
+            });
+        });
+        return false;
+    });
+});
+</script>
 </body>
 </html>

@@ -79,10 +79,10 @@
   </div>
   <th:block th:include="pages/common/public::footer" />
 <script>
-layui.use([ 'table', 'element', 'form' ], function() {
+layui.use([ 'table', 'element', 'form', 'upload' ], function() {
     var table = layui.table
     , $ = layui.$
-    , upload = layui.upload
+    , _upload = layui.upload
     , element = layui.element
     , form = layui.form;
 
@@ -121,7 +121,7 @@ layui.use([ 'table', 'element', 'form' ], function() {
             data: "", 
             defaultContent: "",
             orderable:false,
-            width: "12%",
+            width: "120px",
             render: function (data, type, row) {
                 var id = row['id'];
                 var edit = buttonEdit(id);
@@ -186,7 +186,7 @@ layui.use([ 'table', 'element', 'form' ], function() {
         });
     }
 
-    upload.render({
+    _upload.render({
         elem: '#import_btn' //绑定元素
         ,url: '/employee/excel/upload' //上传接口
         ,accept: 'file'
@@ -217,7 +217,7 @@ layui.use([ 'table', 'element', 'form' ], function() {
             maxmin: true,
             shadeClose: true,
             end: function () {
-                $table.ajax.reload(null, false);
+                _table.ajax.reload(null, false);
             }
         });
         return false;

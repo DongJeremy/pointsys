@@ -648,7 +648,7 @@ a {
 /* 其他 */
 .layui-layout-admin .layui-header .layui-logo-mini, .layui-layout-admin .side-toggle .layui-icon-spread-left,
     .timo-checkbox input[type="checkbox"] {
-    display: none;
+/*     display: none; */
 }
 
 .timo-checkbox {
@@ -918,6 +918,16 @@ a {
     margin: 2px 1px;
 }
 
+.timo-table-checkbox input[type="checkbox"]:checked {
+    border-color: #009688;
+    background-color: #009688;
+}
+
+.timo-layout-page .timo-table .timo-table-checkbox .check {
+    border-color: #009688;
+    background-color: #009688;
+}
+
 .timo-layout-page .timo-table .timo-checkbox {
     margin: 0 1px;
 }
@@ -1011,6 +1021,10 @@ a {
     margin-left: 4px;
 }
 
+.dataTables_paginate {
+	
+}
+
 /* 分页样式 */
 .pagination {
     display: -webkit-box;
@@ -1025,10 +1039,10 @@ a {
 }
 
 .paginate_button {
-	border: none!important;
-	padding: 0!important;
-	margin: 0!important;
-	border-collapse: collapse!important;
+    border: none!important;
+    padding: 0!important;
+    margin: 0!important;
+    border-collapse: collapse!important;
 }
 
 .paginate_button a {
@@ -1040,10 +1054,13 @@ a {
     color: #009688;
     background-color: #FFF;
     border: 1px solid #dee2e6;
+    outline:none;
 }
 
 .paginate_button a:hover{
-	background-color: #dddddd;
+    background-color: #dddddd;
+    border: 1px solid #dddddd;
+    outline:none;
 }
 
 .paginate_button:hover {
@@ -1052,13 +1069,23 @@ a {
 
 .paginate_button:first-child a {
     margin-left: 0;
-    border-top-left-radius: 3px;
-    border-bottom-left-radius: 3px;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+    outline:none;
+}
+
+.paginate_button:first-child a:hover {
+    background-color: #dddddd;
 }
 
 .paginate_button:last-child a {
-    border-top-right-radius: 3px;
-    border-bottom-right-radius: 3px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    outline:none;
+}
+
+.paginate_button:last-child a:hover {
+    background-color: #dddddd;
 }
 
 .paginate_button.active a {
@@ -1066,6 +1093,7 @@ a {
     color: #FFF;
     background-color: #009688;
     border-color: #009688;
+    outline:none;
 }
 
 .paginate_button .breviary {
@@ -1074,7 +1102,7 @@ a {
 
 .dataTables_wrapper .dataTables_length {
     float: left;
-    padding: 12px 3px 0;
+    padding: 10px 3px 0;
     margin-left: 8px;
     border-radius: 2px;
 }

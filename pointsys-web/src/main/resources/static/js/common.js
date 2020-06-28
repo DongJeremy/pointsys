@@ -35,7 +35,7 @@ function initTableConfig(layer, request_url, request_data, columns, order) {
                 }
             }
         },
-        'lengthMenu': [ [10, 20, 30, -1], ['10条/页', '20条/页', '30条/页', 'All'] ],
+        'lengthMenu': [ [10, 20, 50], ['10条/页', '20条/页', '50条/页'] ],
         'dom' : "<'dt-toolbar'r>t<'dt-toolbar-footer'<'col-sm-10 col-xs-12 hidden-xs'i l><'col-xs-12 col-sm-10' p v>>",
         'columns': columns,
         'order' : order
