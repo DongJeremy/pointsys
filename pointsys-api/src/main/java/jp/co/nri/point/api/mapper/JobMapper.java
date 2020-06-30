@@ -1,6 +1,7 @@
 package jp.co.nri.point.api.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import jp.co.nri.point.api.domain.JobModel;
 import jp.co.nri.point.base.BaseMapper;
@@ -8,6 +9,6 @@ import jp.co.nri.point.base.BaseMapper;
 @Mapper
 public interface JobMapper extends BaseMapper<JobModel> {
 
-    JobModel getByName(String jobName);
+    JobModel getByName(@Param("jobName") String jobName);
 
 }

@@ -7,11 +7,12 @@
 <body>
   <div class="layui-form timo-compile">
     <form action="" method="post">
+      <input type="hidden" id="id" name="id">
       <div class="layui-form-item">
         <label for="username" class="layui-form-label">job名</label>
         <div class="layui-input-inline large">
           <input type="text" id="jobName" name="jobName" lay-verify="required"
-            lay-vertype="tips" placeholder="job名" autocomplete="off" class="layui-input">
+            lay-vertype="tips" placeholder="job名" autocomplete="off" class="layui-input" readonly="readonly">
         </div>
       </div>
       <div class="layui-form-item">
@@ -45,22 +46,22 @@
       </div>
       <div class="layui-form-item timo-finally">
         <button type="button" th:text="增加" class="layui-btn layui-btn-normal btn-w100" lay-submit=""
-            data-th-lay-filter="add"></button>
+            data-th-lay-filter="update"></button>
         <button class="layui-btn btn-secondary close-frame-popup" id="closeBtn"><i class="fa fa-times-circle"></i> 关闭</button>
       </div>
     </form>
   </div>
   <th:block th:include="pages/common/public::footer" />
 <script>
-
 layui.use(['form', 'layer', 'element'], function () {
     $ = layui.jquery;
     var index = parent.layer.getFrameIndex(window.name);
     var form = layui.form
      , layer = layui.layer
      element = layui.element;
-    form.on('submit(add)', function (form) {
-        ajaxJsonRequest("POST", '/jobs/add', JSON.stringify(form.field), function (result) {
+    var id = getUrlIdParam("jobUpdateView");
+    form.on('submit(update)', function (form) {
+        ajaxJsonRequest("PUT", '/jobs/update/' + id, JSON.stringify(form.field), function (result) {
             handlerResult(result, function(data) {
                 parent.layer.close(index);
                 layer.msg("添加成功", {
@@ -88,8 +89,7 @@ layui.use(['form', 'layer', 'element'], function () {
         });
     }
     initBeanNames();
-    form.on('select(showMethods)', function(){
-        var val = $("#springBeanName").val();
+    showMethods = function(val) {
         if (val == "") return;
         ajaxLayuiRequest("GET", '/jobs/beans/' + val, function(result) {
             handlerResult(result, function(data) {
@@ -102,6 +102,29 @@ layui.use(['form', 'layer', 'element'], function () {
                 form.render();
             });
         });
+    }
+    function initData(){
+        if(id != ""){
+            ajaxLayuiRequest("GET", '/jobs/get/' + id, function(result) {
+                handlerResult(result, function(data) {
+                    $("#id").val(data.id);
+                    $("#jobName").val(data.jobName);
+                    $("#cron").val(data.cron);
+                    $("#description").val(data.description);
+                    $("#springBeanName").val(data.springBeanName);
+                    var val = data.springBeanName;
+                    showMethods(val);
+                    $("#methodName").val(data.methodName);
+                    form.render('select')
+                });
+            });
+        }
+    }
+    initData();
+    
+    form.on('select(showMethods)', function(){
+        var val = $("#springBeanName").val();
+        showMethods(val);
     });
     
     $("#checkCron").on("click",function(){

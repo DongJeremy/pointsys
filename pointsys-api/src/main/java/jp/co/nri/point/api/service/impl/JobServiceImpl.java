@@ -99,6 +99,7 @@ public class JobServiceImpl extends BaseServiceImpl<JobMapper, JobModel> impleme
 
             JobModel model = jobMapper.getByName(name);
             if (model == null) {
+                jobModel.setStatus(1);
                 jobMapper.insert(jobModel);
             } else {
                 jobMapper.updateByPrimaryKey(jobModel);

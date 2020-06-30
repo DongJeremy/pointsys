@@ -1,15 +1,19 @@
 package jp.co.nri.point.api.controller;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.quartz.CronExpression;
 import org.quartz.SchedulerException;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,10 +21,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import jp.co.nri.point.annotation.JobTask;
 import jp.co.nri.point.annotation.OperationLog;
 import jp.co.nri.point.api.domain.JobModel;
 import jp.co.nri.point.api.service.JobService;
@@ -64,8 +70,8 @@ public class JobController {
     }
 
     @ApiOperation("修改定时任务")
-    @PutMapping
-    public ResultBean<?> update(@RequestBody JobModel jobModel) {
+    @PutMapping("/{id}")
+    public ResultBean<?> update(@PathVariable Long id, @RequestBody JobModel jobModel) {
         jobModel.setStatus(1);
         jobService.saveJob(jobModel);
         return ResultBean.successResult();
@@ -85,8 +91,8 @@ public class JobController {
     }
 
     @ApiOperation(value = "校验cron表达式")
-    @GetMapping(params = "cron")
-    public ResultBean<?> checkCron(String cron) {
+    @GetMapping("/cronCheck")
+    public ResultBean<?> checkCron(@RequestParam("cron") String cron) {
         return ResultBean.successResult(CronExpression.isValidExpression(cron));
     }
 
@@ -113,12 +119,32 @@ public class JobController {
             Class<?> clazz = getClass(str);
 
             // 2018.07.26修改 上面注释的add添加了太多不认识的bean，改为下面的判断我们只添加service，bean少了不少
-            if (clazz.isAnnotationPresent(Service.class) && str.toLowerCase().contains("service")) {
+            if (clazz.isAnnotationPresent(JobTask.class) && str.toLowerCase().contains("task")) {
                 list.add(str);
             }
         }
         Collections.sort(list);// 2018.07.26修改排序
 
         return ResultBean.successResult(list);
+    }
+
+    @ApiOperation(value = "springBean的无参方法")
+    @GetMapping("/beans/{name}")
+    public ResultBean<?> listMethodName(@PathVariable String name) {
+        Class<?> clazz = getClass(name);
+        Method[] methods = clazz.getDeclaredMethods();
+
+        Set<String> names = new HashSet<>();
+        Arrays.asList(methods).forEach(m -> {
+            int b = m.getModifiers();
+            if (Modifier.isPublic(b)) { // 2018.07.26修改public方法的判断
+                Class<?>[] classes = m.getParameterTypes();
+                if (classes.length == 0) {
+                    names.add(m.getName());
+                }
+            }
+        });
+
+        return ResultBean.successResult(names);
     }
 }

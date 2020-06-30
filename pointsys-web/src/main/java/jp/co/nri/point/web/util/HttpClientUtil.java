@@ -169,6 +169,16 @@ public class HttpClientUtil {
         return getPageResultBean(result);
     }
 
+    public static <T> ResultBean<T> doGetResultBean(RestTemplate restTemplate, String token, String url,
+            MultiValueMap<String, String> parmas) {
+        HttpEntity<String> requestEntity = generateEmptyEntity(token);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url).queryParams(parmas);
+        String urlString = builder.build().toUriString();
+        ResponseEntity<String> result = restTemplate.exchange(urlString, HttpMethod.GET, requestEntity, String.class,
+                parmas);
+        return getResultBean(result);
+    }
+
     /**
      * 
      * @param <T>

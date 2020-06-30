@@ -77,11 +77,10 @@ layui.use('layer', function() {
         { data: "params", defaultContent: ""},
         { data: "ip", defaultContent: "", width: "10%"},
         {
-            data : "flag", 
+            data : "createTime", 
             defaultContent : "",
-            render: function (data, type, row) {
-                var flag = row['createTime'];
-                return flag;
+            render: function(data, type, full, meta) {
+                return  moment(data).format("YYYY-MM-DD HH:mm:ss");
             },
             width: "15%"
         },

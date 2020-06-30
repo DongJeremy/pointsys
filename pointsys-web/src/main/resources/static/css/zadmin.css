@@ -1122,6 +1122,10 @@ a {
     width: 240px;
 }
 
+.timo-compile .layui-input-inline.large {
+    width: 440px;
+}
+
 .timo-compile .layui-input-inline input:hover,
 .timo-compile .layui-input-block input:hover,
 .timo-compile .layui-input-inline textarea:hover,

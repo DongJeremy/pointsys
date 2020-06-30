@@ -22,7 +22,7 @@
         and t.description like concat('%', #{params.description}, '%')
       </if>
       <if test="params.status != null and params.status != ''">
-        and t.status = #{params.status}
+        and cast(t.status as character varying) = #{params.status}
       </if>
     </where>
   </sql>
@@ -55,9 +55,12 @@
   </delete>
 
   <insert id="insert" parameterType="jp.co.nri.point.api.domain.JobModel">
-    INSERT INTO t_dept (id,name,description)
+    INSERT INTO t_job 
+    (id,jobname,description,cron,springbeanname,methodname,issysjob,
+    status,createtime,updatetime)
     VALUES
-    (default,#{name},#{description})
+    (default,#{jobName},#{description},#{cron},#{springBeanName},#{methodName},#{isSysJob},
+    #{status},#{createTime},now())
   </insert>
 
   <select id="selectByPrimaryKey" resultMap="jobMap">
@@ -76,12 +79,30 @@
     UPDATE
     t_job
     <set>
-      <if test="name != null">
-        name = #{name},
+      <if test="jobName != null">
+        jobname = #{jobName},
       </if>
-      description = #{description}
+      <if test="cron != null">
+        cron = #{cron},
+      </if>
+      <if test="springBeanName != null">
+        springbeanname = #{springBeanName},
+      </if>
+      <if test="methodName != null">
+        methodname = #{methodName},
+      </if>
+      <if test="description != null">
+        description = #{description},
+      </if>
+      <if test="isSysJob != null">
+        issysjob = #{isSysJob},
+      </if>
+      <if test="status != null">
+        status = #{status},
+      </if>
+      updatetime = now()
     </set>
-    WHERE t_dept.id=#{id}
+    WHERE t_job.id=#{id}
   </update>
 
 </mapper>

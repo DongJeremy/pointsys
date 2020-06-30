@@ -69,24 +69,25 @@
   </div>
   <th:block th:include="pages/common/public::footer" />
 <script>
-layui.use([ 'table', 'element', 'form', 'upload' ], function() {
+layui.use([ 'table', 'element', 'form' ], function() {
     var table = layui.table
     , $ = layui.$
-    , _upload = layui.upload
     , element = layui.element
     , form = layui.form;
 
     columns = [
-        { "data": "id", "defaultContent": ""},
-        { "data": "jobName", "defaultContent": ""},
-        { "data": "cron", "defaultContent": ""},
-        { "data": "springBeanName", "defaultContent": ""},
-        { "data": "methodName", "defaultContent": ""},
-        { "data": "description", "defaultContent": ""},
+        { data: "id", orderable: false, defaultContent: "", width: "40px",},
+        { data: "jobName", orderable: false, defaultContent: ""},
+        { data: "cron", orderable: false, defaultContent: ""},
+        { data: "springBeanName", orderable: false, defaultContent: ""},
+        { data: "methodName", orderable: false, defaultContent: ""},
+        { data: "description", orderable: false, defaultContent: ""},
         { 
-            "data": "status", 
-            "defaultContent": "",
-            "render": function (data, type, row) {
+            data: "status", 
+            defaultContent: "",
+            orderable: false,
+            width: "40px",
+            render: function (data, type, row) {
                 var status = row['status'];
                 var a = "";
                 if(status == 1){
@@ -97,21 +98,26 @@ layui.use([ 'table', 'element', 'form', 'upload' ], function() {
                 return a;
             }
         },
-        { "data": "updateTime", "defaultContent": ""},
         { 
-            "data": "", 
-            "defaultContent": "",
-            "orderable":false,
-            width: "120px",
-            "render": function (data, type, row) {
+            data: "updateTime",
+            orderable: false,
+            defaultContent: "",
+            render: function(data, type, full, meta) {
+                return  moment(data).format("YYYY-MM-DD HH:mm:ss");
+            }
+        },
+        { 
+            data: "", 
+            defaultContent: "",
+            orderable:false,
+            width: "80px",
+            render: function (data, type, row) {
                 var isSysJob = row['isSysJob'];
-                console.log(isSysJob);
                 if(!isSysJob) {
                     var id = row['id'];
                     var edit = buttonEdit(id);
                     var del = buttonDel(id);
-                    var info = buttonInfo(id)
-                    return edit + del + info;
+                    return edit + del;
                 } else {
                     return "<span style='color:red'>系统任务无操作</span>";
                 }
@@ -139,22 +145,9 @@ layui.use([ 'table', 'element', 'form', 'upload' ], function() {
     
     window.editInfo = function(id) {
         layer.open({
-            content: '/main/empChangeView/' + id,
+            content: '/main/jobUpdateView/' + id,
             title: "编辑",
-            area: ['500px', '460px'],
-            type: 2,
-            maxmin: true,
-            shadeClose: true,
-            end: function () {
-                _table.ajax.reload(null, false);
-            }
-        });
-    }
-    window.showDetail = function(id) {
-        layer.open({
-            content: '/main/empDetailsView/' + id,
-            title: "详细信息",
-            area: ['700px', '400px'],
+            area: ['600px', '460px'],
             type: 2,
             maxmin: true,
             shadeClose: true,
@@ -164,8 +157,8 @@ layui.use([ 'table', 'element', 'form', 'upload' ], function() {
         });
     }
     window.deleteInfo = function(id) {
-        layer.confirm("确定删除雇员吗?", {icon: 3, title: '提示'}, function (index) {//确定回调
-            ajaxJsonRequest("DELETE", '/employee/delete/' + id, null, function(data) {
+        layer.confirm("确定删除吗?", {icon: 3, title: '提示'}, function (index) {//确定回调
+            ajaxJsonRequest("DELETE", '/jobs/delete/' + id, null, function(data) {
                 layer.close(index);
                 handlerResult(data, deleteDone)
             });
@@ -180,9 +173,9 @@ layui.use([ 'table', 'element', 'form', 'upload' ], function() {
 
     $("#add_btn").on("click",function(){
         layer.open({
-            content: "/main/jobAdd",
+            content: "/main/jobAddView",
             title: "新增用户",
-            area: ['580px', '460px'],
+            area: ['600px', '460px'],
             type: 2,
             maxmin: true,
             shadeClose: true,
@@ -193,39 +186,6 @@ layui.use([ 'table', 'element', 'form', 'upload' ], function() {
         return false;
     });
 
-    $("#del_btn").on("click",function(){
-        var $checkbox = $("tbody :checkbox", $table);
-        var checkData = [];
-        $checkbox.filter(':checked').each(function () {
-            checkData.push(_table.row($(this).closest('tr')).data());
-        });
-        if (checkData.length === 0) {
-            layer.msg('请选择数据');
-            return false;
-        }
-        layer.confirm('确定删除吗?', function (index) {
-            var reqBody = checkData.reduce(function(acc, cur) {
-                acc.push(cur.id);
-                return acc;
-            }, []);
-            ajaxJsonRequest("POST", '/employee/batch/delete',  JSON.stringify(reqBody), function (data) {
-                layer.close(index);
-                handlerResult(data, deleteDone)
-            });
-        });
-        return false;
-    });
-
-    $("#import_btn").on("click",function(){
-        return false;
-    });
-
-    $("#export_btn").on("click",function(){
-        var time1 = new Date().format("yyyy_MM_dd_hh_mm_ss_S");  
-        ajaxDownloadFile('/employee/excel/download', 'employee_'+ time1 +'.xls');
-        return false;
-    });
-
     function deleteDone(data) {
         parent.layer.msg("删除成功", {
             icon : 6
@@ -233,12 +193,6 @@ layui.use([ 'table', 'element', 'form', 'upload' ], function() {
         _table.ajax.reload(null, false);
     }
 
-    function exportDone(data) {
-        parent.layer.msg("導出成功", {
-            icon : 6
-        });
-        _table.ajax.reload(null, false);
-    }
 });
 </script>
 </body>
