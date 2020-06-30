@@ -99,9 +99,9 @@ public class JobServiceImpl extends BaseServiceImpl<JobMapper, JobModel> impleme
 
             JobModel model = jobMapper.getByName(name);
             if (model == null) {
-                jobMapper.save(jobModel);
+                jobMapper.insert(jobModel);
             } else {
-                jobMapper.update(jobModel);
+                jobMapper.updateByPrimaryKey(jobModel);
             }
         } catch (SchedulerException e) {
             logger.error("新增或修改job异常", e);

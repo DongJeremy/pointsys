@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -54,7 +53,6 @@ public class EmployeeController {
     @OperationLog("获取雇员列表")
     @ApiOperation("获取雇员列表")
     @GetMapping
-    @ResponseBody
     public PaginationResponse listEmployee(PaginationRequest request) {
         int offset = request.getStart() / request.getLength() + 1;
         PaginationResponse pageResponse = new PaginationHandler(req -> service.count(req.getParams()),
@@ -64,7 +62,7 @@ public class EmployeeController {
 
     @ApiOperation("添加雇员")
     @PostMapping
-    public @ResponseBody ResultBean<?> addEmployee(@RequestBody EmployeeVO employeeVo) {
+    public ResultBean<?> addEmployee(@RequestBody EmployeeVO employeeVo) {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeVo, employee);
         employee.setDepartment(new Department(employeeVo.getDepartment()));
@@ -78,7 +76,7 @@ public class EmployeeController {
 
     @ApiOperation("删除雇员")
     @DeleteMapping("/{id}")
-    public @ResponseBody ResultBean<?> deleteEmployee(@PathVariable Long id) {
+    public ResultBean<?> deleteEmployee(@PathVariable Long id) {
         service.delete(id);
         logger.info("delete employee successful.");
         return ResultBean.successResult();
@@ -86,13 +84,13 @@ public class EmployeeController {
 
     @ApiOperation("获取雇员")
     @GetMapping("/{id}")
-    public @ResponseBody ResultBean<?> getEmployee(@PathVariable Long id) {
+    public ResultBean<?> getEmployee(@PathVariable Long id) {
         return ResultBean.successResult(service.getById(id));
     }
 
     @ApiOperation("修改雇员")
     @PutMapping("/{id}")
-    public @ResponseBody ResultBean<?> updateEmployee(@PathVariable Long id, @RequestBody EmployeeVO employeeVo) {
+    public ResultBean<?> updateEmployee(@PathVariable Long id, @RequestBody EmployeeVO employeeVo) {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeVo, employee);
         employee.setDepartment(new Department(employeeVo.getDepartment()));
@@ -107,7 +105,6 @@ public class EmployeeController {
 
     @ApiOperation("批量删除雇员")
     @PostMapping("/batch/delete")
-    @ResponseBody
     public ResultBean<?> removeEmp(@RequestBody List<String> ids) {
         for (String id : ids) {
             service.delete(Long.parseLong(id));
@@ -141,7 +138,7 @@ public class EmployeeController {
      */
     @ApiOperation("导入雇员")
     @PostMapping("/import")
-    public @ResponseBody ResultBean<?> importEmployee(@RequestParam("file") MultipartFile file)
+    public ResultBean<?> importEmployee(@RequestParam("file") MultipartFile file)
             throws IOException, Exception {
 
         final List<EmployeeVO> listObjects = ExcelUtil.importFromFile(file, EmployeeVO.class);

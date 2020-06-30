@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<th:block th:include="pages/common/public::header" />
+</head>
+<body>
+  <div class="layui-form timo-compile">
+    <form action="" method="post">
+      <div class="layui-form-item">
+        <label for="username" class="layui-form-label">job名</label>
+        <div class="layui-input-inline">
+          <input type="text" id="name" name="jobName" lay-verify="required"
+            lay-vertype="tips" placeholder="job名" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label for="address" class="layui-form-label">cron表达式</label>
+        <div class="layui-input-inline">
+          <input type="text" id="address" name="address" lay-verify="required"
+            lay-vertype="tips" placeholder="cron表达式" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label for="age" class="layui-form-label">job描述</label>
+        <div class="layui-input-inline">
+          <input type="text" id="age" name="age" lay-verify="required" lay-vertype="tips"
+            placeholder="job描述" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label for="tel" class="layui-form-label">springBeanName</label>
+        <div class="layui-input-inline">
+          <select name="springBeanName" lay-verify="tips" id="springBeanName" onchange="showMethods()"></select>
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label for="tel" class="layui-form-label">方法名<span style="color: red">（目前仅支持无参方法）</span></label>
+        <div class="layui-input-inline">
+          <input type="text" id="methodName" name="methodName" lay-verify="required"
+            lay-vertype="tips" autocomplete="off" placeholder="方法名" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item timo-finally">
+        <button type="button" th:text="增加" class="layui-btn layui-btn-normal btn-w100" lay-submit=""
+            data-th-lay-filter="edit"></button>
+        <button class="layui-btn btn-secondary close-frame-popup" id="closeBtn"><i class="fa fa-times-circle"></i> 关闭</button>
+      </div>
+    </form>
+  </div>
+  <th:block th:include="pages/common/public::footer" />
+<script>
+
+layui.use(['form', 'layer', 'element'], function () {
+    $ = layui.jquery;
+    var index = parent.layer.getFrameIndex(window.name);
+    var form = layui.form
+     , layer = layui.layer
+     element = layui.element;
+//     form.on('submit(add)', function (form) {
+//         form.field.role = formSelects.value('role-select', 'val');
+//         ajaxJsonRequest("POST", '/employee/add', JSON.stringify(form.field), function (result) {
+//             handlerResult(result, addDone)
+//         });
+//         return false;
+//     });
+    $(document).on("click",".close-frame-popup",function(){
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+        return false;
+    });
+
+    initBeanNames = function() {
+        ajaxLayuiRequest("GET", '/jobs/beans', function(result) {
+            var select = $("#springBeanName");
+            var data = result.data;
+            for (var i = 0; i < data.length; i++) {
+                var v = data[i];
+                console.log(v);
+                select.append("<option value='" + v + "'>" + v + "</option>")
+            }
+            form.render();
+        });
+    }
+    initBeanNames();
+    
+    function showMethods() {
+        var val = $("#springBeanName").val();
+        if (val == "") {
+            return;
+        }
+
+        $.ajax({
+            type : 'get',
+            url : '/jobs/beans/' + val,
+            async : false,
+            success : function(data) {
+    			var select = $("#methodName");
+    			select.empty();
+    			if (data.length == 0) {
+    				return;
+    			}
+
+    			for (var i = 0; i < data.length; i++) {
+    				var v = data[i];
+    				select.append("<option value='" + v + "'>" + v + "</option>")
+    			}
+    		}
+    	});
+    }
+    
+    function add() {
+        $('#form').bootstrapValidator();
+        var bootstrapValidator = $("#form").data('bootstrapValidator');
+        bootstrapValidator.validate();
+        if(!bootstrapValidator.isValid()){
+            return;
+        }
+
+        var formdata = $("#form").serializeObject();
+
+        $.ajax({
+            type : 'post',
+            url : '/jobs',
+            contentType: "application/json; charset=utf-8",  
+            data : JSON.stringify(formdata),
+            success : function(data) {
+				layer.msg("添加成功", {shift: -1, time: 1000}, function(){
+                    location.href = "jobList.html";
+                });
+			}
+		});
+	}
+        
+
+        //监听提交
+        form.on('submit(edit)', function (form) {
+            if (id != null) {
+                ajaxJsonRequest("PUT", '/employee/update/' + id, JSON.stringify(form.field), function(result) {
+                    handlerResult(result, editDone)
+                });
+                return false;
+            }
+        });
+
+        function addDone(data) {
+            parent.layer.close(index);
+            layer.msg("添加成功", {
+                icon : 6
+            });
+        }
+
+        function editDone(data) {
+            parent.layer.close(index);
+            layer.msg("修改成功", {
+                icon : 6
+            });
+        }
+    });
+  </script>
+</body>
+</html>

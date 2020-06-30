@@ -5,7 +5,6 @@ import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -27,7 +26,6 @@ public class SysLogController {
 
     @ApiOperation(value = "获取操作日志")
     @GetMapping("/list")
-    @ResponseBody
     public PaginationResponse listEmployee(PaginationRequest request) {
         int offset = request.getStart() / request.getLength() + 1;
         PaginationResponse pageResponse = new PaginationHandler(req -> service.count(req.getParams()),
@@ -38,7 +36,6 @@ public class SysLogController {
     @ApiOperation(value = "清空操作日志")
     @OperationLog("清空操作日志")
     @PostMapping("/clear")
-    @ResponseBody
     public ResultBean<?> clearSysLogs() {
         service.clearLogs();
         return ResultBean.successResult();

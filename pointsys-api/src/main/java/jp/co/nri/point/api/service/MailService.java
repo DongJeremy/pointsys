@@ -1,7 +1,6 @@
 package jp.co.nri.point.api.service;
 
 import java.util.List;
-import java.util.Map;
 
 import jp.co.nri.point.api.domain.Mail;
 import jp.co.nri.point.api.domain.MailTo;

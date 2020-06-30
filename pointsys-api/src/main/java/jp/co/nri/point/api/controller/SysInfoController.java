@@ -4,7 +4,6 @@ import javax.annotation.Resource;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -23,7 +22,6 @@ public class SysInfoController {
 
     @ApiOperation(value = "获取系统信息")
     @GetMapping
-    @ResponseBody
     public ResultBean<Server> getSysInfo() {
         Server server = serverInfoService.getServerInfo();
         return ResultBean.successResult(server);

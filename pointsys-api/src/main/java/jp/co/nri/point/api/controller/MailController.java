@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -34,7 +33,6 @@ public class MailController {
 
     @PostMapping
     @ApiOperation(value = "保存邮件")
-    @ResponseBody
     public ResultBean<?> save(@RequestBody Mail mail) {
         String toUsers = mail.getToUsers().trim();
         if (StringUtils.isBlank(toUsers)) {
@@ -54,20 +52,20 @@ public class MailController {
 
     @ApiOperation(value = "根据id获取邮件")
     @GetMapping("/{id}")
-    public @ResponseBody ResultBean<?> get(@PathVariable Long id) {
+    public ResultBean<?> get(@PathVariable Long id) {
         return ResultBean.successResult(mailService.getById(id));
     }
 
     @ApiOperation(value = "根据id获取邮件发送详情")
     @GetMapping("/{id}/to")
-    public @ResponseBody ResultBean<?> getMailTo(@PathVariable Long id) {
+    public ResultBean<?> getMailTo(@PathVariable Long id) {
         List<MailTo> mailTos = mailService.getToUsers(id);
         return ResultBean.successResult(mailTos);
     }
 
     @ApiOperation(value = "邮件列表")
     @GetMapping
-    public @ResponseBody PaginationResponse list(PaginationRequest request) {
+    public PaginationResponse list(PaginationRequest request) {
         int offset = request.getStart() / request.getLength() + 1;
         PaginationResponse pageResponse = new PaginationHandler(req -> mailService.count(req.getParams()),
                 req -> mailService.list(req.getParams(), offset, req.getLength())).handle(request);

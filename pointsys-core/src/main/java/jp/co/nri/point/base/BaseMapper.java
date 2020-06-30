@@ -3,6 +3,8 @@ package jp.co.nri.point.base;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 public interface BaseMapper<T> {
 
     Long selectCount();
@@ -19,7 +21,7 @@ public interface BaseMapper<T> {
 
     Long updateByPrimaryKey(T entity);
 
-    Long selectCountByParams(Map<String, Object> params);
+    Long selectCountByParams(@Param("params") Map<String, Object> params);
 
-    List<T> selectAllByParams(Map<String, Object> params);
+    List<T> selectAllByParams(@Param("params") Map<String, Object> params);
 }

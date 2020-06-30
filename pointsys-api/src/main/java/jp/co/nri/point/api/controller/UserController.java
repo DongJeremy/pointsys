@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -55,7 +54,6 @@ public class UserController {
     @OperationLog("获取在线用户列表")
     @ApiOperation(value = "获取在线用户列表")
     @GetMapping("/onlinelist")
-    @ResponseBody
     public PaginationResponse listUsers(PaginationRequest request) {
         int offset = request.getStart() / request.getLength() + 1;
         PaginationResponse pageResponse = new PaginationHandler(req -> userService.getOnlineUserCount(),
@@ -65,7 +63,6 @@ public class UserController {
 
     @ApiOperation("剔除在线用户")
     @PostMapping("/kickout/{sessionId}")
-    @ResponseBody
     public ResultBean<?> forceLogout(@PathVariable("sessionId") String sessionId) {
         userService.forceLogout(sessionId);
         return ResultBean.successResult();
@@ -74,7 +71,6 @@ public class UserController {
     @ApiOperation("获取用户列表")
     @OperationLog("获取用户列表")
     @GetMapping("/list")
-    @ResponseBody
     public PaginationResponse listUser(PaginationRequest request) {
         int offset = request.getStart() / request.getLength() + 1;
         PaginationResponse pageResponse = new PaginationHandler(req -> userService.count(req.getParams()),
@@ -85,7 +81,6 @@ public class UserController {
     @ApiOperation("添加用户")
     @OperationLog("添加用户")
     @PostMapping
-    @ResponseBody
     public ResultBean<Long> addUser(@RequestBody SysUser user) {
         return ResultBean.successResult(userService.save(user));
     }
@@ -93,14 +88,12 @@ public class UserController {
     @ApiOperation("编辑用户")
     @OperationLog("编辑用户")
     @PutMapping
-    @ResponseBody
     public ResultBean<?> updateUser(@RequestBody SysUser user) {
         userService.save(user);
         return ResultBean.successResult();
     }
 
     @PostMapping("/userInfo")
-    @ResponseBody
     public ResultBean<?> userInfo(@RequestBody SysUser user) {
         // 保存数据
         userService.updateUserInfoByPrimaryKey(user);
@@ -110,7 +103,6 @@ public class UserController {
     @ApiOperation("刪除用户")
     @OperationLog("刪除用户")
     @DeleteMapping("/{id}")
-    @ResponseBody
     public ResultBean<?> deleteUser(@PathVariable Long id) {
         userService.delete(id);
         return ResultBean.successResult();
@@ -118,21 +110,18 @@ public class UserController {
 
     @OperationLog("删除账号")
     @PostMapping("/{id}/disable")
-    @ResponseBody
     public ResultBean<Boolean> disable(@PathVariable("id") Long id) {
         return ResultBean.successResult(userService.disableUserByID(id));
     }
 
     @OperationLog("激活账号")
     @PostMapping("/{id}/enable")
-    @ResponseBody
     public ResultBean<Boolean> enable(@PathVariable("id") Long id) {
         return ResultBean.successResult(userService.enableUserByID(id));
     }
 
     @OperationLog("重置密码")
     @PostMapping("/{id}/reset")
-    @ResponseBody
     public ResultBean<?> resetPassword(@PathVariable("id") Long id, @RequestBody PasswordBean passwordBean) {
         System.out.println(passwordBean);
         boolean resetPass = userService.updatePasswordByUserId(id, passwordBean.getOriginal(),

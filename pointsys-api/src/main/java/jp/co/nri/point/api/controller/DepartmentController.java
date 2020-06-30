@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -31,7 +30,6 @@ public class DepartmentController {
 
     @ApiOperation(value = "部门列表")
     @GetMapping
-    @ResponseBody
     public PaginationResponse listDepartment(PaginationRequest request) {
         int offset = request.getStart() / request.getLength() + 1;
         PaginationResponse pageResponse = new PaginationHandler(req -> service.count(req.getParams()),
@@ -42,7 +40,6 @@ public class DepartmentController {
     @OperationLog("添加部门")
     @ApiOperation(value = "添加部门")
     @PostMapping
-    @ResponseBody
     public ResultBean<?> addDepartment(@RequestBody Department department) {
         service.save(department);
         return ResultBean.successResult();
@@ -51,7 +48,6 @@ public class DepartmentController {
     @OperationLog("删除部门")
     @ApiOperation(value = "删除部门")
     @DeleteMapping("/{id}")
-    @ResponseBody
     public ResultBean<?> deleteDepartment(@PathVariable Long id) {
         long deleteNo = service.delete(id);
         return deleteNo > 0 ? ResultBean.successResult() : ResultBean.errorResult();
@@ -59,7 +55,6 @@ public class DepartmentController {
 
     @ApiOperation(value = "查找部门")
     @GetMapping("/{id}")
-    @ResponseBody
     public ResultBean<?> getDepartment(@PathVariable Long id) {
         return ResultBean.successResult(service.getById(id));
     }
@@ -67,7 +62,6 @@ public class DepartmentController {
     @OperationLog("更新部门")
     @ApiOperation(value = "更新部门")
     @PutMapping("/{id}")
-    @ResponseBody
     public ResultBean<?> updateDepartment(@PathVariable Long id, @RequestBody Department department) {
         department.setId(id);
         service.save(department);
@@ -77,7 +71,6 @@ public class DepartmentController {
     @OperationLog("删除部门")
     @ApiOperation(value = "删除部门")
     @PostMapping("/batch/{id}")
-    @ResponseBody
     public ResultBean<?> removeDepartment(@PathVariable("id") String[] ids) {
         for (String id : ids) {
             service.delete(Long.parseLong(id));
@@ -87,7 +80,6 @@ public class DepartmentController {
 
     @ApiOperation(value = "部门列表")
     @GetMapping("/list")
-    @ResponseBody
     public ResultBean<?> getDepartmentList() {
         return ResultBean.successResult(service.list());
     }
