@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import jp.co.nri.point.annotation.OperationLog;
+import jp.co.nri.point.api.service.UserService;
 import jp.co.nri.point.beans.PaginationRequest;
 import jp.co.nri.point.beans.PaginationResponse;
 import jp.co.nri.point.beans.ResultBean;
@@ -21,7 +22,6 @@ import jp.co.nri.point.domain.SysUser;
 import jp.co.nri.point.dto.PasswordBean;
 import jp.co.nri.point.pagination.PaginationHandler;
 import jp.co.nri.point.security.service.TokenService;
-import jp.co.nri.point.security.service.UserService;
 import jp.co.nri.point.util.UserUtil;
 
 @Api(tags = "用户")

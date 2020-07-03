@@ -16,7 +16,7 @@
   <dependencies>
     <dependency>
       <groupId>jp.co.nri</groupId>
-      <artifactId>pointsys-core</artifactId>
+      <artifactId>pointsys-framework</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>

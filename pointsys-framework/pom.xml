@@ -9,11 +9,10 @@
   </parent>
   <artifactId>pointsys-framework</artifactId>
   <name>pointsys-framework</name>
-  <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
       <groupId>jp.co.nri</groupId>
-      <artifactId>pointsys-core</artifactId>
+      <artifactId>pointsys-domain</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -52,13 +51,14 @@
       <artifactId>thymeleaf-extras-springsecurity5</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.quartz-scheduler</groupId>
-      <artifactId>quartz</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.mybatis.spring.boot</groupId>
       <artifactId>mybatis-spring-boot-starter</artifactId>
       <version>2.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.pagehelper</groupId>
+      <artifactId>pagehelper-spring-boot-starter</artifactId>
+      <version>1.2.13</version>
     </dependency>
     <dependency>
       <groupId>io.jsonwebtoken</groupId>
@@ -82,6 +82,25 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-pool2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>4.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>4.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>fastjson</artifactId>
+      <version>1.2.68</version>
     </dependency>
     <dependency>
       <groupId>io.springfox</groupId>

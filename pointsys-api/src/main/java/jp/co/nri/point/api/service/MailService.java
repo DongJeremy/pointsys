@@ -2,9 +2,9 @@ package jp.co.nri.point.api.service;
 
 import java.util.List;
 
-import jp.co.nri.point.api.domain.Mail;
-import jp.co.nri.point.api.domain.MailTo;
 import jp.co.nri.point.base.BaseService;
+import jp.co.nri.point.domain.Mail;
+import jp.co.nri.point.domain.MailTo;
 
 public interface MailService extends BaseService<Mail> {
 

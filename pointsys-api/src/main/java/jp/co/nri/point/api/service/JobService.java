@@ -3,8 +3,8 @@ package jp.co.nri.point.api.service;
 import org.quartz.JobDataMap;
 import org.quartz.SchedulerException;
 
-import jp.co.nri.point.api.domain.JobModel;
 import jp.co.nri.point.base.BaseService;
+import jp.co.nri.point.domain.JobModel;
 
 public interface JobService extends BaseService<JobModel> {
 

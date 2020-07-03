@@ -24,8 +24,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import jp.co.nri.point.api.dto.UploadFileResponse;
 import jp.co.nri.point.api.service.FileStorageService;
+import jp.co.nri.point.dto.UploadFileResponse;
 
 @Api(tags = "文件处理")
 @RestController

@@ -4,8 +4,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import jp.co.nri.point.api.info.Server;
 import jp.co.nri.point.beans.ResultBean;
+import jp.co.nri.point.web.info.Server;
 import jp.co.nri.point.web.util.HttpClientUtil;
 
 @Controller

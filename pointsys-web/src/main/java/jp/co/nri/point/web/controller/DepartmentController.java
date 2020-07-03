@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import jp.co.nri.point.beans.PaginationResponse;
 import jp.co.nri.point.beans.ResultBean;
-import jp.co.nri.point.web.domain.Department;
+import jp.co.nri.point.domain.Department;
 import jp.co.nri.point.web.util.HttpClientUtil;
 
 @Controller

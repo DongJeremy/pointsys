@@ -10,10 +10,10 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jp.co.nri.point.api.domain.Employee;
-import jp.co.nri.point.api.mapper.EmployeeMapper;
 import jp.co.nri.point.api.service.EmployeeService;
 import jp.co.nri.point.base.BaseServiceImpl;
+import jp.co.nri.point.domain.Employee;
+import jp.co.nri.point.mapper.EmployeeMapper;
 
 @Service
 public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employee> implements EmployeeService {

@@ -24,8 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jp.co.nri.point.beans.PaginationResponse;
 import jp.co.nri.point.beans.ResultBean;
+import jp.co.nri.point.domain.Employee;
 import jp.co.nri.point.util.FileUtil;
-import jp.co.nri.point.web.domain.Employee;
 import jp.co.nri.point.web.domain.EmployeeVO;
 import jp.co.nri.point.web.dto.DeptList;
 import jp.co.nri.point.web.util.HttpClientUtil;

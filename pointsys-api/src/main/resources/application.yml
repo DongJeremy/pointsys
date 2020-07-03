@@ -35,6 +35,9 @@ mybatis:
   mapper-locations: classpath*:mapper/*.xml
 app:
   logOperation: true
+  security:
+    basic:
+      enabled: true
 swagger:
   enable: true
 file:

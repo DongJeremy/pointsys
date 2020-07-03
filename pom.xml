@@ -10,11 +10,12 @@
   <name>pointsys</name>
   <url>http://maven.apache.org</url>
   <modules>
-    <module>pointsys-core</module>
     <module>pointsys-api</module>
     <module>pointsys-framework</module>
     <module>pointsys-web</module>
     <module>pointsys-generator</module>
+    <module>pointsys-domain</module>
+    <module>pointsys-batch</module>
   </modules>
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -30,7 +31,7 @@
     <dependencies>
       <dependency>
         <groupId>jp.co.nri</groupId>
-        <artifactId>pointsys-core</artifactId>
+        <artifactId>pointsys-domain</artifactId>
         <version>1.0.0</version>
       </dependency>
       <dependency>
@@ -41,6 +42,11 @@
       <dependency>
         <groupId>jp.co.nri</groupId>
         <artifactId>pointsys-api</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>jp.co.nri</groupId>
+        <artifactId>pointsys-batch</artifactId>
         <version>1.0.0</version>
       </dependency>
     </dependencies>

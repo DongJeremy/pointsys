@@ -28,11 +28,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import jp.co.nri.point.annotation.JobTask;
 import jp.co.nri.point.annotation.OperationLog;
-import jp.co.nri.point.api.domain.JobModel;
 import jp.co.nri.point.api.service.JobService;
 import jp.co.nri.point.beans.PaginationRequest;
 import jp.co.nri.point.beans.PaginationResponse;
 import jp.co.nri.point.beans.ResultBean;
+import jp.co.nri.point.domain.JobModel;
 import jp.co.nri.point.pagination.PaginationHandler;
 
 @Api(tags = "定时任务")

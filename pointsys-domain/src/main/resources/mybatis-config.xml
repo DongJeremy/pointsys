@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+<!--   <settings> -->
+<!--     <setting name="logImpl" value="STDOUT_LOGGING" /> -->
+<!--   </settings> -->
+  <typeAliases>
+    <typeAlias type="jp.co.nri.point.domain.Employee" alias="Employee" />
+    <typeAlias type="jp.co.nri.point.domain.Department" alias="Department" />
+    <typeAlias type="jp.co.nri.point.domain.SysLog" alias="SysLog" />
+    <typeAlias type="jp.co.nri.point.domain.Permission" alias="Permission" />
+    <typeAlias type="jp.co.nri.point.domain.Role" alias="Role" />
+    <typeAlias type="jp.co.nri.point.domain.SysUser" alias="SysUser" />
+    <typeAlias type="jp.co.nri.point.domain.JobModel" alias="JobModel" />
+    <typeAlias type="jp.co.nri.point.domain.Mail" alias="Mail" />
+  </typeAliases>
+
+</configuration>

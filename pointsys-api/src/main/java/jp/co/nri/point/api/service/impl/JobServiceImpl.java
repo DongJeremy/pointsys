@@ -20,11 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
-import jp.co.nri.point.api.domain.JobModel;
 import jp.co.nri.point.api.job.SpringBeanJob;
-import jp.co.nri.point.api.mapper.JobMapper;
 import jp.co.nri.point.api.service.JobService;
 import jp.co.nri.point.base.BaseServiceImpl;
+import jp.co.nri.point.domain.JobModel;
+import jp.co.nri.point.mapper.JobMapper;
 
 @Service
 public class JobServiceImpl extends BaseServiceImpl<JobMapper, JobModel> implements JobService {

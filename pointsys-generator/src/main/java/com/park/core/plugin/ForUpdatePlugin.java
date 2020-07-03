@@ -36,64 +36,56 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
  *
  * @author Iwao AVE!
  */
-public class ForUpdatePlugin extends PluginAdapter
-{
+public class ForUpdatePlugin extends PluginAdapter {
 
-	public boolean validate(List<String> arg0)
-	{
-		return true;
-	}
+    public boolean validate(List<String> arg0) {
+        return true;
+    }
 
-	@Override
-	public boolean modelExampleClassGenerated(TopLevelClass topLevelClass,
-		IntrospectedTable introspectedTable)
-	{
-		// add field, getter, setter for for update clause
-		Field field = new Field("forUpdate", FullyQualifiedJavaType.getBooleanPrimitiveInstance());
-		field.setVisibility(JavaVisibility.PROTECTED);
-		context.getCommentGenerator().addFieldComment(field, introspectedTable);
-		topLevelClass.addField(field);
+    @Override
+    public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+        // add field, getter, setter for for update clause
+        Field field = new Field("forUpdate", FullyQualifiedJavaType.getBooleanPrimitiveInstance());
+        field.setVisibility(JavaVisibility.PROTECTED);
+        context.getCommentGenerator().addFieldComment(field, introspectedTable);
+        topLevelClass.addField(field);
 
-		Method method = new Method("setForUpdate");
-		method.setVisibility(JavaVisibility.PUBLIC);
-		method.addParameter(new Parameter(FullyQualifiedJavaType.getBooleanPrimitiveInstance(),
-			"forUpdate"));
-		method.addBodyLine("this.forUpdate = forUpdate;");
-		context.getCommentGenerator().addGeneralMethodComment(method, introspectedTable);
-		topLevelClass.addMethod(method);
+        Method method = new Method("setForUpdate");
+        method.setVisibility(JavaVisibility.PUBLIC);
+        method.addParameter(new Parameter(FullyQualifiedJavaType.getBooleanPrimitiveInstance(), "forUpdate"));
+        method.addBodyLine("this.forUpdate = forUpdate;");
+        context.getCommentGenerator().addGeneralMethodComment(method, introspectedTable);
+        topLevelClass.addMethod(method);
 
-		method = new Method("isForUpdate");
-		method.setVisibility(JavaVisibility.PUBLIC);
-		method.setReturnType(FullyQualifiedJavaType.getBooleanPrimitiveInstance());
-		method.addBodyLine("return forUpdate;");
-		topLevelClass.addMethod(method);
-		context.getCommentGenerator().addGeneralMethodComment(method, introspectedTable);
+        method = new Method("isForUpdate");
+        method.setVisibility(JavaVisibility.PUBLIC);
+        method.setReturnType(FullyQualifiedJavaType.getBooleanPrimitiveInstance());
+        method.addBodyLine("return forUpdate;");
+        topLevelClass.addMethod(method);
+        context.getCommentGenerator().addGeneralMethodComment(method, introspectedTable);
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public boolean sqlMapSelectByExampleWithBLOBsElementGenerated(XmlElement element,
-		IntrospectedTable introspectedTable)
-	{
-		addElement(element);
-		return true;
-	}
+    @Override
+    public boolean sqlMapSelectByExampleWithBLOBsElementGenerated(XmlElement element,
+            IntrospectedTable introspectedTable) {
+        addElement(element);
+        return true;
+    }
 
-	@Override
-	public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(XmlElement element,
-		IntrospectedTable introspectedTable)
-	{
-		addElement(element);
-		return true;
-	}
+    @Override
+    public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(XmlElement element,
+            IntrospectedTable introspectedTable) {
+        addElement(element);
+        return true;
+    }
 
-	protected void addElement(XmlElement element)
-	{
-		XmlElement ifElement = new XmlElement("if");
-		ifElement.addAttribute(new Attribute("test", "forUpdate"));
-		ifElement.addElement(new TextElement("for update"));
-		element.addElement(ifElement);
-	}
+    protected void addElement(XmlElement element) {
+        XmlElement ifElement = new XmlElement("if");
+        ifElement.addAttribute(new Attribute("test", "forUpdate"));
+        ifElement.addElement(new TextElement("for update"));
+        element.addElement(ifElement);
+    }
 
 }

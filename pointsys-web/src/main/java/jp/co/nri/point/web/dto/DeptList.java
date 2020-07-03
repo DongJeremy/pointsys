@@ -2,7 +2,7 @@ package jp.co.nri.point.web.dto;
 
 import java.util.List;
 
-import jp.co.nri.point.web.domain.Department;
+import jp.co.nri.point.domain.Department;
 
 public class DeptList {
     private List<Department> departments;

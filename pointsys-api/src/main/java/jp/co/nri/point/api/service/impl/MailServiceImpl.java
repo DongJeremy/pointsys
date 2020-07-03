@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jp.co.nri.point.api.domain.Mail;
-import jp.co.nri.point.api.domain.MailTo;
-import jp.co.nri.point.api.mapper.MailMapper;
 import jp.co.nri.point.api.service.MailService;
 import jp.co.nri.point.api.service.SendMailSevice;
 import jp.co.nri.point.base.BaseServiceImpl;
+import jp.co.nri.point.domain.Mail;
+import jp.co.nri.point.domain.MailTo;
+import jp.co.nri.point.mapper.MailMapper;
 import jp.co.nri.point.util.UserUtil;
 
 @Service

@@ -1,6 +1,7 @@
 package jp.co.nri.point.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,6 +25,7 @@ import jp.co.nri.point.security.filter.TokenFilter;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@ConditionalOnProperty(value = "app.security.basic.enabled", havingValue = "true")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired

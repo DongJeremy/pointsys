@@ -19,6 +19,10 @@
       <artifactId>pointsys-framework</artifactId>
     </dependency>
     <dependency>
+      <groupId>jp.co.nri</groupId>
+      <artifactId>pointsys-batch</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.github.oshi</groupId>
       <artifactId>oshi-core</artifactId>
       <version>5.1.2</version>

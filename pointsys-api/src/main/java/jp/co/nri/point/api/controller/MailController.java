@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import jp.co.nri.point.api.domain.Mail;
-import jp.co.nri.point.api.domain.MailTo;
 import jp.co.nri.point.api.service.MailService;
 import jp.co.nri.point.beans.PaginationRequest;
 import jp.co.nri.point.beans.PaginationResponse;
 import jp.co.nri.point.beans.ResultBean;
+import jp.co.nri.point.domain.Mail;
+import jp.co.nri.point.domain.MailTo;
 import jp.co.nri.point.pagination.PaginationHandler;
 
 @Api(tags = "邮件")
