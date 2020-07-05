@@ -3,6 +3,8 @@ package jp.co.nri.point.config;
 import java.io.IOException;
 import java.util.Properties;
 
+import javax.sql.DataSource;
+
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -18,12 +20,15 @@ import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import jp.co.nri.point.jobs.CustomQuartzJob;
 
 @Configuration
 public class QuartzConfig {
+
+    public static final String KEY = "applicationContextSchedulerContextKey";
 
     @Autowired
     private JobLauncher jobLauncher;
@@ -80,7 +85,7 @@ public class QuartzConfig {
                 .withSchedule(scheduleBuilder).build();
     }
 
-    @Bean
+    //@Bean
     public SchedulerFactoryBean schedulerFactoryBean() throws IOException {
         SchedulerFactoryBean scheduler = new SchedulerFactoryBean();
         scheduler.setTriggers(jobOneTrigger(), jobTwoTrigger());
@@ -95,6 +100,24 @@ public class QuartzConfig {
         propertiesFactoryBean.setLocation(new ClassPathResource("quartz.properties"));
         propertiesFactoryBean.afterPropertiesSet();
         return propertiesFactoryBean.getObject();
+    }
+
+    @Bean("adminQuartzScheduler")
+    public SchedulerFactoryBean quartzScheduler(DataSource dataSource) {
+        SchedulerFactoryBean quartzScheduler = new SchedulerFactoryBean();
+
+        try {
+            quartzScheduler.setQuartzProperties(
+                    PropertiesLoaderUtils.loadProperties(new ClassPathResource("quartz.properties")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        quartzScheduler.setDataSource(dataSource);
+        quartzScheduler.setOverwriteExistingJobs(true);
+        quartzScheduler.setApplicationContextSchedulerContextKey(KEY);
+        quartzScheduler.setStartupDelay(10);
+
+        return quartzScheduler;
     }
 
 }

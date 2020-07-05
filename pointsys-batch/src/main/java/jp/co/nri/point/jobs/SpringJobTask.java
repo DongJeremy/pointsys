@@ -1,4 +1,4 @@
-package jp.co.nri.point.api.job;
+package jp.co.nri.point.jobs;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

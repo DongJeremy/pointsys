@@ -646,9 +646,8 @@ a {
 }
 
 /* 其他 */
-.layui-layout-admin .layui-header .layui-logo-mini, .layui-layout-admin .side-toggle .layui-icon-spread-left,
-    .timo-checkbox input[type="checkbox"] {
-/*     display: none; */
+.layui-layout-admin .layui-header .layui-logo-mini, .layui-layout-admin .side-toggle .layui-icon-spread-left {
+    display: none; 
 }
 
 .timo-checkbox {

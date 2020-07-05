@@ -7,7 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import jp.co.nri.point.api.service.JobService;
-import jp.co.nri.point.config.JobConfig;
+import jp.co.nri.point.config.QuartzConfig;
 
 public class SpringBeanJob extends QuartzJobBean {
 
@@ -15,7 +15,7 @@ public class SpringBeanJob extends QuartzJobBean {
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
         try {
             ApplicationContext applicationContext = (ApplicationContext) context.getScheduler().getContext()
-                    .get(JobConfig.KEY);
+                    .get(QuartzConfig.KEY);
             JobService jobService = applicationContext.getBean(JobService.class);
             jobService.doJob(context.getJobDetail().getJobDataMap());
         } catch (SchedulerException e) {
