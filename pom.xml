@@ -16,6 +16,7 @@
     <module>pointsys-generator</module>
     <module>pointsys-domain</module>
     <module>pointsys-batch</module>
+    <module>pointsys-test</module>
   </modules>
   <parent>
     <groupId>org.springframework.boot</groupId>

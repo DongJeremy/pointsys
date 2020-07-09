@@ -13,8 +13,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jp.co.nri.point.beans.PaginationResponse;
 import jp.co.nri.point.beans.ResultBean;
@@ -61,15 +62,27 @@ public class HttpClientUtil {
     }
 
     private static PaginationResponse getPageResultBean(ResponseEntity<String> result) {
-        PaginationResponse pageResultBean = JSON.parseObject(result.getBody(), new TypeReference<PaginationResponse>() {
-        });
-        return pageResultBean;
+        ObjectMapper mapper = new ObjectMapper();
+        PaginationResponse pageResultBean;
+        try {
+            pageResultBean = mapper.readValue(result.getBody(), new TypeReference<PaginationResponse>() { });
+            return pageResultBean;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private static <T> ResultBean<T> getResultBean(ResponseEntity<String> result) {
-        ResultBean<T> resultBean = JSON.parseObject(result.getBody(), new TypeReference<ResultBean<T>>() {
-        });
-        return resultBean;
+        ObjectMapper mapper = new ObjectMapper();
+        ResultBean<T> resultBean;
+        try {
+            resultBean = mapper.readValue(result.getBody(), new TypeReference<ResultBean<T>>() { });
+            return resultBean;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

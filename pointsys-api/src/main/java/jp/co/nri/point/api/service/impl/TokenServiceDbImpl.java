@@ -20,7 +20,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -70,7 +71,12 @@ public class TokenServiceDbImpl implements TokenService {
 
         // 校验是否已过期
         if (model.getExpireTime().getTime() > System.currentTimeMillis()) {
-            return JSONObject.parseObject(model.getVal(), LoginUser.class);
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                return mapper.readValue(model.getVal(), LoginUser.class);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
         }
 
         return null;
@@ -125,7 +131,12 @@ public class TokenServiceDbImpl implements TokenService {
         model.setCreateTime(new Date());
         model.setUpdateTime(new Date());
         model.setExpireTime(new Date(loginUser.getExpireTime()));
-        model.setVal(JSONObject.toJSONString(loginUser));
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            model.setVal(mapper.writeValueAsString(loginUser));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
 
         tokenMapper.save(model);
         // 登陆日志
@@ -161,7 +172,12 @@ public class TokenServiceDbImpl implements TokenService {
         TokenModel model = tokenMapper.getById(loginUser.getToken());
         model.setUpdateTime(new Date());
         model.setExpireTime(new Date(loginUser.getExpireTime()));
-        model.setVal(JSONObject.toJSONString(loginUser));
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            model.setVal(mapper.writeValueAsString(loginUser));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
 
         tokenMapper.update(model);
 
