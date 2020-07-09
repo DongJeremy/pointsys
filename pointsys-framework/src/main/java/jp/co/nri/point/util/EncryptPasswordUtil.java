@@ -19,7 +19,7 @@ public class EncryptPasswordUtil {
 
     public static void main(String[] args) {
         System.out.println(encrypt("password"));
-        System.out.println(encrypt("12345678"));
+        System.out.println(encrypt("123456"));
         System.out.println(encrypt("sinocom11#"));
 
     }

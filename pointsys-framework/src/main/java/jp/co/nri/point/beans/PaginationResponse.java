@@ -15,6 +15,10 @@ public class PaginationResponse implements Serializable {
     private Long recordsFiltered;
     private List<?> data;
 
+    public PaginationResponse() {
+        super();
+    }
+
     public PaginationResponse(long recordsTotal, long recordsFiltered, List<?> data) {
         super();
         this.recordsTotal = recordsTotal;

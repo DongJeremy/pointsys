@@ -1,5 +1,4 @@
 <factorypath>
-    <factorypathentry kind="VARJAR" id="M2_REPO/com/alibaba/fastjson/1.2.68/fastjson-1.2.68.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/boot/spring-boot-starter-web/2.2.5.RELEASE/spring-boot-starter-web-2.2.5.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/boot/spring-boot-starter/2.2.5.RELEASE/spring-boot-starter-2.2.5.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/boot/spring-boot/2.2.5.RELEASE/spring-boot-2.2.5.RELEASE.jar" enabled="true" runInBatchMode="false"/>
