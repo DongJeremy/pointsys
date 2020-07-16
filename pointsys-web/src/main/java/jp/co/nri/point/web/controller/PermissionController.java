@@ -18,6 +18,7 @@ public class PermissionController extends BaseController {
     public List<Permission> getPermission() {
         ParameterizedTypeReference<List<Permission>> responseType = new ParameterizedTypeReference<List<Permission>>() {
         };
-        return HttpClientUtil.doGet(restTemplate, getTokenString(), getUrlString("/permissions/current"), responseType);
+        return HttpClientUtil.doGet(restTemplate, getTokenString(), getUrlString("/api/v1/permissions/current"),
+                responseType);
     }
 }

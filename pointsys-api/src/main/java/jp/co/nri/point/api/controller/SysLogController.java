@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jp.co.nri.point.annotation.OperationLog;
 import jp.co.nri.point.api.service.SysLogService;
 import jp.co.nri.point.beans.PaginationRequest;
@@ -16,15 +16,15 @@ import jp.co.nri.point.beans.PaginationResponse;
 import jp.co.nri.point.beans.ResultBean;
 import jp.co.nri.point.pagination.PaginationHandler;
 
-@Api(tags = "系统Log")
+@Tag(name = "系统Log")
 @RestController
-@RequestMapping("/api/syslog")
+@RequestMapping("/api/v1/syslogs")
 public class SysLogController {
 
     @Resource
     private SysLogService service;
 
-    @ApiOperation(value = "获取操作日志")
+    @Operation(summary = "获取操作日志")
     @GetMapping("/list")
     public PaginationResponse listEmployee(PaginationRequest request) {
         int offset = request.getStart() / request.getLength() + 1;
@@ -33,7 +33,7 @@ public class SysLogController {
         return pageResponse;
     }
 
-    @ApiOperation(value = "清空操作日志")
+    @Operation(summary = "清空操作日志")
     @OperationLog("清空操作日志")
     @PostMapping("/clear")
     public ResultBean<?> clearSysLogs() {

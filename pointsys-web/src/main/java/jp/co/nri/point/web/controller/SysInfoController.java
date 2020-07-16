@@ -14,7 +14,7 @@ public class SysInfoController extends BaseController {
     @GetMapping("/sysInfo/current")
     public String getSysInfo(Model model) {
         ResultBean<Server> server = HttpClientUtil.doGetResultBean(restTemplate, getTokenString(),
-                getUrlString("/api/sysInfo"), Server.class);
+                getUrlString("/api/v1/sysInfo"), Server.class);
         model.addAttribute("server", server.getData());
         return "pages/system/sysinfo-list::serverInfo";
     }

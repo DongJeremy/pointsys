@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jp.co.nri.point.annotation.OperationLog;
 import jp.co.nri.point.api.service.UserService;
 import jp.co.nri.point.beans.PaginationRequest;
@@ -24,9 +24,9 @@ import jp.co.nri.point.pagination.PaginationHandler;
 import jp.co.nri.point.security.service.TokenService;
 import jp.co.nri.point.util.UserUtil;
 
-@Api(tags = "用户")
+@Tag(name = "用户")
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/v1/users")
 public class UserController {
 
     @Autowired
@@ -35,14 +35,14 @@ public class UserController {
     @Autowired
     private TokenService tokenService;
 
-    @ApiOperation(value = "根据用户id获取用户")
+    @Operation(summary = "根据用户id获取用户")
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('sys:user:query')")
     public SysUser user(@PathVariable Long id) {
         return userService.getById(id);
     }
 
-    @ApiOperation(value = "当前登录用户")
+    @Operation(summary = "当前登录用户")
     @GetMapping("/current")
     public SysUser currentUser(String token) {
         if (token != null) {
@@ -52,7 +52,7 @@ public class UserController {
     }
 
     @OperationLog("获取在线用户列表")
-    @ApiOperation(value = "获取在线用户列表")
+    @Operation(summary = "获取在线用户列表")
     @GetMapping("/onlinelist")
     public PaginationResponse listUsers(PaginationRequest request) {
         int offset = request.getStart() / request.getLength() + 1;
@@ -61,14 +61,14 @@ public class UserController {
         return pageResponse;
     }
 
-    @ApiOperation("剔除在线用户")
+    @Operation(summary = "剔除在线用户")
     @PostMapping("/kickout/{sessionId}")
     public ResultBean<?> forceLogout(@PathVariable("sessionId") String sessionId) {
         userService.forceLogout(sessionId);
         return ResultBean.successResult();
     }
 
-    @ApiOperation("获取用户列表")
+    @Operation(summary = "获取用户列表")
     @OperationLog("获取用户列表")
     @GetMapping("/list")
     public PaginationResponse listUser(PaginationRequest request) {
@@ -78,14 +78,14 @@ public class UserController {
         return pageResponse;
     }
 
-    @ApiOperation("添加用户")
+    @Operation(summary = "添加用户")
     @OperationLog("添加用户")
     @PostMapping
     public ResultBean<Long> addUser(@RequestBody SysUser user) {
         return ResultBean.successResult(userService.save(user));
     }
 
-    @ApiOperation("编辑用户")
+    @Operation(summary = "编辑用户")
     @OperationLog("编辑用户")
     @PutMapping
     public ResultBean<?> updateUser(@RequestBody SysUser user) {
@@ -100,7 +100,7 @@ public class UserController {
         return ResultBean.successResult();
     }
 
-    @ApiOperation("刪除用户")
+    @Operation(summary = "刪除用户")
     @OperationLog("刪除用户")
     @DeleteMapping("/{id}")
     public ResultBean<?> deleteUser(@PathVariable Long id) {

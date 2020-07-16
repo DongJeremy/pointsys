@@ -26,8 +26,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jp.co.nri.point.annotation.OperationLog;
 import jp.co.nri.point.api.dto.EmployeeVO;
 import jp.co.nri.point.api.service.EmployeeService;
@@ -40,7 +40,7 @@ import jp.co.nri.point.pagination.PaginationHandler;
 import jp.co.nri.point.util.BeanCopyUtil;
 import jp.co.nri.point.util.ExcelUtil;
 
-@Api(tags = "雇员")
+@Tag(name = "雇员")
 @RestController
 @RequestMapping("/api/v1/employees")
 public class EmployeeController {
@@ -51,7 +51,7 @@ public class EmployeeController {
     private EmployeeService service;
 
     @OperationLog("获取雇员列表")
-    @ApiOperation("获取雇员列表")
+    @Operation(summary = "获取雇员列表")
     @GetMapping
     public PaginationResponse listEmployee(PaginationRequest request) {
         int offset = request.getStart() / request.getLength() + 1;
@@ -60,7 +60,7 @@ public class EmployeeController {
         return pageResponse;
     }
 
-    @ApiOperation("添加雇员")
+    @Operation(summary = "添加雇员")
     @PostMapping
     public ResultBean<?> addEmployee(@RequestBody EmployeeVO employeeVo) {
         Employee employee = new Employee();
@@ -74,7 +74,7 @@ public class EmployeeController {
         return ResultBean.errorResult("add employee fail.");
     }
 
-    @ApiOperation("删除雇员")
+    @Operation(summary = "删除雇员")
     @DeleteMapping("/{id}")
     public ResultBean<?> deleteEmployee(@PathVariable Long id) {
         service.delete(id);
@@ -82,13 +82,13 @@ public class EmployeeController {
         return ResultBean.successResult();
     }
 
-    @ApiOperation("获取雇员")
+    @Operation(summary = "获取雇员")
     @GetMapping("/{id}")
     public ResultBean<?> getEmployee(@PathVariable Long id) {
         return ResultBean.successResult(service.getById(id));
     }
 
-    @ApiOperation("修改雇员")
+    @Operation(summary = "修改雇员")
     @PutMapping("/{id}")
     public ResultBean<?> updateEmployee(@PathVariable Long id, @RequestBody EmployeeVO employeeVo) {
         Employee employee = new Employee();
@@ -103,7 +103,7 @@ public class EmployeeController {
         return ResultBean.errorResult("update employee fail.");
     }
 
-    @ApiOperation("批量删除雇员")
+    @Operation(summary = "批量删除雇员")
     @PostMapping("/batch/delete")
     public ResultBean<?> removeEmp(@RequestBody List<String> ids) {
         for (String id : ids) {
@@ -112,7 +112,7 @@ public class EmployeeController {
         return ResultBean.successResult();
     }
 
-    @ApiOperation("导出雇员")
+    @Operation(summary = "导出雇员")
     @GetMapping("/export")
     public ResponseEntity<ByteArrayResource> exportEmployee(HttpServletRequest request) throws IOException {
         String contentType = "application/vnd.ms-excel";
@@ -136,10 +136,9 @@ public class EmployeeController {
      * @throws IOException
      * @throws Exception
      */
-    @ApiOperation("导入雇员")
+    @Operation(summary = "导入雇员")
     @PostMapping("/import")
-    public ResultBean<?> importEmployee(@RequestParam("file") MultipartFile file)
-            throws IOException, Exception {
+    public ResultBean<?> importEmployee(@RequestParam("file") MultipartFile file) throws IOException, Exception {
 
         final List<EmployeeVO> listObjects = ExcelUtil.importFromFile(file, EmployeeVO.class);
 

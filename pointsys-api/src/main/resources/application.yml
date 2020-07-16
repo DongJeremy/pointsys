@@ -40,6 +40,11 @@ app:
       enabled: true
 swagger:
   enable: true
+springdoc:
+  api-docs:
+    path: /api/v3/api-docs
+  swagger-ui:
+    path: /api/swagger-ui.html
 file:
   upload-dir: ./uploads
 token:

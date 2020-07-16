@@ -19,7 +19,11 @@ spring:
 https:
   httpclient:
     url: http://localhost:8080
-
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
 proxy:
   servlet_url: /api/*
-  target_url: http://localhost:8080
+  target_url: http://localhost:8080/api

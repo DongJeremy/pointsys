@@ -54,7 +54,7 @@ public class UserController extends BaseController {
     @GetMapping("/user/current")
     @ResponseBody
     public SysUser currentUser() {
-        return HttpClientUtil.doGet(restTemplate, getTokenString(), getUrlString("/api/user/current"), SysUser.class);
+        return HttpClientUtil.doGet(restTemplate, getTokenString(), getUrlString("/api/v1/users/current"), SysUser.class);
     }
 
     @GetMapping("/user/list")
@@ -64,7 +64,7 @@ public class UserController extends BaseController {
         MultiValueMap<String, String> paramsMap = new LinkedMultiValueMap<>();
         paramsMap.set("start", String.valueOf(start));
         paramsMap.set("length", String.valueOf(length));
-        return HttpClientUtil.doGetPageResultBean(restTemplate, getTokenString(), getUrlString("/api/user/list"),
+        return HttpClientUtil.doGetPageResultBean(restTemplate, getTokenString(), getUrlString("/api/v1/users/list"),
                 paramsMap);
     }
 
@@ -75,7 +75,7 @@ public class UserController extends BaseController {
         MultiValueMap<String, String> paramsMap = new LinkedMultiValueMap<>();
         paramsMap.set("start", String.valueOf(start));
         paramsMap.set("length", String.valueOf(length));
-        return HttpClientUtil.doGetPageResultBean(restTemplate, getTokenString(), getUrlString("/api/user/onlinelist"),
+        return HttpClientUtil.doGetPageResultBean(restTemplate, getTokenString(), getUrlString("/api/v1/users/onlinelist"),
                 paramsMap);
     }
 
@@ -83,20 +83,20 @@ public class UserController extends BaseController {
     @ResponseBody
     public ResultBean<?> forceLogout(@RequestBody SessionInfo sessionInfo) {
         return HttpClientUtil.doPostResultBean(restTemplate, getTokenString(),
-                getUrlString("/api/user/kickout/" + sessionInfo.getSessionId()), null, SessionInfo.class);
+                getUrlString("/api/v1/users/kickout/" + sessionInfo.getSessionId()), null, SessionInfo.class);
     }
 
     @PostMapping("/user/userInfo")
     @ResponseBody
     public ResultBean<?> userInfo(@RequestBody SysUser user) {
         return HttpClientUtil.doPostResultBean(restTemplate, getTokenString(),
-                getUrlString("/api/user/userInfo"), user, SysUser.class);
+                getUrlString("/api/v1/users/userInfo"), user, SysUser.class);
     }
     
     @PostMapping("/user/{id}/reset")
     @ResponseBody
     public ResultBean<?> resetPassword(@PathVariable("id") Long id, @RequestBody PasswordBean passwordBean) {
         return HttpClientUtil.doPostResultBean(restTemplate, getTokenString(),
-                getUrlString("/api/user/" + id + "/reset"), passwordBean, PasswordBean.class);
+                getUrlString("/api/v1/users/" + id + "/reset"), passwordBean, PasswordBean.class);
     }
 }

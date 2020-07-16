@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jp.co.nri.point.api.service.MailService;
 import jp.co.nri.point.beans.PaginationRequest;
 import jp.co.nri.point.beans.PaginationResponse;
@@ -23,7 +23,7 @@ import jp.co.nri.point.domain.Mail;
 import jp.co.nri.point.domain.MailTo;
 import jp.co.nri.point.pagination.PaginationHandler;
 
-@Api(tags = "邮件")
+@Tag(name = "邮件")
 @RestController
 @RequestMapping("/api/v1/mails")
 public class MailController {
@@ -32,7 +32,7 @@ public class MailController {
     private MailService mailService;
 
     @PostMapping
-    @ApiOperation(value = "保存邮件")
+    @Operation(summary = "保存邮件")
     public ResultBean<?> save(@RequestBody Mail mail) {
         String toUsers = mail.getToUsers().trim();
         if (StringUtils.isBlank(toUsers)) {
@@ -50,20 +50,20 @@ public class MailController {
         return ResultBean.successResult();
     }
 
-    @ApiOperation(value = "根据id获取邮件")
+    @Operation(summary = "根据id获取邮件")
     @GetMapping("/{id}")
     public ResultBean<?> get(@PathVariable Long id) {
         return ResultBean.successResult(mailService.getById(id));
     }
 
-    @ApiOperation(value = "根据id获取邮件发送详情")
+    @Operation(summary = "根据id获取邮件发送详情")
     @GetMapping("/{id}/to")
     public ResultBean<?> getMailTo(@PathVariable Long id) {
         List<MailTo> mailTos = mailService.getToUsers(id);
         return ResultBean.successResult(mailTos);
     }
 
-    @ApiOperation(value = "邮件列表")
+    @Operation(summary = "邮件列表")
     @GetMapping
     public PaginationResponse list(PaginationRequest request) {
         int offset = request.getStart() / request.getLength() + 1;

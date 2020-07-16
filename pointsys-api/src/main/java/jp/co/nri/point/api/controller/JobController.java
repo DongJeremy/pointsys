@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jp.co.nri.point.annotation.JobTask;
 import jp.co.nri.point.annotation.OperationLog;
 import jp.co.nri.point.api.service.JobService;
@@ -35,7 +35,7 @@ import jp.co.nri.point.beans.ResultBean;
 import jp.co.nri.point.domain.JobModel;
 import jp.co.nri.point.pagination.PaginationHandler;
 
-@Api(tags = "定时任务")
+@Tag(name = "定时任务")
 @RestController
 @RequestMapping("/api/v1/jobs")
 public class JobController {
@@ -48,7 +48,7 @@ public class JobController {
 
     @GetMapping
     @OperationLog("获取雇员列表")
-    @ApiOperation(value = "定时任务列表")
+    @Operation(summary = "定时任务列表")
     public PaginationResponse list(PaginationRequest request) {
         int offset = request.getStart() / request.getLength() + 1;
         PaginationResponse pageResponse = new PaginationHandler(req -> jobService.count(req.getParams()),
@@ -56,7 +56,7 @@ public class JobController {
         return pageResponse;
     }
 
-    @ApiOperation("新建定时任务")
+    @Operation(summary = "新建定时任务")
     @PostMapping
     public ResultBean<?> add(@RequestBody JobModel jobModel) {
         JobModel model = jobService.getByName(jobModel.getJobName());
@@ -69,7 +69,7 @@ public class JobController {
         return ResultBean.successResult();
     }
 
-    @ApiOperation("修改定时任务")
+    @Operation(summary = "修改定时任务")
     @PutMapping("/{id}")
     public ResultBean<?> update(@PathVariable Long id, @RequestBody JobModel jobModel) {
         jobModel.setStatus(1);
@@ -77,20 +77,20 @@ public class JobController {
         return ResultBean.successResult();
     }
 
-    @ApiOperation("删除定时任务")
+    @Operation(summary = "删除定时任务")
     @DeleteMapping("/{id}")
     public ResultBean<?> delete(@PathVariable Long id) throws SchedulerException {
         jobService.deleteJob(id);
         return ResultBean.successResult();
     }
 
-    @ApiOperation("根据id获取定时任务")
+    @Operation(summary = "根据id获取定时任务")
     @GetMapping("/{id}")
     public ResultBean<?> getById(@PathVariable Long id) {
         return ResultBean.successResult(jobService.getById(id));
     }
 
-    @ApiOperation(value = "校验cron表达式")
+    @Operation(summary = "校验cron表达式")
     @GetMapping("/cronCheck")
     public ResultBean<?> checkCron(@RequestParam("cron") String cron) {
         return ResultBean.successResult(CronExpression.isValidExpression(cron));
@@ -106,7 +106,7 @@ public class JobController {
         return clazz;
     }
 
-    @ApiOperation(value = "springBean名字")
+    @Operation(summary = "springBean名字")
     @GetMapping("/beans")
     public ResultBean<?> listAllBeanName() {
         String[] strings = applicationContext.getBeanDefinitionNames();
@@ -128,7 +128,7 @@ public class JobController {
         return ResultBean.successResult(list);
     }
 
-    @ApiOperation(value = "springBean的无参方法")
+    @Operation(summary = "springBean的无参方法")
     @GetMapping("/beans/{name}")
     public ResultBean<?> listMethodName(@PathVariable String name) {
         Class<?> clazz = getClass(name);

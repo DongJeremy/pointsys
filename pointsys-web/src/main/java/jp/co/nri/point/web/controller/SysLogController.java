@@ -22,14 +22,14 @@ public class SysLogController extends BaseController {
         MultiValueMap<String, String> paramsMap = new LinkedMultiValueMap<>();
         paramsMap.set("start", String.valueOf(start));
         paramsMap.set("length", String.valueOf(length));
-        return HttpClientUtil.doGetPageResultBean(restTemplate, getTokenString(), getUrlString("/api/syslog/list"),
+        return HttpClientUtil.doGetPageResultBean(restTemplate, getTokenString(), getUrlString("/api/v1/syslogs/list"),
                 paramsMap);
     }
     
     @PostMapping("/syslog/clear")
     @ResponseBody
     public ResultBean<?> clearSysLogs() {
-        return HttpClientUtil.doPostResultBean(restTemplate, getTokenString(), getUrlString("/api/syslog/clear"),
+        return HttpClientUtil.doPostResultBean(restTemplate, getTokenString(), getUrlString("/api/v1/syslogs/clear"),
                 null, Object.class);
     }
 
