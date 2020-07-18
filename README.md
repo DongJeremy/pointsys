@@ -23,7 +23,7 @@ services:
     container_name: pointsys-api
     image: javaboy/pointsys-api:1.0.0
     ports:
-      - 8080:8080
+      - 8082:8082
     environment:
       url: jdbc:postgresql://192.168.1.94:5432/mydb?characterEncoding=utf8&useSSL=true
   pointsys-web:
@@ -32,19 +32,19 @@ services:
     privileged: true
     container_name: pointsys-web
     ports:
-      - 80:80
+      - 8081:8081
     environment:
-      url: http://192.168.1.94:8080
+      url: http://192.168.1.94:8082
   nginx:
     restart: always
     container_name: nginx
     image: nginx:alpine
     ports:
+      - 80:80
       - 443:443
     volumes: 
       - /opt/nginx/conf.d:/etc/nginx/conf.d
       - /opt/nginx/log:/var/log/nginx
-      - /opt/nginx/www:/var/www
       - /opt/nginx/cert:/etc/nginx/cert
 EOF
 ```
@@ -55,8 +55,17 @@ EOF
 mkdir -p /opt/nginx/{conf.d,log,www,cert}
 cat << 'EOF' > /opt/nginx/conf.d/default.conf
 server {
+    listen      80;
+    server_name localhost.local;
+
+    rewrite ^(.*)$ https://$host$1 permanent;
+    add_header Content-Security-Policy upgrade-insecure-requests;
+}
+EOF
+cat << 'EOF' > /opt/nginx/conf.d/ssl.conf
+server {
     listen      443 ssl;
-    server_name www.d05660.top;
+    server_name localhost.local;
 
     ssl_certificate         cert/localhost.pem;
     ssl_certificate_key     cert/localhost.key;
@@ -66,12 +75,13 @@ server {
     ssl_ciphers ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA;
     ssl_prefer_server_ciphers on;
     location / {
-        proxy_pass http://192.168.1.94:80;
+        proxy_pass http://192.168.1.94:8081;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Port $server_port;
-        proxy_set_header Host $host:$server_port;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-SSL on;
         add_header Content-Security-Policy upgrade-insecure-requests;
     }
 }
@@ -99,6 +109,4 @@ EOF
 openssl req -new -nodes -newkey rsa:2048 -keyout /opt/nginx/cert/localhost.key -out localhost.csr -subj "/C=CN/ST=JiLin/L=JiLin/O=JLZM/CN=localhost.local"
 openssl x509 -req -in localhost.csr -CA RootCA.pem -CAkey RootCA.key -CAcreateserial -days 3650 -sha256 -extfile http.ext -out /opt/nginx/cert/localhost.pem -outform PEM
 ```
-
-
 
