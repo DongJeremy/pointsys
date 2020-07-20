@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"></meta>
+<th:block th:include="pages/common/public::header" />
+</head>
+<body class="animated fadeIn timo-layout-page">
+  <div class="page-loading">
+    <div class="rubik-loader"></div>
+  </div>
+  <div class="animated fadeIn layui-card">
+    <div class="layui-card-header timo-card-header">
+      <span><i class="fa fa-bars"></i> 文件管理</span> <i class="layui-icon layui-icon-refresh refresh-btn"></i>
+    </div>
+    <div class="layui-card-body">
+      <div class="layui-row timo-card-screen put-row">
+        <div class="pull-right screen-btn-group">
+          <div class="pull-left layui-form-pane timo-search-box layui-form">
+            <div class="layui-inline">
+              <button class="layui-btn" id="import_btn">
+                <i class="layui-icon">&#xe67c;</i>上传文件
+              </button>
+            </div>
+          </div>
+          <div class="btn-group-right">
+            <div class="timo-toolbar">
+              <button class="layui-btn timo-search-btn" id="searchBtn" data-type="reload">
+                <i class="layui-icon">&#xe615;</i>搜索
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="timo-table-wrap" id="wrap-table">
+        <table class="layui-table timo-table timo-table-fixed" id="dt-table" lay-filter="allAttr">
+          <thead>
+            <tr>
+              <th class='th'><input type="checkbox" class="checkall" id="checkAll" name="cb-check-all" /></th>
+              <th>文件名</th>
+              <th>下载路径</th>
+              <th>文件大小</th>
+              <th>文件类型</th>
+              <th>修改时间</th>
+              <th>管理</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <th:block th:include="pages/common/public::footer" />
+<script>
+layui.use([ 'table', 'element', 'form' ], function() {
+    var table = layui.table
+    , $ = layui.$
+    , _upload = layui.upload
+    , element = layui.element
+    , form = layui.form;
+
+    columns = [
+        {
+            targets: 0,
+            data: null,
+            className: 'timo-table-checkbox',
+            orderable: false,
+            render: function (data, type, full, meta) {
+                return '<input type="checkbox" id="check_' + data.id + '" class="check" name="check" value="' + data.id + '">';
+            },
+            width: "20px"
+        },
+        { data: "name", orderable: false, defaultContent: "", width: "10%"},
+        { data: "url", orderable: false, defaultContent: ""},
+        { data: "size", orderable: false, defaultContent: "", width: "10%"},
+        { data: "type", orderable: false, defaultContent: "", width: "10%"},
+        { 
+            data: "updateTime",
+            orderable: false,
+            defaultContent: "",
+            width: "120px",
+            render: function(data, type, full, meta) {
+                return  moment(data).format("YYYY-MM-DD HH:mm:ss");
+            }
+        },
+        { 
+            data: "", 
+            defaultContent: "",
+            orderable:false,
+            width: "80px",
+            render: function (data, type, row) {
+                var isSysJob = row['isSysJob'];
+                if(!isSysJob) {
+                    var id = row['id'];
+                    var edit = buttonEdit(id);
+                    var del = buttonDel(id);
+                    return edit + del;
+                } else {
+                    return "<span style='color:red'>系统任务无操作</span>";
+                }
+            }
+        },
+    ];
+    var data = function(d){
+        d.description = $('#description').val();
+        d.status = $("#status").val();
+    }
+    var $table = $('#dt-table'),
+        $wrapper = $("#wrap-table");
+    var config  = initTableConfig(layer, "/file/list", data, columns, [ [ 3, 'asc' ], [ 1, 'asc' ] ]);
+    config["drawCallback"] = drawCallback($wrapper, $table)
+
+    var _table = $table.DataTable(config);
+    $table.on("change", ":checkbox", function () {
+        if ($(this).is("[name='cb-check-all']")) {
+            $(":checkbox", $table).prop("checked", $(this).prop("checked"));
+        } else {
+            var checkbox = $("tbody :checkbox", $table);
+            $(":checkbox[name='cb-check-all']", $table).prop('checked', checkbox.length === checkbox.filter(':checked').length);
+        }
+    })
+
+    _upload.render({
+        elem: '#import_btn' //绑定元素
+        ,url: '/file/upload' //上传接口
+        ,accept: 'file'
+        ,done: function(res){
+            parent.layer.msg("导入成功", {
+                icon : 6
+            });
+            _table.ajax.reload(null, false);
+        }
+        ,error: function(){
+            parent.layer.msg("导入失敗", {
+                icon : 6
+            });
+            _table.ajax.reload(null, false);
+        }
+    });
+
+    window.editInfo = function(id) {
+        layer.open({
+            content: '/main/jobUpdateView/' + id,
+            title: "编辑",
+            area: ['600px', '460px'],
+            type: 2,
+            maxmin: true,
+            shadeClose: true,
+            end: function () {
+                _table.ajax.reload(null, false);
+            }
+        });
+    }
+    window.deleteInfo = function(id) {
+        layer.confirm("确定删除吗?", {icon: 3, title: '提示'}, function (index) {//确定回调
+            ajaxJsonRequest("DELETE", '/jobs/delete/' + id, null, function(data) {
+                layer.close(index);
+                handlerResult(data, deleteDone)
+            });
+        }, function(index) {//取消回调
+            layer.close(index);
+        });
+    }
+
+    $("#searchBtn").on("click",function(){
+        _table.ajax.reload();
+    });
+
+    $("#add_btn").on("click",function(){
+        layer.open({
+            content: "/main/jobAddView",
+            title: "新增用户",
+            area: ['600px', '460px'],
+            type: 2,
+            maxmin: true,
+            shadeClose: true,
+            end: function () {
+                _table.ajax.reload(null, false);
+            }
+        });
+        return false;
+    });
+
+    function deleteDone(data) {
+        parent.layer.msg("删除成功", {
+            icon : 6
+        });
+        _table.ajax.reload(null, false);
+    }
+
+});
+</script>
+</body>
+</html>

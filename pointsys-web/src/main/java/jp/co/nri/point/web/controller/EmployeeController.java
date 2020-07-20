@@ -136,7 +136,7 @@ public class EmployeeController extends BaseController {
         try {
             ByteArrayResource result = HttpClientUtil.doExportFile(getTokenString(),
                     getUrlString("/api/v1/employees/export"), ByteArrayResource.class);
-            FileUtil.saveExcelToFile(result.getInputStream(), response, excelFileName);
+            FileUtil.saveInputStreamToFile(result.getInputStream(), response, excelFileName);
         } catch (Exception e) {
             throw e;
         }

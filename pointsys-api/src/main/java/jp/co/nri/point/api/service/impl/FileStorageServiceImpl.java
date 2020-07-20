@@ -15,12 +15,15 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import jp.co.nri.point.api.service.FileStorageService;
+import jp.co.nri.point.base.BaseServiceImpl;
 import jp.co.nri.point.config.FileStorageProperties;
+import jp.co.nri.point.domain.FileStorage;
 import jp.co.nri.point.exception.FileStorageException;
 import jp.co.nri.point.exception.MyFileNotFoundException;
+import jp.co.nri.point.mapper.FileStorageMapper;
 
 @Service
-public class FileStorageServiceImpl implements FileStorageService {
+public class FileStorageServiceImpl extends BaseServiceImpl<FileStorageMapper, FileStorage> implements FileStorageService {
 
     private final Path fileStorageLocation;
 

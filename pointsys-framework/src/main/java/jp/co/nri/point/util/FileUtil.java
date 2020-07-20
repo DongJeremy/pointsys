@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class FileUtil {
 
-    public static void saveExcelToFile(InputStream is, HttpServletResponse response, String filename)
+    public static void saveInputStreamToFile(InputStream is, HttpServletResponse response, String filename)
             throws Exception {
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;

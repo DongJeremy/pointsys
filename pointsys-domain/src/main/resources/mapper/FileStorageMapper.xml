@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="jp.co.nri.point.mapper.FileStorageMapper">
+
+  <resultMap type="FileStorage" id="fileStorageMap">
+    <id column="id" property="id"></id>
+    <result column="name" property="name" />
+    <result column="url" property="url" />
+    <result column="size" property="size" />
+    <result column="type" property="type" />
+    <result column="createtime" property="createTime" />
+    <result column="updatetime" property="updateTime" />
+  </resultMap>
+
+  <sql id="where">
+    <where>
+      <if test="params.name != null and params.name != ''">
+        and t.name like concat('%', #{params.name}, '%')
+      </if>
+    </where>
+  </sql>
+
+  <select id="selectAll" resultMap="fileStorageMap">
+    SELECT *
+    FROM t_file_info t
+  </select>
+
+  <select id="selectAllByParams" resultMap="fileStorageMap">
+    SELECT *
+    FROM t_file_info t
+    <include refid="where" />
+  </select>
+
+  <select id="selectCount" resultType="long">
+    SELECT count(1) 
+    FROM t_file_info t
+  </select>
+
+  <select id="selectCountByParams" resultType="long">
+    SELECT count(1) 
+    FROM t_file_info t
+    <include refid="where" />
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="long">
+    DELETE FROM
+    t_file_info WHERE t_file_info.id=#{id}
+  </delete>
+
+  <insert id="insert" parameterType="FileStorage">
+    INSERT INTO t_file_info
+    (id,name,url,size,type,createtime,updatetime)
+    VALUES
+    (default,#{name},#{url},#{size},#{type},#{createTime},now())
+  </insert>
+
+  <select id="selectByPrimaryKey" resultMap="fileStorageMap">
+    SELECT *
+    FROM t_file_info
+    WHERE t_file_info.id=#{id}
+  </select>
+
+  <select id="getByName" resultMap="fileStorageMap">
+    SELECT *
+    FROM t_file_info
+    WHERE t_file_info.jobname=#{jobName}
+  </select>
+
+  <update id="updateByPrimaryKey" parameterType="FileStorage">
+    UPDATE
+    t_file_info
+    <set>
+      <if test="jobName != null">
+        jobname = #{jobName},
+      </if>
+      <if test="cron != null">
+        cron = #{cron},
+      </if>
+      <if test="springBeanName != null">
+        springbeanname = #{springBeanName},
+      </if>
+      <if test="methodName != null">
+        methodname = #{methodName},
+      </if>
+      <if test="description != null">
+        description = #{description},
+      </if>
+      <if test="isSysJob != null">
+        issysjob = #{isSysJob},
+      </if>
+      <if test="status != null">
+        status = #{status},
+      </if>
+      updatetime = now()
+    </set>
+    WHERE t_file_info.id=#{id}
+  </update>
+
+</mapper>

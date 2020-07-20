@@ -14,6 +14,7 @@
     <typeAlias type="jp.co.nri.point.domain.SysUser" alias="SysUser" />
     <typeAlias type="jp.co.nri.point.domain.JobModel" alias="JobModel" />
     <typeAlias type="jp.co.nri.point.domain.Mail" alias="Mail" />
+    <typeAlias type="jp.co.nri.point.domain.FileStorage" alias="FileStorage" />
   </typeAliases>
 
 </configuration>

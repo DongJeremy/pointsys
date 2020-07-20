@@ -3,7 +3,10 @@ package jp.co.nri.point.api.service;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
-public interface FileStorageService {
+import jp.co.nri.point.base.BaseService;
+import jp.co.nri.point.domain.FileStorage;
+
+public interface FileStorageService extends BaseService<FileStorage> {
 
     Resource loadFileAsResource(String fileName);
 

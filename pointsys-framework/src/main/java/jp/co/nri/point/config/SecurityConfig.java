@@ -90,7 +90,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) {
         // 将项目中静态资源路径开放出来
         web.ignoring().antMatchers("/api/v3/api-docs/**",
-                "/static/**", "/", 
+                "/uploads/**", "/static/**", "/", 
                 "/api/swagger-ui/**",
                 "/api/swagger-resources/**",
                 "/api/swagger-ui.html",
