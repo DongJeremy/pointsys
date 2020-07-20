@@ -16,6 +16,10 @@ spring:
     prefix: classpath:/templates/
     servlet:
       content-type: text/html
+  servlet:
+    multipart:
+      max-file-size: -1 
+      max-request-size: -1
 https:
   httpclient:
     url: http://localhost:8082

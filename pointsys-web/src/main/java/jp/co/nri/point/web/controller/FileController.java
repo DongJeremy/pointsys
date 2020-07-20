@@ -8,7 +8,9 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jp.co.nri.point.beans.PaginationResponse;
 import jp.co.nri.point.beans.ResultBean;
+import jp.co.nri.point.domain.Employee;
 import jp.co.nri.point.util.FileUtil;
 import jp.co.nri.point.web.util.HttpClientUtil;
 
@@ -39,13 +42,13 @@ public class FileController extends BaseController {
                 String.class);
     }
 
-    @GetMapping("/file/download")
+    @GetMapping("/file/download/{fileName}")
     @ResponseBody
-    public ResultBean<?> downloadFile(HttpServletResponse response) throws Exception {
+    public ResultBean<?> downloadFile(@PathVariable String fileName, HttpServletResponse response) throws Exception {
         String excelFileName = "Capture001.png";
         try {
             ByteArrayResource result = HttpClientUtil.doExportFile(getTokenString(),
-                    getUrlString("/api/v1/files/downloadFile/" + excelFileName), ByteArrayResource.class);
+                    getUrlString("/api/v1/files/downloadFile/" + fileName), ByteArrayResource.class);
             FileUtil.saveInputStreamToFile(result.getInputStream(), response, excelFileName);
         } catch (Exception e) {
             throw e;
@@ -67,6 +70,13 @@ public class FileController extends BaseController {
         PaginationResponse response = HttpClientUtil.doGetPageResultBean(restTemplate, getTokenString(),
                 getUrlString("/api/v1/files"), paramsMap);
         return response;
+    }
+
+    @DeleteMapping("/file/delete/{id}")
+    @ResponseBody
+    public ResultBean<?> deleteEmployee(@PathVariable String id) {
+        return HttpClientUtil.doDeleteResultBean(restTemplate, getTokenString(),
+                getUrlString("/api/v1/files/" + id), Employee.class);
     }
 
 //    @GetMapping("/jobs/list")

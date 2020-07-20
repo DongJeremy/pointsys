@@ -26,6 +26,9 @@ import jp.co.nri.point.mapper.FileStorageMapper;
 public class FileStorageServiceImpl extends BaseServiceImpl<FileStorageMapper, FileStorage> implements FileStorageService {
 
     private final Path fileStorageLocation;
+    
+    @Autowired
+    private FileStorageMapper fileStorageMapper;
 
     @Autowired
     public FileStorageServiceImpl(FileStorageProperties fileStorageProperties) {
@@ -40,7 +43,7 @@ public class FileStorageServiceImpl extends BaseServiceImpl<FileStorageMapper, F
     }
 
     @Override
-    public String storeFile(MultipartFile file) {
+    public String storeFile(MultipartFile file, String targetFilename) {
         // Normalize file name
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
@@ -51,7 +54,7 @@ public class FileStorageServiceImpl extends BaseServiceImpl<FileStorageMapper, F
             }
 
             // Copy file to the target location (Replacing existing file with the same name)
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+            Path targetLocation = this.fileStorageLocation.resolve(targetFilename);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
             return fileName;
@@ -73,5 +76,17 @@ public class FileStorageServiceImpl extends BaseServiceImpl<FileStorageMapper, F
         } catch (MalformedURLException ex) {
             throw new MyFileNotFoundException("File not found " + fileName, ex);
         }
+    }
+
+    @Override
+    public void deleteByUuid(String uuidString) {
+        try {
+            Path filePath = this.fileStorageLocation.resolve(uuidString).normalize();
+            Path destinationPath = this.fileStorageLocation.resolve(uuidString + ".removed").normalize();
+            Files.move(filePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ex) {
+            throw new FileStorageException("File not found " + uuidString, ex);
+        }
+        fileStorageMapper.deleteByUuid(uuidString);
     }
 }

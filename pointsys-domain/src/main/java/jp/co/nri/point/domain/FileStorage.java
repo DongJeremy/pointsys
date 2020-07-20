@@ -7,14 +7,14 @@ public class FileStorage extends BaseEntity<Long> {
     private Long id;
     private String name;
     private String url;
-    private long size;
+    private String size;
     private String type;
 
     public FileStorage() {
         super();
     }
 
-    public FileStorage(String name, String url, long size, String type) {
+    public FileStorage(String name, String url, String size, String type) {
         super();
         this.name = name;
         this.url = url;
@@ -46,11 +46,11 @@ public class FileStorage extends BaseEntity<Long> {
         this.url = url;
     }
 
-    public long getSize() {
+    public String getSize() {
         return size;
     }
 
-    public void setSize(long size) {
+    public void setSize(String size) {
         this.size = size;
     }
 

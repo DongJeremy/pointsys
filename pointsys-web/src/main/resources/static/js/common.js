@@ -66,3 +66,8 @@ function buttonInfo(data){
     var btn = $("<button class='layui-btn layui-btn-xs btn-info' title='详情' onclick='showDetail(\"" + data +"\")'><i class='layui-icon'>&#xe65f;</i></button>");
     return btn.prop("outerHTML");
 }
+
+function buttonDownload(id, name){
+    var btn = $("<button class='layui-btn layui-btn-xs btn-info' title='下载' onclick='download(\"" + id + "\",\"" + name +"\")'><i class='layui-icon'>&#xe601;</i></button>");
+    return btn.prop("outerHTML");
+}

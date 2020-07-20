@@ -24,6 +24,10 @@ spring:
     password:
     protocol: smtp
     test-connection: false
+  servlet:
+    multipart:
+      max-file-size: -1 
+      max-request-size: -1
 pagehelper:
   helperDialect: postgresql
   reasonable: true

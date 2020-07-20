@@ -37,7 +37,6 @@
             <tr>
               <th class='th'><input type="checkbox" class="checkall" id="checkAll" name="cb-check-all" /></th>
               <th>文件名</th>
-              <th>下载路径</th>
               <th>文件大小</th>
               <th>文件类型</th>
               <th>修改时间</th>
@@ -70,15 +69,14 @@ layui.use([ 'table', 'element', 'form' ], function() {
             },
             width: "20px"
         },
-        { data: "name", orderable: false, defaultContent: "", width: "10%"},
-        { data: "url", orderable: false, defaultContent: ""},
-        { data: "size", orderable: false, defaultContent: "", width: "10%"},
-        { data: "type", orderable: false, defaultContent: "", width: "10%"},
+        { data: "name", orderable: false, defaultContent: ""},
+        { data: "size", orderable: false, defaultContent: "", width: "150px"},
+        { data: "type", orderable: false, defaultContent: "", width: "150px"},
         { 
             data: "updateTime",
             orderable: false,
             defaultContent: "",
-            width: "120px",
+            width: "150px",
             render: function(data, type, full, meta) {
                 return  moment(data).format("YYYY-MM-DD HH:mm:ss");
             }
@@ -89,15 +87,10 @@ layui.use([ 'table', 'element', 'form' ], function() {
             orderable:false,
             width: "80px",
             render: function (data, type, row) {
-                var isSysJob = row['isSysJob'];
-                if(!isSysJob) {
-                    var id = row['id'];
-                    var edit = buttonEdit(id);
-                    var del = buttonDel(id);
-                    return edit + del;
-                } else {
-                    return "<span style='color:red'>系统任务无操作</span>";
-                }
+                var formData = new FormData();
+                var download = buttonDownload(row['url'], row['name']);
+                var del = buttonDel(row['url']);
+                return download + del;
             }
         },
     ];
@@ -138,22 +131,13 @@ layui.use([ 'table', 'element', 'form' ], function() {
         }
     });
 
-    window.editInfo = function(id) {
-        layer.open({
-            content: '/main/jobUpdateView/' + id,
-            title: "编辑",
-            area: ['600px', '460px'],
-            type: 2,
-            maxmin: true,
-            shadeClose: true,
-            end: function () {
-                _table.ajax.reload(null, false);
-            }
-        });
+    window.download = function(id, name) {
+        ajaxDownloadFile('/file/download/'+ id, name);
+        return false;
     }
     window.deleteInfo = function(id) {
         layer.confirm("确定删除吗?", {icon: 3, title: '提示'}, function (index) {//确定回调
-            ajaxJsonRequest("DELETE", '/jobs/delete/' + id, null, function(data) {
+            ajaxJsonRequest("DELETE", '/file/delete/' + id, null, function(data) {
                 layer.close(index);
                 handlerResult(data, deleteDone)
             });

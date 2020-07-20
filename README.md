@@ -123,6 +123,8 @@ services:
       - 8082:8082
     environment:
       url: jdbc:postgresql://192.168.1.94:5432/mydb?characterEncoding=utf8&useSSL=true
+    volumes: 
+      - /opt/nginx/uploads:/uploads
   pointsys-web:
     restart: always
     image: javaboy/pointsys-web:1.0.0

@@ -48,6 +48,11 @@
     t_file_info WHERE t_file_info.id=#{id}
   </delete>
 
+  <delete id="deleteByUuid" parameterType="String">
+    DELETE FROM
+    t_file_info WHERE t_file_info.url=#{uuid}
+  </delete>
+
   <insert id="insert" parameterType="FileStorage">
     INSERT INTO t_file_info
     (id,name,url,size,type,createtime,updatetime)

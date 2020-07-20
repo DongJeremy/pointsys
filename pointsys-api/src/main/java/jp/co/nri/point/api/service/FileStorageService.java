@@ -10,6 +10,8 @@ public interface FileStorageService extends BaseService<FileStorage> {
 
     Resource loadFileAsResource(String fileName);
 
-    String storeFile(MultipartFile file);
+    String storeFile(MultipartFile file, String targetFilename);
+
+    void deleteByUuid(String uuidString);
 
 }
