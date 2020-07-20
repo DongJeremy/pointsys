@@ -2,6 +2,7 @@ package jp.co.nri.point.api.controller;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +35,7 @@ import jp.co.nri.point.beans.ResultBean;
 import jp.co.nri.point.domain.FileStorage;
 import jp.co.nri.point.pagination.PaginationHandler;
 import jp.co.nri.point.util.FileSizeUtil;
+import jp.co.nri.point.util.FileUtil;
 
 @Tag(name = "文件处理")
 @RestController
@@ -52,7 +55,9 @@ public class FileController {
 
         // update database
         String fileSize = FileSizeUtil.formatFileSize(file.getSize());
-        FileStorage targetFileStorage = new FileStorage(fileName, fileUuid, fileSize, file.getContentType());
+        String extString = FileUtil.getMediaTypeExtension(file.getContentType());
+        String fileExt = extString.substring(1).toUpperCase();
+        FileStorage targetFileStorage = new FileStorage(fileName, fileUuid, fileSize, fileExt);
         long effectRow = fileStorageService.save(targetFileStorage);
         if (effectRow == 0) {
             return ResultBean.errorResult("update employee fail.");
@@ -107,6 +112,15 @@ public class FileController {
     public ResultBean<?> deleteEmployee(@PathVariable String id) {
         fileStorageService.deleteByUuid(id);
         logger.info("delete employee successful.");
+        return ResultBean.successResult();
+    }
+
+    @Operation(summary = "批量删除文件")
+    @PostMapping("/batch/delete")
+    public ResultBean<?> removeEmp(@RequestBody List<String> ids) {
+        for (String id : ids) {
+            fileStorageService.deleteByUuid(id);
+        }
         return ResultBean.successResult();
     }
 }

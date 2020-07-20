@@ -363,6 +363,15 @@ CREATE TABLE T_FILE_INFO
   PRIMARY KEY (ID)
 )
 
+CREATE TABLE persistent_logins
+(
+  username character varying(64) NOT NULL,
+  series character varying(64) NOT NULL,
+  token character varying(64) NOT NULL,
+  last_used timestamp without time zone NOT NULL,
+  CONSTRAINT persistent_logins_pkey PRIMARY KEY (series)
+)
+
 INSERT INTO SYS_PERMISSION (ID, PARENTID, NAME, CSS, HREF, TYPE, PERMISSION, SORT) VALUES (1, 0, '人事管理', 'fa-users', '', 1, '', 1);
 INSERT INTO SYS_PERMISSION (ID, PARENTID, NAME, CSS, HREF, TYPE, PERMISSION, SORT) VALUES (2, 1, '雇员管理', 'fa-user', '/main/empView', 1, '', 2);
 INSERT INTO SYS_PERMISSION (ID, PARENTID, NAME, CSS, HREF, TYPE, PERMISSION, SORT) VALUES (3, 1, '部门管理', 'fa-wrench', '/main/deptView', 1, '', 3);

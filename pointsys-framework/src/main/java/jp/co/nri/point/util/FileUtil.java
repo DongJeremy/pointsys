@@ -7,6 +7,10 @@ import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.tika.mime.MimeType;
+import org.apache.tika.mime.MimeTypeException;
+import org.apache.tika.mime.MimeTypes;
+
 public class FileUtil {
 
     public static void saveInputStreamToFile(InputStream is, HttpServletResponse response, String filename)
@@ -34,5 +38,17 @@ public class FileUtil {
             if (bos != null)
                 bos.close();
         }
+    }
+
+    public static String getMediaTypeExtension(String contentType) {
+        final MimeTypes allTypes = MimeTypes.getDefaultMimeTypes();
+        try {
+            MimeType file = allTypes.forName(contentType);
+            String ext = file.getExtension();
+            return ext;
+        } catch (MimeTypeException e) {
+            e.printStackTrace();
+        }
+        return "unknown";
     }
 }

@@ -1,5 +1,7 @@
 package jp.co.nri.point.config;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -14,8 +16,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 
 import jp.co.nri.point.security.BadAuthenticationEntryPoint;
 import jp.co.nri.point.security.LoginSuccessHandler;
@@ -46,6 +51,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private TokenFilter tokenFilter;
 
+    @Autowired
+    private DataSource dataSource;
+
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -69,9 +77,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 基于token，所以不需要session
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-                .antMatchers("/login", "/main/**").permitAll().anyRequest().authenticated().and().formLogin().and()
-                .exceptionHandling().authenticationEntryPoint(badAuthenticationEntryPoint).and().logout()
-                .logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler);
+                .antMatchers("/login", "/main/**").permitAll().anyRequest().authenticated().and().rememberMe()
+                .rememberMeServices(rememberMeServices())
+                .key("INTERNAL_SECRET_KEY")
+                .rememberMeServices(rememberMeServices())
+                .rememberMeParameter("remember-me")
+                .key("INTERNAL_SECRET_KEY").tokenValiditySeconds(1209600).and()
+                .formLogin().and().exceptionHandling().authenticationEntryPoint(badAuthenticationEntryPoint).and()
+                .logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler);
 
         // 解决不允许显示在iframe的问题
         http.headers().frameOptions().disable();
@@ -79,6 +92,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterAt(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Bean
+    public RememberMeServices rememberMeServices() {
+        JdbcTokenRepositoryImpl db = new JdbcTokenRepositoryImpl();
+        db.setDataSource(dataSource);
+
+        PersistentTokenBasedRememberMeServices rememberMeServices =
+                new PersistentTokenBasedRememberMeServices("INTERNAL_SECRET_KEY", userDetailsService, db);
+
+        // 该参数不是必须的，默认值为 "remember-me", 但如果设置必须和页面复选框的 name 一致
+        rememberMeServices.setParameter("remember-me");
+        return rememberMeServices;
     }
 
     @Override

@@ -20,10 +20,20 @@
               <button class="layui-btn" id="import_btn">
                 <i class="layui-icon">&#xe67c;</i>上传文件
               </button>
+              <button class="layui-btn" id="del_btn">
+                <i class="layui-icon">&#xe640;</i>批量删除
+              </button>
             </div>
           </div>
+          
           <div class="btn-group-right">
-            <div class="timo-toolbar">
+            <div class="timo-toolbar layui-form-pane timo-search-box">
+              <div class="layui-inline" id="deptInfo">
+                <label class="layui-form-label">名字：</label>
+                <div class="layui-input-block">
+                  <input id="name" name="name" value="" placeholder="名字" autocomplete="off" class="layui-input">
+                </div>
+              </div>
               <button class="layui-btn timo-search-btn" id="searchBtn" data-type="reload">
                 <i class="layui-icon">&#xe615;</i>搜索
               </button>
@@ -95,8 +105,7 @@ layui.use([ 'table', 'element', 'form' ], function() {
         },
     ];
     var data = function(d){
-        d.description = $('#description').val();
-        d.status = $("#status").val();
+        d.name = $("#name").val();
     }
     var $table = $('#dt-table'),
         $wrapper = $("#wrap-table");
@@ -115,15 +124,16 @@ layui.use([ 'table', 'element', 'form' ], function() {
 
     _upload.render({
         elem: '#import_btn' //绑定元素
-        ,url: '/file/upload' //上传接口
-        ,accept: 'file'
-        ,done: function(res){
+        , url: '/file/upload' //上传接口
+        , accept: 'file'
+        , multiple: true
+        , done: function(res){
             parent.layer.msg("导入成功", {
                 icon : 6
             });
             _table.ajax.reload(null, false);
         }
-        ,error: function(){
+        , error: function(){
             parent.layer.msg("导入失敗", {
                 icon : 6
             });
@@ -150,17 +160,25 @@ layui.use([ 'table', 'element', 'form' ], function() {
         _table.ajax.reload();
     });
 
-    $("#add_btn").on("click",function(){
-        layer.open({
-            content: "/main/jobAddView",
-            title: "新增用户",
-            area: ['600px', '460px'],
-            type: 2,
-            maxmin: true,
-            shadeClose: true,
-            end: function () {
-                _table.ajax.reload(null, false);
-            }
+    $("#del_btn").on("click",function(){
+        var $checkbox = $("tbody :checkbox", $table);
+        var checkData = [];
+        $checkbox.filter(':checked').each(function () {
+            checkData.push(_table.row($(this).closest('tr')).data());
+        });
+        if (checkData.length === 0) {
+            layer.msg('请选择数据');
+            return false;
+        }
+        layer.confirm('确定删除吗?', function (index) {
+            var reqBody = checkData.reduce(function(acc, cur) {
+                acc.push(cur.url);
+                return acc;
+            }, []);
+            ajaxJsonRequest("POST", '/file/batch/delete',  JSON.stringify(reqBody), function (data) {
+                layer.close(index);
+                handlerResult(data, deleteDone)
+            });
         });
         return false;
     });

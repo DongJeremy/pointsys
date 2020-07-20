@@ -34,7 +34,7 @@
           autocomplete="off" placeholder="验证码"> <img class="captcha-img" th:src="@{/captcha}" />
       </div>
       <div class="layui-form-item">
-        <input type="checkbox" name="rememberMe" title="记住我" lay-skin="primary"> <a
+        <input type="checkbox" name="remember-me" title="记住我" lay-skin="primary" id="remember-me"> <a
           class="layui-layout-right forget-password" href="javascript:alert('请联系超级管理员！')">忘记密码?</a>
       </div>
       <button lay-submit lay-filter="login" class="layui-btn layui-btn-fluid ajax-login" onclick="login(this)">
@@ -45,8 +45,16 @@
   <!-- jQuery 3 -->
   <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
   <script th:src="@{/webjars/layui/layui.js}"></script>
+  
 
 <script type="text/javascript">
+    layui.use([ 'element', 'form', 'upload' ], function() {
+        var table = layui.table
+        , $ = layui.$
+        , _upload = layui.upload
+        , element = layui.element
+        , form = layui.form;
+    });
     if (top != self) {
         parent.location.href = '/login';
     }
