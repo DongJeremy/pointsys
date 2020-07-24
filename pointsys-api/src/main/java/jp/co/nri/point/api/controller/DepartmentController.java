@@ -32,8 +32,9 @@ public class DepartmentController {
     @GetMapping
     public PaginationResponse listDepartment(PaginationRequest request) {
         int offset = request.getStart() / request.getLength() + 1;
-        PaginationResponse pageResponse = new PaginationHandler(req -> service.count(req.getParams()),
-                req -> service.list(req.getParams(), offset, req.getLength())).handle(request);
+        PaginationResponse pageResponse = new PaginationHandler(
+                req -> service.list(req.getParams(), offset, req.getLength()).getTotal(),
+                req -> service.list(req.getParams(), offset, req.getLength()).getList()).handle(request);
         return pageResponse;
     }
 

@@ -37,12 +37,6 @@
     FROM t_file_info t
   </select>
 
-  <select id="selectCountByParams" resultType="long">
-    SELECT count(1) 
-    FROM t_file_info t
-    <include refid="where" />
-  </select>
-
   <delete id="deleteByPrimaryKey" parameterType="long">
     DELETE FROM
     t_file_info WHERE t_file_info.id=#{id}

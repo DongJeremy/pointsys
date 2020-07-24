@@ -43,12 +43,6 @@
     FROM t_job t
   </select>
 
-  <select id="selectCountByParams" resultType="long">
-    SELECT count(1) 
-    FROM t_job t
-    <include refid="where" />
-  </select>
-
   <delete id="deleteByPrimaryKey" parameterType="long">
     DELETE FROM
     t_job WHERE t_job.id=#{id}

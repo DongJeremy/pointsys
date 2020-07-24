@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 import jp.co.nri.point.mapper.BaseMapper;
 
@@ -26,14 +27,9 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T> implements BaseService<
     }
 
     @Override
-    public Long count(Map<String, Object> params) {
-        return mapper.selectCountByParams(params);
-    }
-
-    @Override
-    public List<T> list(Map<String, Object> params, int pageNum, int pageSize) {
+    public PageInfo<T> list(Map<String, Object> params, int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        return mapper.selectAllByParams(params);
+        return new PageInfo<>(mapper.selectAllByParams(params));
     }
 
     @Override

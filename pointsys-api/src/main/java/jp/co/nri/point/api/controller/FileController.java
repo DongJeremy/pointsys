@@ -102,8 +102,9 @@ public class FileController {
     @GetMapping
     public PaginationResponse listFiles(PaginationRequest request) {
         int offset = request.getStart() / request.getLength() + 1;
-        PaginationResponse pageResponse = new PaginationHandler(req -> fileStorageService.count(req.getParams()),
-                req -> fileStorageService.list(req.getParams(), offset, req.getLength())).handle(request);
+        PaginationResponse pageResponse = new PaginationHandler(
+                req -> fileStorageService.list(req.getParams(), offset, req.getLength()).getTotal(),
+                req -> fileStorageService.list(req.getParams(), offset, req.getLength()).getList()).handle(request);
         return pageResponse;
     }
 

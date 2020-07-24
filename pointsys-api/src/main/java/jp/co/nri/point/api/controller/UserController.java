@@ -73,8 +73,9 @@ public class UserController {
     @GetMapping("/list")
     public PaginationResponse listUser(PaginationRequest request) {
         int offset = request.getStart() / request.getLength() + 1;
-        PaginationResponse pageResponse = new PaginationHandler(req -> userService.count(req.getParams()),
-                req -> userService.list(req.getParams(), offset, req.getLength())).handle(request);
+        PaginationResponse pageResponse = new PaginationHandler(
+                req -> userService.list(req.getParams(), offset, req.getLength()).getTotal(),
+                req -> userService.list(req.getParams(), offset, req.getLength()).getList()).handle(request);
         return pageResponse;
     }
 

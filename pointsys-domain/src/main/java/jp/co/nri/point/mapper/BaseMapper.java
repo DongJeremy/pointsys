@@ -21,7 +21,5 @@ public interface BaseMapper<T> {
 
     Long updateByPrimaryKey(T entity);
 
-    Long selectCountByParams(@Param("params") Map<String, Object> params);
-
     List<T> selectAllByParams(@Param("params") Map<String, Object> params);
 }

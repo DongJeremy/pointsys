@@ -44,12 +44,6 @@
     FROM t_mail
   </select>
 
-  <select id="selectCountByParams" resultType="long">
-    SELECT count(*)
-    FROM t_mail t
-    <include refid="where" />
-  </select>
-
   <delete id="deleteByPrimaryKey" parameterType="long">
     DELETE FROM
     t_mail t WHERE t.id=#{id}

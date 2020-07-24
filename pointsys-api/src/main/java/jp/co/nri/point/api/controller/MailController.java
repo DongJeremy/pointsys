@@ -67,8 +67,9 @@ public class MailController {
     @GetMapping
     public PaginationResponse list(PaginationRequest request) {
         int offset = request.getStart() / request.getLength() + 1;
-        PaginationResponse pageResponse = new PaginationHandler(req -> mailService.count(req.getParams()),
-                req -> mailService.list(req.getParams(), offset, req.getLength())).handle(request);
+        PaginationResponse pageResponse = new PaginationHandler(
+                req -> mailService.list(req.getParams(), offset, req.getLength()).getTotal(),
+                req -> mailService.list(req.getParams(), offset, req.getLength()).getList()).handle(request);
         return pageResponse;
     }
 }

@@ -63,13 +63,6 @@
     t_emp A
   </select>
 
-  <select id="selectCountByParams" resultType="long">
-    SELECT count(*)
-    FROM
-    t_emp A
-    <include refid="where" />
-  </select>
-
   <delete id="deleteByPrimaryKey" parameterType="long">
     DELETE FROM
     t_emp

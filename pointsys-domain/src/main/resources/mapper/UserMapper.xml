@@ -65,18 +65,6 @@
     sys_user
   </select>
 
-  <select id="selectCountByParams" resultType="long">
-    SELECT count(*)
-    FROM
-    sys_user A
-    <where>
-      1=1
-      <if test="params.name != null and params.name != ''">
-        AND A.name = #{params.name}
-      </if>
-    </where>
-  </select>
-
   <delete id="deleteByPrimaryKey" parameterType="long">
     DELETE FROM
     sys_user

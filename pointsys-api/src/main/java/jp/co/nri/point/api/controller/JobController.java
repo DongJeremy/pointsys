@@ -51,8 +51,9 @@ public class JobController {
     @Operation(summary = "定时任务列表")
     public PaginationResponse list(PaginationRequest request) {
         int offset = request.getStart() / request.getLength() + 1;
-        PaginationResponse pageResponse = new PaginationHandler(req -> jobService.count(req.getParams()),
-                req -> jobService.list(req.getParams(), offset, req.getLength())).handle(request);
+        PaginationResponse pageResponse = new PaginationHandler(
+                req -> jobService.list(req.getParams(), offset, req.getLength()).getTotal(),
+                req -> jobService.list(req.getParams(), offset, req.getLength()).getList()).handle(request);
         return pageResponse;
     }
 

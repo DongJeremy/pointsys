@@ -3,17 +3,17 @@ package jp.co.nri.point.base;
 import java.util.List;
 import java.util.Map;
 
+import com.github.pagehelper.PageInfo;
+
 public interface BaseService<T> {
 
     Long count();
-
-    Long count(Map<String, Object> params);
 
     T getById(Long id);
 
     List<T> list();
 
-    List<T> list(Map<String, Object> params, int pageNum, int pageSize);
+    PageInfo<T> list(Map<String, Object> params, int pageNum, int pageSize);
 
     Long save(T entity);
 
