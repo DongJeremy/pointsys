@@ -342,15 +342,6 @@ CREATE TABLE T_MAIL_TO
   PRIMARY KEY (ID)
 );
 
-CREATE TABLE T_MAIL_TO
-(
-  ID              SERIAL,
-  MAILID          INT           NOT NULL,
-  TOUSER          VARCHAR(128)  NOT NULL,
-  STATUS          BOOL          NOT NULL DEFAULT TRUE,
-  PRIMARY KEY (ID)
-);
-
 CREATE TABLE T_FILE_INFO
 (
   ID               SERIAL,
@@ -361,7 +352,7 @@ CREATE TABLE T_FILE_INFO
   CREATETIME       TIMESTAMP     NOT NULL,
   UPDATETIME       TIMESTAMP     NOT NULL,
   PRIMARY KEY (ID)
-)
+);
 
 CREATE TABLE persistent_logins
 (
@@ -370,7 +361,7 @@ CREATE TABLE persistent_logins
   token character varying(64) NOT NULL,
   last_used timestamp without time zone NOT NULL,
   CONSTRAINT persistent_logins_pkey PRIMARY KEY (series)
-)
+);
 
 INSERT INTO SYS_PERMISSION (ID, PARENTID, NAME, CSS, HREF, TYPE, PERMISSION, SORT) VALUES (1, 0, '人事管理', 'fa-users', '', 1, '', 1);
 INSERT INTO SYS_PERMISSION (ID, PARENTID, NAME, CSS, HREF, TYPE, PERMISSION, SORT) VALUES (2, 1, '雇员管理', 'fa-user', '/main/empView', 1, '', 2);

@@ -65,8 +65,8 @@ server {
     listen      443 ssl;
     server_name localhost.local;
 
-    ssl_certificate         cert/localhost.pem;
-    ssl_certificate_key     cert/localhost.key;
+    ssl_certificate         cert/pointsys.pem;
+    ssl_certificate_key     cert/pointsys.key;
 
     ssl_session_timeout 5m;
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
@@ -147,6 +147,4 @@ services:
       - /opt/nginx/cert:/etc/nginx/cert
 EOF
 ```
-
-
 
