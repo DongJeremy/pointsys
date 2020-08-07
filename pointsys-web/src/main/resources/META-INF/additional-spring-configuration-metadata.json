@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "proxy.servlet_url",
+    "type": "java.lang.String",
+    "description": "A description for 'proxy.servlet_url'"
+  },
+  {
+    "name": "proxy.target_url",
+    "type": "java.lang.String",
+    "description": "A description for 'proxy.target_url'"
+  },
+  {
+    "name": "springdoc.swagger-ui.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'springdoc.swagger-ui.enabled'"
+  }
+]}
