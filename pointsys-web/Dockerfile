@@ -1,4 +1,4 @@
-FROM openjdk:11.0.6-jre
+FROM woahbase/alpine-openjdk11:latest
 VOLUME /tmp
 ENV url=""
 ADD target/pointsys-web-1.0.0.jar app.jar
